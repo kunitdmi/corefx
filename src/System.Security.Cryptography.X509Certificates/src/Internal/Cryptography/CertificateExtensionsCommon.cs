@@ -21,6 +21,7 @@ namespace Internal.Cryptography.Pal
                 throw new ArgumentNullException(nameof(certificate));
 
             string oidValue = GetExpectedOidValue<T>();
+            //var tmp = certificate.PublicKey.Key;
             PublicKey publicKey = certificate.PublicKey;
             Oid algorithmOid = publicKey.Oid;
             if (oidValue != algorithmOid.Value)
@@ -58,6 +59,9 @@ namespace Internal.Cryptography.Pal
             if (typeof(T) == typeof(DSA))
                 return (T)(object)certificate.Pal.GetDSAPrivateKey();
 
+            if (typeof(T) == typeof(Gost3410))
+                return (T)(object)certificate.Pal.GetGost3410PrivateKey();
+
             Debug.Fail("Expected GetExpectedOidValue() to have thrown before we got here.");
             throw new NotSupportedException(SR.NotSupported_KeyAlgorithm);
         }
@@ -70,6 +74,8 @@ namespace Internal.Cryptography.Pal
                 return Oids.Ecc;
             if (typeof(T) == typeof(DSA))
                 return Oids.DsaDsa;
+            if (typeof(T) == typeof(Gost3410))
+                return Oids.Gost3410EL;
             throw new NotSupportedException(SR.NotSupported_KeyAlgorithm);
         }
     }

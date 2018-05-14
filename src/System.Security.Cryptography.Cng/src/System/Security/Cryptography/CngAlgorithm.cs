@@ -201,6 +201,14 @@ namespace System.Security.Cryptography
             }
         }
 
+        public static CngAlgorithm Gost3410
+        {
+            get
+            {
+                return s_gost3410 ?? (s_gost3410 = new CngAlgorithm("Gost3410")); // BCRYPT_SHA512_ALGORITHM
+            }
+        }
+
         private static CngAlgorithm s_ecdh;
         private static CngAlgorithm s_ecdhp256;
         private static CngAlgorithm s_ecdhp384;
@@ -215,6 +223,7 @@ namespace System.Security.Cryptography
         private static CngAlgorithm s_sha384;
         private static CngAlgorithm s_sha512;
         private static CngAlgorithm s_rsa;
+        private static CngAlgorithm s_gost3410;
 
         private readonly string _algorithm;
     }

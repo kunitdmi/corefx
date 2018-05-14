@@ -568,5 +568,23 @@
     <Reference Include="System.Core" />
     <Compile Include="System\Security\Cryptography\IncrementalHash.net46.cs" />
   </ItemGroup>
+  <ItemGroup Condition="'$(IsPartialFacadeAssembly)' != 'true'">
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Gost3410Cng.ImportExport.cs">
+      <Link>Common\System\Security\Cryptography\Gost3410Cng.ImportExport.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Gost3410Cng.cs">
+      <Link>Common\System\Security\Cryptography\Gost3410Cng.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Gost3410Cng.SignVerify.cs">
+      <Link>Common\System\Security\Cryptography\Gost3410Cng.SignVerify.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup Condition="'$(IsPartialFacadeAssembly)' != 'true'">
+    <Compile Include="System\Security\Cryptography\Gost3410.cs" />
+    <Compile Include="System\Security\Cryptography\Gost3410Cng.cs" />
+    <Compile Include="System\Security\Cryptography\Gost3410CSPObject.cs" />
+    <Compile Include="System\Security\Cryptography\Gost3410Parameters.cs" />
+    <Compile Include="System\Security\Cryptography\Gost3411.cs" />
+  </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>

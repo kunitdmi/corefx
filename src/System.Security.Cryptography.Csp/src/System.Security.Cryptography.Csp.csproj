@@ -14,11 +14,220 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'uap-Windows_NT-Debug|AnyCPU'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'uap-Windows_NT-Release|AnyCPU'" />
   <ItemGroup>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn18BitCharString.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn18BitCharString.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1BerDecodeBuffer.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1BerDecodeBuffer.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1BerDecodeContext.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1BerDecodeContext.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1BerEncodeBuffer.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1BerEncodeBuffer.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1BerInputStream.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1BerInputStream.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1BerMessageDumpHandler.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1BerMessageDumpHandler.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1BerOutputStream.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1BerOutputStream.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1BigInteger.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1BigInteger.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1BitString.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1BitString.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1BmpString.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1BmpString.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1Boolean.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1Boolean.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1CerInputStream.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1CerInputStream.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1CerOutputStream.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1CerOutputStream.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1CharRange.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1CharRange.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1CharSet.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1CharSet.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1CharString.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1CharString.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1Choice.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1Choice.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1ChoiceExt.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1ChoiceExt.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1DecodeBuffer.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1DecodeBuffer.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1DerDecodeBuffer.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1DerDecodeBuffer.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1DerEncodeBuffer.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1DerEncodeBuffer.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1DerInputStream.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1DerInputStream.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1DiscreteCharSet.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1DiscreteCharSet.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1EncodeBuffer.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1EncodeBuffer.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1Enumerated.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1Enumerated.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1GeneralizedTime.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1GeneralizedTime.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1GeneralString.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1GeneralString.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1GraphicString.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1GraphicString.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1Ia5String.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1Ia5String.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1Integer.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1Integer.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1MessageBuffer.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1MessageBuffer.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1Null.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1Null.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1NumericString.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1NumericString.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1ObjectDescriptor.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1ObjectDescriptor.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1ObjectIdentifier.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1ObjectIdentifier.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1OctetString.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1OctetString.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1OpenExt.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1OpenExt.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1OpenType.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1OpenType.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1OutputStream.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1OutputStream.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1PrintableString.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1PrintableString.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1Real.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1Real.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1RelativeOid.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1RelativeOid.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1RunTime.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1RunTime.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1Status.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1Status.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1T61String.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1T61String.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1Tag.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1Tag.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1Time.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1Time.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1TraceHandler.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1TraceHandler.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1Type.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1Type.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1UniversalString.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1UniversalString.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1UtcTime.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1UtcTime.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1Utf8String.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1Utf8String.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1Util.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1Util.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1Value.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1Value.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1VarWidthCharString.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1VarWidthCharString.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1VideotexString.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1VideotexString.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn1VisibleString.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Asn1VisibleString.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\BigInteger.cs">
+      <Link>Common\System\Security\Cryptography\Ber\BigInteger.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\IAsn1InputStream.cs">
+      <Link>Common\System\Security\Cryptography\Ber\IAsn1InputStream.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\IAsn1NamedEventHandler.cs">
+      <Link>Common\System\Security\Cryptography\Ber\IAsn1NamedEventHandler.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\IAsn1TaggedEventHandler.cs">
+      <Link>Common\System\Security\Cryptography\Ber\IAsn1TaggedEventHandler.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\IAsn1Type.cs">
+      <Link>Common\System\Security\Cryptography\Ber\IAsn1Type.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\IntHolder.cs">
+      <Link>Common\System\Security\Cryptography\Ber\IntHolder.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Tokenizer.cs">
+      <Link>Common\System\Security\Cryptography\Ber\Tokenizer.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\GostR34102001PublicKey.cs">
+      <Link>Common\System\Security\Cryptography\GostR34102001PublicKey.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\GostR34102001PublicKeyParameters.cs">
+      <Link>Common\System\Security\Cryptography\GostR34102001PublicKeyParameters.cs</Link>
+    </Compile>
+	<Compile Include="$(CommonPath)\System\Security\Cryptography\Gost2814789ParamSet.cs">
+      <Link>Common\System\Security\Cryptography\Gost2814789ParamSet.cs</Link>
+    </Compile>
+	<Compile Include="$(CommonPath)\System\Security\Cryptography\GostKeyExchangeParameters.cs">
+      <Link>Common\System\Security\Cryptography\GostKeyExchangeParameters.cs</Link>
+    </Compile>
     <Compile Include="System\Security\Cryptography\AesCryptoServiceProvider.cs" />
     <Compile Include="System\Security\Cryptography\CapiHelper.DSA.Shared.cs" />
+    <Compile Include="System\Security\Cryptography\CapiHelper.Gost.Shared.cs" />
     <Compile Include="System\Security\Cryptography\CapiHelper.Shared.cs" />
     <Compile Include="System\Security\Cryptography\CspParameters.cs" />
     <Compile Include="System\Security\Cryptography\CspProviderFlags.cs" />
+    <Compile Include="System\Security\Cryptography\Gost3410CryptoServiceProvider.Windows.cs" />
+    <Compile Include="System\Security\Cryptography\Gost3410CSPObject.cs" />
+    <Compile Include="System\Security\Cryptography\Gost3411CryptoServiceProvider.cs" />
+    <Compile Include="System\Security\Cryptography\GostConstants.cs" />
     <Compile Include="System\Security\Cryptography\ICspAsymmetricAlgorithm.cs" />
     <Compile Include="System\Security\Cryptography\KeyNumber.cs" />
     <Compile Include="System\Security\Cryptography\MD5CryptoServiceProvider.cs" />
@@ -31,7 +240,7 @@
     <Compile Include="System\Security\Cryptography\TripleDESCryptoServiceProvider.cs" />
     <Compile Include="Internal\Cryptography\Helpers.cs" />
   </ItemGroup>
-    <ItemGroup Condition="'$(TargetsUnix)' == 'true'">
+  <ItemGroup Condition="'$(TargetsUnix)' == 'true'">
     <Compile Include="System\Security\Cryptography\CapiHelper.Unix.cs" />
     <Compile Include="System\Security\Cryptography\CspKeyContainerInfo.Unix.cs" />
     <Compile Include="System\Security\Cryptography\DESCryptoServiceProvider.Unix.cs" />
@@ -90,6 +299,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Buffers" />
+    <Reference Include="System.Collections, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System.Diagnostics.Debug" />
     <Reference Include="System.Diagnostics.Tools" />
     <Reference Include="System.Memory" />

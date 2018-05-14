@@ -42,6 +42,26 @@ namespace Internal.Cryptography.Pal
                         CngKey cngKey = CngKey.Import(keyBlob, CngKeyBlobFormat.GenericPublicBlob);
                         return new RSACng(cngKey);
                     }
+                //add: sk
+                case AlgId.CALG_GOST3410:
+                    {
+                        var cspObject = new GostKeyExchangeParameters();
+                        cspObject.DecodeParameters(encodedParameters);
+                        cspObject.DecodePublicKey(encodedKeyValue);
+                        var cspBlobData = GostKeyExchangeParameters.EncodePublicBlob(cspObject);
+
+                        CspParameters cspParams = new CspParameters(); 
+                        cspParams.Flags |= CspProviderFlags.NoPrompt;
+                        cspParams.Flags |= CspProviderFlags.UseExistingKey;
+                        cspParams.Flags |= CspProviderFlags.UseDefaultKeyContainer;
+                        cspParams.KeyNumber = (int)KeyNumber.Exchange; 
+                        Gost3410CryptoServiceProvider gost3410 = new Gost3410CryptoServiceProvider(cspParams);
+
+                        //gost3410.ImportCspBlob(encodedKeyValue, encodedParameters);
+                        gost3410.ImportCspBlob(cspBlobData);
+                        return gost3410;
+                    }
+                //end: sk
                 case AlgId.CALG_DSS_SIGN:
                     {
                         byte[] keyBlob = ConstructDSSPublicKeyCspBlob(encodedKeyValue, encodedParameters);

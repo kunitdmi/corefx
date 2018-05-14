@@ -4,7 +4,6 @@
     <PackageConfigurations>
       netcoreapp;
       netfx;
-      netstandard;
       net462;
       net47;
     </PackageConfigurations>

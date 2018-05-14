@@ -645,4 +645,62 @@ namespace System.Security.Cryptography
         public static new System.Security.Cryptography.TripleDES Create(string str) { throw null; }
         public static bool IsWeakKey(byte[] rgbKey) { throw null; }
     }
+    //add: SK
+    public abstract partial class Gost3410 : System.Security.Cryptography.AsymmetricAlgorithm
+    {
+        public override string KeyExchangeAlgorithm { get { throw null; } }
+        public override string SignatureAlgorithm { get { throw null; } }
+        public static Gost3410 Create(int keySizeInBits) { throw null; }
+        public static Gost3410 Create(Gost3410Parameters parameters) { throw null; }
+        public static new Gost3410 Create(string algName) { throw null; }
+        public const int DefaultKeySize = 512;
+        public abstract Gost3410Parameters ExportParameters(bool includePrivateParameters);
+        public abstract void ImportParameters(Gost3410Parameters parameters);
+        public virtual byte[] Encrypt(byte[] data) { throw null; }
+        public virtual byte[] Decrypt(byte[] data) { throw null; }
+        public abstract byte[] SignHash(byte[] hash, HashAlgorithmName hashAlgorithm);
+        public abstract bool VerifyHash(byte[] hash, byte[] signature, HashAlgorithmName hashAlgorithm);
+        protected abstract byte[] HashData(byte[] data, int offset, int count, HashAlgorithmName hashAlgorithm);
+        protected abstract byte[] HashData(IO.Stream data, HashAlgorithmName hashAlgorithm); 
+        public virtual bool TryDecrypt(ReadOnlySpan<byte> data, Span<byte> destination, out int bytesWritten) { throw null; }
+        public virtual bool TryEncrypt(ReadOnlySpan<byte> data, Span<byte> destination, out int bytesWritten) { throw null; }
+        protected virtual bool TryHashData(ReadOnlySpan<byte> data, Span<byte> destination, HashAlgorithmName hashAlgorithm, out int bytesWritten) { throw null; }
+        public virtual bool TrySignHash(ReadOnlySpan<byte> hash, Span<byte> destination, HashAlgorithmName hashAlgorithm, out int bytesWritten) { throw null; }
+        public virtual bool VerifyHash(ReadOnlySpan<byte> hash, ReadOnlySpan<byte> signature, HashAlgorithmName hashAlgorithm) { throw null; }
+        public virtual byte[] DecryptValue(byte[] rgb) { throw null; }
+        public virtual byte[] EncryptValue(byte[] rgb) { throw null; }
+        public byte[] SignData(byte[] data, HashAlgorithmName hashAlgorithm) { throw null; }
+        public virtual byte[] SignData(byte[] data, int offset, int count, HashAlgorithmName hashAlgorithm) { throw null; }
+        public virtual byte[] SignData(IO.Stream data, HashAlgorithmName hashAlgorithm) { throw null; }
+        public virtual bool TrySignData(ReadOnlySpan<byte> data, Span<byte> destination, HashAlgorithmName hashAlgorithm, out int bytesWritten) { throw null; }
+        public bool VerifyData(byte[] data, byte[] signature, HashAlgorithmName hashAlgorithm) { throw null; }
+        public virtual bool VerifyData(byte[] data, int offset, int count, byte[] signature, HashAlgorithmName hashAlgorithm) { throw null; }
+        public bool VerifyData(IO.Stream data, byte[] signature, HashAlgorithmName hashAlgorithm) { throw null; }
+        public virtual bool VerifyData(ReadOnlySpan<byte> data, ReadOnlySpan<byte> signature, HashAlgorithmName hashAlgorithm) { throw null; }
+        private static Exception HashAlgorithmNameNullOrEmpty() { throw null; }
+    }
+
+    public struct Gost3410Parameters
+    {
+        /// <summary>OID параметров подписи и DH.</summary>
+        public string PublicKeyParamSet;
+        /// <summary>OID параметров хеширования.</summary>
+        public string DigestParamSet;
+        /// <summary>Необязательный OID параметров шифрования.</summary>
+        public string EncryptionParamSet;
+        /// <summary>Открытый ключ.</summary>
+        public byte[] PublicKey;
+        /// <summary>Секретный ключ.</summary>
+        [NonSerialized]
+        public byte[] PrivateKey;
+    }
+
+    public abstract partial class Gost3411 : System.Security.Cryptography.HashAlgorithm
+    {
+        protected Gost3411() { }
+        public static new System.Security.Cryptography.Gost3411 Create() { throw null; }
+        public static new System.Security.Cryptography.Gost3411 Create(string hashName) { throw null; }
+    }
+
+    //end: SK
 }

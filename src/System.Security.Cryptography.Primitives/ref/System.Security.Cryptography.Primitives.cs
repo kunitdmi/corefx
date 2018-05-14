@@ -121,6 +121,8 @@ namespace System.Security.Cryptography
         public static System.Security.Cryptography.HashAlgorithmName SHA256 { get { throw null; } }
         public static System.Security.Cryptography.HashAlgorithmName SHA384 { get { throw null; } }
         public static System.Security.Cryptography.HashAlgorithmName SHA512 { get { throw null; } }
+        public static System.Security.Cryptography.HashAlgorithmName Gost3410 { get { throw null; } }
+        public static System.Security.Cryptography.HashAlgorithmName Gost3411 { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public bool Equals(System.Security.Cryptography.HashAlgorithmName other) { throw null; }
         public override int GetHashCode() { throw null; }

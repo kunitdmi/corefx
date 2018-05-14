@@ -4,6 +4,7 @@
 // ------------------------------------------------------------------------------
 // Changes to this file must follow the http://aka.ms/api-review process.
 // ------------------------------------------------------------------------------
+using System.IO;
 
 namespace System.Security.Cryptography
 {
@@ -270,4 +271,61 @@ namespace System.Security.Cryptography
         public override void GenerateIV() { }
         public override void GenerateKey() { }
     }
+
+    //add: sk
+    public sealed partial class Gost3410CryptoServiceProvider : Gost3410, ICspAsymmetricAlgorithm
+    {
+        public CspKeyContainerInfo CspKeyContainerInfo { get { throw null; } }
+        public override int KeySize { get { throw null; } }
+        public bool PersistKeyInCsp { get { throw null; } set { } }
+        public bool PublicOnly { get { throw null; } }
+        public static bool UseMachineKeyStore { get { throw null; } set { } }
+        public Gost3410CryptoServiceProvider() { throw null; }
+        public Gost3410CryptoServiceProvider(CspParameters parameters) { throw null; }
+        public byte[] SignData(byte[] buffer, object hashAlg) { throw null; }
+        public byte[] SignData(byte[] buffer, int offset, int count, object hashAlg) { throw null; }
+        public byte[] SignData(System.IO.Stream inputStream, object hashAlg) { throw null; }
+        //public byte[] SignHash(byte[] hash) { throw null; }
+        public bool VerifyData(byte[] buffer, object hashAlg, byte[] signature) { throw null; }
+        public bool VerifyData(System.IO.Stream inputStream, object hashAlg, byte[] signature) { throw null; }
+        public bool VerifyHash(byte[] hash, byte[] signature) { throw null; }
+        public override bool VerifyHash(byte[] hash, byte[] signature, HashAlgorithmName hashAlgName) { throw null; }
+
+        protected override byte[] HashData(byte[] data, int offset, int count, HashAlgorithmName hashAlgorithm) { throw null; }
+        protected override byte[] HashData(Stream data, HashAlgorithmName hashAlgorithm) { throw null; }
+        public override byte[] SignHash(byte[] hash, HashAlgorithmName hashAlgorithm) { throw null; }
+        public byte[] ExportCspBlob(bool includePrivateParameters) { throw null; }
+        public void ImportCspBlob(byte[] rawData) { throw null; }
+        public void ImportCspBlob(byte[] keyBlob, byte[] paramBlob) { throw null; }
+        public override Gost3410Parameters ExportParameters(bool includePrivateParameters) { throw null; }
+        public override void ImportParameters(Gost3410Parameters parameters) { throw null; }
+        protected override void Dispose(bool disposing) { throw null; }
+    }
+
+    public sealed partial class Gost3411CryptoServiceProvider : Gost3411
+    {
+        protected override void Dispose(bool disposing) { throw null; }
+        public override void Initialize() { throw null; }
+        protected override void HashCore(byte[] array, int ibStart, int cbSize) { throw null; }
+        protected override void HashCore(ReadOnlySpan<byte> source) { throw null; }
+        protected override byte[] HashFinal() { throw null; }
+        protected override bool TryHashFinal(Span<byte> destination, out int bytesWritten) { throw null; }
+    }
+
+    public sealed class GostKeyExchangeParameters
+    {
+        public GostKeyExchangeParameters() { }
+        public GostKeyExchangeParameters(GostKeyExchangeParameters parameters) { }
+        public string DigestParamSet;
+        public string PublicKeyParamSet;
+        public string EncryptionParamSet;
+        public byte[] PublicKey;
+        public byte[] PrivateKey;
+        public void DecodeParameters(byte[] data) { }
+        public byte[] EncodeParameters() { throw null; }
+        public void DecodePublicKey(byte[] data) { }
+        public static byte[] EncodePublicBlob(GostKeyExchangeParameters publicKeyParameters) { throw null; }
+
+    }
+    //end: sk
 }

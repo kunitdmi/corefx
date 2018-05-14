@@ -33,6 +33,9 @@ namespace System.Security.Cryptography.X509Certificates
                     {
                         case Oids.RsaRsa:
                         case Oids.DsaDsa:
+                        case Oids.Gost3410EL:
+                        case Oids.Gost3410_2012_256:
+                        case Oids.Gost3410_2012_512:
                             _key = X509Pal.Instance.DecodePublicKey(_oid, EncodedKeyValue.RawData, EncodedParameters.RawData, null);
                             break;
 

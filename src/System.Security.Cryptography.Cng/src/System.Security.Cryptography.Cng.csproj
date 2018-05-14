@@ -88,6 +88,8 @@
     <Compile Include="Internal\Cryptography\ProviderPropertyName.cs" />
     <Compile Include="Internal\Cryptography\SymmetricImportExportExtensions.cs" />
     <Compile Include="Internal\Cryptography\CngSymmetricAlgorithmCore.cs" />
+    <Compile Include="System\Security\Cryptography\Gost3410Cng.cs" />
+    <Compile Include="System\Security\Cryptography\Gost3410Cng.Key.cs" />
     <Compile Include="$(CommonPath)\Interop\Windows\Interop.Libraries.cs">
       <Link>Interop\Windows\Interop.Libraries.cs</Link>
     </Compile>
@@ -318,6 +320,20 @@
     <Reference Include="System.Security.Cryptography.Encoding" />
     <Reference Include="System.Security.Cryptography.Primitives" />
     <Reference Include="System.Threading" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(IsPartialFacadeAssembly)' != 'true'">
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Gost3410Cng.ImportExport.cs">
+      <Link>Common\System\Security\Cryptography\Gost3410Cng.ImportExport.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Gost3410Cng.cs">
+      <Link>Common\System\Security\Cryptography\Gost3410Cng.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\Gost3410Cng.SignVerify.cs">
+      <Link>Common\System\Security\Cryptography\Gost3410Cng.SignVerify.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup Condition="'$(IsPartialFacadeAssembly)' != 'true'">
+    <Compile Include="System\Security\Cryptography\Gost3410Cng.ImportExport.cs" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>

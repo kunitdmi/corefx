@@ -466,6 +466,9 @@ namespace Internal.Cryptography.Pal.Native
         public const int CALG_RSA_SIGN = 0x2400;
         public const int CALG_DSS_SIGN = 0x2200;
         public const int CALG_SHA1     = 0x8004;
+        //add: sk
+        public const int CALG_GOST3410 = 0x2e23;
+        //end: sk
     }
 
     [Flags]
@@ -486,6 +489,10 @@ namespace Internal.Cryptography.Pal.Native
         X509_CERT_POLICIES = 16,
         X509_UNICODE_ANY_STRING = 24,
         X509_CERTIFICATE_TEMPLATE = 64,
+        //add: sk
+        X509_OCTET_STRING = 25,
+        X509_PUBLIC_KEY_INFO = 8
+        //end: sk
     }
 
     [StructLayout(LayoutKind.Sequential)]

@@ -210,6 +210,11 @@ namespace System.Security.Cryptography.X509Certificates
                         case Oids.DsaDsa:
                             _lazyPrivateKey = Pal.GetDSAPrivateKey();
                             break;
+                        //add: sk
+                        case Oids.Gost3410EL:
+                            _lazyPrivateKey = Pal.GetGost3410PrivateKey();
+                            break;
+                        //end: sk
                         default:
                             // This includes ECDSA, because an Oids.Ecc key can be
                             // many different algorithm kinds, not necessarily with mutual exclusion.

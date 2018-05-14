@@ -9,7 +9,7 @@ namespace Microsoft.Win32.SafeHandles
 {
     public abstract partial class SafeNCryptHandle : Microsoft.Win32.SafeHandles.SafeHandleZeroOrMinusOneIsInvalid
     {
-        protected SafeNCryptHandle() : base (default(bool)) { }
+        protected SafeNCryptHandle() : base(default(bool)) { }
         protected SafeNCryptHandle(System.IntPtr handle, System.Runtime.InteropServices.SafeHandle parentHandle) : base(default(bool)) { }
         public override bool IsInvalid { get { throw null; } }
         protected override bool ReleaseHandle() { throw null; }
@@ -68,6 +68,7 @@ namespace System.Security.Cryptography
         public static System.Security.Cryptography.CngAlgorithm Sha256 { get { throw null; } }
         public static System.Security.Cryptography.CngAlgorithm Sha384 { get { throw null; } }
         public static System.Security.Cryptography.CngAlgorithm Sha512 { get { throw null; } }
+        public static System.Security.Cryptography.CngAlgorithm Gost3410 { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public bool Equals(System.Security.Cryptography.CngAlgorithm other) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -84,6 +85,7 @@ namespace System.Security.Cryptography
         public static System.Security.Cryptography.CngAlgorithmGroup ECDiffieHellman { get { throw null; } }
         public static System.Security.Cryptography.CngAlgorithmGroup ECDsa { get { throw null; } }
         public static System.Security.Cryptography.CngAlgorithmGroup Rsa { get { throw null; } }
+        public static System.Security.Cryptography.CngAlgorithmGroup Gost3410 { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public bool Equals(System.Security.Cryptography.CngAlgorithmGroup other) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -346,4 +348,24 @@ namespace System.Security.Cryptography
         public override void GenerateIV() { }
         public override void GenerateKey() { }
     }
+
+    //add: sk
+    public sealed partial class Gost3410Cng : System.Security.Cryptography.Gost3410
+    {
+        public Gost3410Cng() { }
+        public Gost3410Cng(int keySize) { }
+        public Gost3410Cng(System.Security.Cryptography.CngKey key) { }
+        public System.Security.Cryptography.CngKey Key { get { throw null; } }
+        public override System.Security.Cryptography.KeySizes[] LegalKeySizes { get { throw null; } }
+        public override byte[] Decrypt(byte[] data) { throw null; }
+        protected override void Dispose(bool disposing) { }
+        public override byte[] Encrypt(byte[] data) { throw null; }
+        public override System.Security.Cryptography.Gost3410Parameters ExportParameters(bool includePrivateParameters) { throw null; }
+        protected override byte[] HashData(byte[] data, int offset, int count, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
+        protected override byte[] HashData(System.IO.Stream data, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
+        public override void ImportParameters(System.Security.Cryptography.Gost3410Parameters parameters) { }
+        public override byte[] SignHash(byte[] hash, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
+        public override bool VerifyHash(byte[] hash, byte[] signature, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
+    }
+    //end: sk
 }

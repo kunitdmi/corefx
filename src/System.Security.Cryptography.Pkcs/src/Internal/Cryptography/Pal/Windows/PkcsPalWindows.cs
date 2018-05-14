@@ -214,6 +214,10 @@ namespace Internal.Cryptography.Pal.Windows
                             return (T)(object)new ECDsaCng(cngKey);
                         if (typeof(T) == typeof(DSA))
                             return (T)(object)new DSACng(cngKey);
+                        //add: sk
+                        if (typeof(T) == typeof(Gost3410))
+                            return (T)(object)new Gost3410Cng(cngKey);
+                        //end:sk
 
                         Debug.Fail($"Unknown CNG key type request: {typeof(T).FullName}");
                         return null;
@@ -239,6 +243,10 @@ namespace Internal.Cryptography.Pal.Windows
                     return (T)(object)new RSACryptoServiceProvider(cspParams);
                 if (typeof(T) == typeof(DSA))
                     return (T)(object)new DSACryptoServiceProvider(cspParams);
+                //add: sk
+                if (typeof(T) == typeof(Gost3410))
+                    return (T)(object)new Gost3410CryptoServiceProvider(cspParams);
+                //end: sk
 
                 Debug.Fail($"Unknown CAPI key type request: {typeof(T).FullName}");
                 return null;

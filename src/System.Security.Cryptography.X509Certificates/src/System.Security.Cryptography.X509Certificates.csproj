@@ -49,6 +49,7 @@
     <Compile Include="System\Security\Cryptography\X509Certificates\Pkcs10CertificationRequestInfo.cs" />
     <Compile Include="System\Security\Cryptography\X509Certificates\Pkcs9ExtensionRequest.cs" />
     <Compile Include="System\Security\Cryptography\X509Certificates\PublicKey.cs" />
+    <Compile Include="System\Security\Cryptography\X509Certificates\Gost3410CertificateExtensions.cs" />
     <Compile Include="System\Security\Cryptography\X509Certificates\RSACertificateExtensions.cs" />
     <Compile Include="System\Security\Cryptography\X509Certificates\RSAPkcs1X509SignatureGenerator.cs" />
     <Compile Include="System\Security\Cryptography\X509Certificates\RSAPssX509SignatureGenerator.cs" />

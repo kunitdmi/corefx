@@ -52,6 +52,24 @@ namespace Internal.Cryptography
                     return HashAlgorithmName.SHA384;
                 case Oids.Sha512:
                     return HashAlgorithmName.SHA512;
+                //add: sk
+                case Oids.Gost3411:
+                    return new HashAlgorithmName("GOST R 34.11-94");
+                case Oids.Gost28147:
+                    return new HashAlgorithmName("HMAC GOST 28147-89");
+                case Oids.Gost34112012256:
+                    return new HashAlgorithmName("GR 34.11-2012 256");
+                case Oids.Gost34112012512:
+                    return new HashAlgorithmName("GR 34.11-2012 512");
+                case Oids.Gost3410:
+                    return new HashAlgorithmName("GOST DH 34.10-2001");
+                /*
+                 case Oids.Gost34102012256:
+                    return new HashAlgorithmName("GOST DH 34.10-2012 256");
+                 case Oids.Gost34102012512:
+                    return new HashAlgorithmName("GOST DH 34.10-2012 512");
+                */
+                //end: sk 
                 default:
                     throw new CryptographicException(SR.Cryptography_UnknownHashAlgorithm, oidValue);
             }
@@ -69,7 +87,24 @@ namespace Internal.Cryptography
                 return Oids.Sha384;
             if (algName == HashAlgorithmName.SHA512)
                 return Oids.Sha512;
-
+            //add: sk
+            if (algName == new HashAlgorithmName("GOST R 34.11-94"))
+                return Oids.Gost3411;
+            if (algName == new HashAlgorithmName("HMAC GOST 28147-89"))
+                return Oids.Gost28147;
+            if (algName == new HashAlgorithmName("GR 34.11-2012 256"))
+                return Oids.Gost34112012256;
+            if (algName == new HashAlgorithmName("GR 34.11-2012 512"))
+                return Oids.Gost34112012512;
+            if (algName == new HashAlgorithmName("GOST DH 34.10-2001"))
+                return Oids.Gost3410;
+            /*
+            if (algName == new HashAlgorithmName("GOST DH 34.10-2012 256"))
+                return Oids.Gost34102012256;
+            if (algName == new HashAlgorithmName("GOST DH 34.10-2012 512"))
+                return Oids.Gost34102012512;
+            */
+            //end: sk
             throw new CryptographicException(SR.Cryptography_Cms_UnknownAlgorithm, algName.Name);
         }
 
@@ -117,7 +152,7 @@ namespace Internal.Cryptography
 
         public static T[] NormalizeSet<T>(
             T[] setItems,
-            Action<byte[]> encodedValueProcessor=null)
+            Action<byte[]> encodedValueProcessor = null)
         {
             AsnSet<T> set = new AsnSet<T>
             {

@@ -66,6 +66,23 @@ namespace Internal.Cryptography.Pal
             );
         }
 
+        //add: sk
+        public Gost3410 GetGost3410PrivateKey()
+        {
+            return GetPrivateKey<Gost3410>(
+                delegate (CspParameters csp)
+                {
+                    return new Gost3410CryptoServiceProvider(csp);
+                }
+                ,
+                delegate (CngKey cngKey)
+                {
+                    return new Gost3410Cng(cngKey);
+                }
+            );
+        }
+        //end: sk
+
         public ICertificatePal CopyWithPrivateKey(DSA dsa)
         {
             DSACng dsaCng = dsa as DSACng;

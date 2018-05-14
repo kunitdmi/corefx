@@ -130,11 +130,20 @@ namespace System.Security.Cryptography
             }
         }
 
+        public static CngAlgorithmGroup Gost3410
+        {
+            get
+            {
+                return s_gost3410 ?? (s_gost3410 = new CngAlgorithmGroup("Gost3410")); // NCRYPT_RSA_ALGORITHM_GROUP
+            }
+        }
+
         private static CngAlgorithmGroup s_dh;
         private static CngAlgorithmGroup s_dsa;
         private static CngAlgorithmGroup s_ecdh;
         private static CngAlgorithmGroup s_ecdsa;
         private static CngAlgorithmGroup s_rsa;
+        private static CngAlgorithmGroup s_gost3410;
 
         private readonly string _algorithmGroup;
     }

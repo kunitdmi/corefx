@@ -386,70 +386,70 @@ namespace Internal.NativeCrypto
                 switch (keyParam)
                 {
                     case Constants.CLR_EXPORTABLE:
-                    {
-                        impTypeReturn = GetProviderParameterWorker(safeProvHandle, impType, ref cb, CryptProvParam.PP_IMPTYPE);
-                        //If implementation type is not HW
-                        if (!IsFlagBitSet((uint)impTypeReturn, (uint)CryptGetProvParamPPImpTypeFlags.CRYPT_IMPL_HARDWARE))
                         {
-                            if (!Interop.CryptGetUserKey(safeProvHandle, keyNumber, out safeKeyHandle))
+                            impTypeReturn = GetProviderParameterWorker(safeProvHandle, impType, ref cb, CryptProvParam.PP_IMPTYPE);
+                            //If implementation type is not HW
+                            if (!IsFlagBitSet((uint)impTypeReturn, (uint)CryptGetProvParamPPImpTypeFlags.CRYPT_IMPL_HARDWARE))
                             {
-                                throw GetErrorCode().ToCryptographicException();
+                                if (!Interop.CryptGetUserKey(safeProvHandle, keyNumber, out safeKeyHandle))
+                                {
+                                    throw GetErrorCode().ToCryptographicException();
+                                }
+                                byte[] permissions = null;
+                                int permissionsReturn = 0;
+                                permissions = new byte[Constants.SIZE_OF_DWORD];
+                                cb = sizeof(byte) * Constants.SIZE_OF_DWORD;
+                                if (!Interop.CryptGetKeyParam(safeKeyHandle, (int)CryptGetKeyParamFlags.KP_PERMISSIONS, permissions, ref cb, 0))
+                                {
+                                    throw GetErrorCode().ToCryptographicException();
+                                }
+                                permissionsReturn = BitConverter.ToInt32(permissions, 0);
+                                retVal = IsFlagBitSet((uint)permissionsReturn, (uint)CryptGetKeyParamFlags.CRYPT_EXPORT);
                             }
-                            byte[] permissions = null;
-                            int permissionsReturn = 0;
-                            permissions = new byte[Constants.SIZE_OF_DWORD];
-                            cb = sizeof(byte) * Constants.SIZE_OF_DWORD;
-                            if (!Interop.CryptGetKeyParam(safeKeyHandle, (int)CryptGetKeyParamFlags.KP_PERMISSIONS, permissions, ref cb, 0))
+                            else
                             {
-                                throw GetErrorCode().ToCryptographicException();
+                                //Assumption HW keys are not exportable.
+                                retVal = false;
                             }
-                            permissionsReturn = BitConverter.ToInt32(permissions, 0);
-                            retVal = IsFlagBitSet((uint)permissionsReturn, (uint)CryptGetKeyParamFlags.CRYPT_EXPORT);
-                        }
-                        else
-                        {
-                            //Assumption HW keys are not exportable.
-                            retVal = false;
-                        }
 
-                        break;
-                    }
+                            break;
+                        }
                     case Constants.CLR_REMOVABLE:
-                    {
-                        impTypeReturn = GetProviderParameterWorker(safeProvHandle, impType, ref cb, CryptProvParam.PP_IMPTYPE);
-                        retVal = IsFlagBitSet((uint)impTypeReturn, (uint)CryptGetProvParamPPImpTypeFlags.CRYPT_IMPL_REMOVABLE);
-                        break;
-                    }
+                        {
+                            impTypeReturn = GetProviderParameterWorker(safeProvHandle, impType, ref cb, CryptProvParam.PP_IMPTYPE);
+                            retVal = IsFlagBitSet((uint)impTypeReturn, (uint)CryptGetProvParamPPImpTypeFlags.CRYPT_IMPL_REMOVABLE);
+                            break;
+                        }
                     case Constants.CLR_HARDWARE:
                     case Constants.CLR_PROTECTED:
-                    {
-                        impTypeReturn = GetProviderParameterWorker(safeProvHandle, impType, ref cb, CryptProvParam.PP_IMPTYPE);
-                        retVal = IsFlagBitSet((uint)impTypeReturn, (uint)CryptGetProvParamPPImpTypeFlags.CRYPT_IMPL_HARDWARE);
-                        break;
-                    }
+                        {
+                            impTypeReturn = GetProviderParameterWorker(safeProvHandle, impType, ref cb, CryptProvParam.PP_IMPTYPE);
+                            retVal = IsFlagBitSet((uint)impTypeReturn, (uint)CryptGetProvParamPPImpTypeFlags.CRYPT_IMPL_HARDWARE);
+                            break;
+                        }
                     case Constants.CLR_ACCESSIBLE:
-                    {
-                        retVal = Interop.CryptGetUserKey(safeProvHandle, keyNumber, out safeKeyHandle) ? true : false;
-                        break;
-                    }
+                        {
+                            retVal = Interop.CryptGetUserKey(safeProvHandle, keyNumber, out safeKeyHandle) ? true : false;
+                            break;
+                        }
                     case Constants.CLR_UNIQUE_CONTAINER:
-                    {
-                        returnType = 1;
-                        byte[] pb = null;
-                        impTypeReturn = GetProviderParameterWorker(safeProvHandle, pb, ref cb, CryptProvParam.PP_UNIQUE_CONTAINER);
-                        pb = new byte[cb];
-                        impTypeReturn = GetProviderParameterWorker(safeProvHandle, pb, ref cb, CryptProvParam.PP_UNIQUE_CONTAINER);
-                        // GetProviderParameterWorker allocated the null character, we want to not interpret that.
-                        Debug.Assert(cb > 0);
-                        Debug.Assert(pb[cb - 1] == 0);
-                        retStr = Encoding.ASCII.GetString(pb, 0, cb - 1);
-                        break;
-                    }
+                        {
+                            returnType = 1;
+                            byte[] pb = null;
+                            impTypeReturn = GetProviderParameterWorker(safeProvHandle, pb, ref cb, CryptProvParam.PP_UNIQUE_CONTAINER);
+                            pb = new byte[cb];
+                            impTypeReturn = GetProviderParameterWorker(safeProvHandle, pb, ref cb, CryptProvParam.PP_UNIQUE_CONTAINER);
+                            // GetProviderParameterWorker allocated the null character, we want to not interpret that.
+                            Debug.Assert(cb > 0);
+                            Debug.Assert(pb[cb - 1] == 0);
+                            retStr = Encoding.ASCII.GetString(pb, 0, cb - 1);
+                            break;
+                        }
                     default:
-                    {
-                        Debug.Assert(false);
-                        break;
-                    }
+                        {
+                            Debug.Assert(false);
+                            break;
+                        }
                 }
             }
             finally
@@ -649,7 +649,7 @@ namespace Internal.NativeCrypto
                 case CryptGetKeyParamQueryType.KP_MODE:
                 case CryptGetKeyParamQueryType.KP_MODE_BITS:
                 case CryptGetKeyParamQueryType.KP_EFFECTIVE_KEYLEN:
-                    if (! Interop.CryptSetKeyParamInt(safeKeyHandle, (int)keyParam, ref value, 0))
+                    if (!Interop.CryptSetKeyParamInt(safeKeyHandle, (int)keyParam, ref value, 0))
                         throw new CryptographicException(SR.CryptSetKeyParam_Failed, Convert.ToString(GetErrorCode()));
 
                     break;
@@ -674,19 +674,55 @@ namespace Internal.NativeCrypto
             out bool randomKeyContainer)
         {
             CspParameters parameters;
+            //add: sk
+            if (userParameters != null && userParameters.ProviderType !=(int)keyType )
+            {
+                switch (keyType)
+                {
+                    case CspAlgorithmType.Dss:
+                        userParameters.ProviderType = DefaultDssProviderType;
+                        break;
+                    case CspAlgorithmType.PROV_GOST_2001_DH:
+                    case CspAlgorithmType.PROV_GOST_2012_256:
+                    case CspAlgorithmType.PROV_GOST_2012_512:
+                        userParameters.ProviderType = (int) keyType;
+                        break;
+                    case CspAlgorithmType.Rsa:
+                    default:
+                        userParameters.ProviderType = DefaultRsaProviderType;
+                        break;
+                }
+            }
+            //end: sk
+
             if (userParameters == null)
             {
-                parameters = new CspParameters(keyType == CspAlgorithmType.Dss ?
-                                                DefaultDssProviderType : DefaultRsaProviderType,
-                                                null, null, defaultFlags);
+                //add: sk
+                switch (keyType)
+                {
+                    case CspAlgorithmType.Dss:
+                        parameters = new CspParameters(DefaultDssProviderType, null, null, defaultFlags);
+                        break;
+                    case CspAlgorithmType.PROV_GOST_2001_DH:
+                    case CspAlgorithmType.PROV_GOST_2012_256:
+                    case CspAlgorithmType.PROV_GOST_2012_512:
+                        parameters = new CspParameters((int) keyType, null, null, defaultFlags);
+                        break;
+                    case CspAlgorithmType.Rsa:
+                    default:
+                        parameters = new CspParameters(DefaultRsaProviderType, null, null, defaultFlags);
+                        break;
+                }
+                //end: sk
             }
             else
             {
                 ValidateCspFlags(userParameters.Flags);
                 parameters = new CspParameters(userParameters);
             }
-
-            if (parameters.KeyNumber == -1)
+            //add: sk Желательно переписать на более удобоваримую конструкцию
+            if (parameters.KeyNumber == -1 && (keyType != CspAlgorithmType.PROV_GOST_2001_DH))
+            //end: sk
             {
                 parameters.KeyNumber = keyType == CapiHelper.CspAlgorithmType.Dss ? (int)KeyNumber.Signature : (int)KeyNumber.Exchange;
             }
@@ -698,6 +734,12 @@ namespace Internal.NativeCrypto
             {
                 parameters.KeyNumber = (int)KeyNumber.Exchange;
             }
+            //add: sk
+            else if ((parameters.KeyNumber == -1) && ((keyType == CspAlgorithmType.PROV_GOST_2001_DH) || (keyType == CspAlgorithmType.PROV_GOST_2012_256) || (keyType == CspAlgorithmType.PROV_GOST_2012_512)))
+            {
+                parameters.KeyNumber = (int)KeyNumber.Signature;
+            }
+            //end: sk
             // If no key container was specified and UseDefaultKeyContainer is not used, then use CRYPT_VERIFYCONTEXT
             // to generate an ephemeral key
             randomKeyContainer = IsFlagBitSet((uint)parameters.Flags, (uint)CspProviderFlags.CreateEphemeralKey);
@@ -1147,6 +1189,46 @@ namespace Internal.NativeCrypto
             throw new ArgumentException(SR.Argument_InvalidValue, nameof(hashAlg));
         }
 
+        //add:SK
+        /// <summary>
+        /// Получение OID алгоритма для переданного объекта хеширования.
+        /// </summary>
+        /// 
+        /// <param name="hashAlg">Объект хеширования: собственно
+        /// объект, OID, строка имени...</param>
+        /// 
+        /// <returns>OID алгоритма хеширования.</returns>
+        /// 
+        /// <exception cref="ArgumentException">Переданный объект
+        /// не объект алгоритма хеширования.</exception>
+        /// 
+        /// <intdoc><para>Функция полностью аналогична MS.</para></intdoc>
+        internal static string ObjToOidValue(object hashAlg)
+        {
+            if (hashAlg == null)
+                throw new ArgumentNullException("hashAlg");
+            string s = null;
+            string sHashAlg = hashAlg as string;
+            if (sHashAlg != null)
+            {
+                s = CryptoConfig.MapNameToOID(sHashAlg);
+                if (s == null)
+                    s = sHashAlg;
+            }
+            else if ((hashAlg is HashAlgorithm))
+            {
+                s = CryptoConfig.MapNameToOID(hashAlg.GetType().ToString());
+            }
+            else if ((hashAlg is Type))
+            {
+                s = CryptoConfig.MapNameToOID(hashAlg.ToString());
+            }
+            if (s == null)
+                throw new ArgumentException(SR.Argument_InvalidValue, nameof(hashAlg));
+            return s;
+        }
+        //end: SK
+
         /// <summary>
         /// Helper for signing and verifications that accept a string/Type/HashAlgorithm to specify a hashing algorithm.
         /// </summary>
@@ -1345,6 +1427,52 @@ namespace Internal.NativeCrypto
                 hHash?.Dispose();
             }
         }
+
+        //add: sk
+        //HelperMethod used by HashData
+        public static void CryptHashData(SafeHashHandle hHash, byte[] pbData, int dwDataLen, int dwFlags)
+        {
+            unsafe
+            {
+                bool ret = Interop.CryptHashData(hHash, pbData,
+                    dwDataLen, 0);
+                if (!ret)
+                    throw new CryptographicException(
+                        Marshal.GetLastWin32Error());
+            }
+        }
+
+        /// <summary>
+        /// Завершение хешифрования и получение значения хеша.
+        /// </summary>
+        /// 
+        /// <param name="hHash">HNALDE хеша.</param>
+        /// 
+        /// <returns>Значение хеша.</returns>
+        /// 
+        /// <exception cref="CryptographicException">При ошибках на native
+        /// уровне.</exception>
+        /// 
+        /// <intdoc><para>Есть аналог у MS с тем же прототипом и похожей
+        /// (CRYPT_HASH_CTX другой) реализацией.</para></intdoc>
+        /// 
+        /// <unmanagedperm action="LinkDemand" />
+        //internal static byte[] EndHash(SafeHashHandle hHash)
+        //{
+        //    int dwDataLen = 0;
+        //    int dwHashSize = 0;
+        //    bool ret = Interop.CryptGetHashParam(hHash,
+        //        CryptHashProperty.HP_HASHVAL, out dwHashSize, ref dwDataLen, 0);
+        //    if (!ret)
+        //        throw new CryptographicException(Marshal.GetLastWin32Error());
+        //    byte[] data = new byte[dwDataLen];
+        //    ret = Interop.CryptGetHashParam(hHash,
+        //        CryptHashProperty.HP_HASHVAL, out data, ref dwDataLen, 0);
+        //    if (!ret)
+        //        throw new CryptographicException(Marshal.GetLastWin32Error());
+        //    return data;
+        //}
+        //end:sk
 
         // Helper method used by DeriveKey (above) to return the key contents.
         // WARNING: This function side-effects its first argument (hProv)
@@ -1798,7 +1926,10 @@ namespace Internal.NativeCrypto
         internal enum CspAlgorithmType
         {
             Rsa = 0,
-            Dss = 1
+            Dss = 1,
+            PROV_GOST_2001_DH = 75,
+            PROV_GOST_2012_256 = 80,
+            PROV_GOST_2012_512 = 81
         }
 
         [Flags]

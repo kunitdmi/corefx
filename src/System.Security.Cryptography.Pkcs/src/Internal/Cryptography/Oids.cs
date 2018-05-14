@@ -73,5 +73,16 @@ namespace Internal.Cryptography
         // RFC3161 Timestamping
         public const string TstInfo = "1.2.840.113549.1.9.16.1.4";
         public const string TimeStampingPurpose = "1.3.6.1.5.5.7.3.8";
+
+        //add: SK
+        // Hash algorithms GOST
+        public const string Gost3411 = "1.2.643.2.2.9";
+        public const string Gost28147 = "1.2.643.2.2.21";
+        public const string Gost34112012256 = "GR 34.11-2012 256";
+        public const string Gost34112012512 = "GR 34.11-2012 512";
+
+        //Sign algorithms GOST
+        public const string Gost3410 = "1.2.643.2.2.19";
+        //end: SK
     }
 }

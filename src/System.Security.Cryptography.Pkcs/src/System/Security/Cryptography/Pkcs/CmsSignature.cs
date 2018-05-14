@@ -20,12 +20,17 @@ namespace System.Security.Cryptography.Pkcs
             PrepareRegistrationRsa(s_lookup);
             PrepareRegistrationDsa(s_lookup);
             PrepareRegistrationECDsa(s_lookup);
+            //add: sk
+            PrepareRegistrationGost(s_lookup);
+            //end: sk
         }
 
         static partial void PrepareRegistrationRsa(Dictionary<string, CmsSignature> lookup);
         static partial void PrepareRegistrationDsa(Dictionary<string, CmsSignature> lookup);
         static partial void PrepareRegistrationECDsa(Dictionary<string, CmsSignature> lookup);
-
+        //add: sk
+        static partial void PrepareRegistrationGost(Dictionary<string, CmsSignature> lookup);
+        //end: sk
         internal abstract bool VerifySignature(
 #if netcoreapp
             ReadOnlySpan<byte> valueHash,

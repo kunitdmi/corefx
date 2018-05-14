@@ -282,5 +282,17 @@ internal partial class Interop
             internal int cbSeed;                 //Byte length of the seed used to generate the curve.
             // The rest of the buffer contains the domain parameters
         }
+
+        //add: SK
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct BCRYPT_GOSTKEY_BLOB
+        {
+            internal int PublicKeyParamSet;
+            internal int DigestParamSet;
+            internal int EncryptionParamSet;
+            internal int PublicKey;
+            internal int PrivateKey;
+        }
+        //end: SK
     }
 }

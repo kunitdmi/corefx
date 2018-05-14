@@ -16,6 +16,7 @@ namespace Internal.Cryptography
         public const string SHA256 = "SHA256";
         public const string SHA384 = "SHA384";
         public const string SHA512 = "SHA512";
+        public const string GOST3411 = "Gost3411";
 
         private static readonly HashSet<string> s_allNames = CreateAllNames();
 
@@ -34,6 +35,8 @@ namespace Internal.Cryptography
                 return HashAlgorithmNames.SHA512;
             if (hashAlgorithm is MD5)
                 return HashAlgorithmNames.MD5;
+            if (hashAlgorithm is Gost3411)
+                return HashAlgorithmNames.GOST3411;
 
             // Fallback to ToString() which can be extended by derived classes
             return hashAlgorithm.ToString();
@@ -61,6 +64,7 @@ namespace Internal.Cryptography
             allNames.Add(HashAlgorithmNames.SHA384);
             allNames.Add(HashAlgorithmNames.SHA512);
             allNames.Add(HashAlgorithmNames.MD5);
+            allNames.Add(HashAlgorithmNames.GOST3411);
 
             return allNames;
         }

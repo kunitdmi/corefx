@@ -34,7 +34,7 @@ function LocateCMake
     return $inPathPath
   }
   # Check the default installation directory
-  $inDefaultDir = [System.IO.Path]::Combine(${Env:ProgramFiles(x86)}, "CMake\bin\cmake.exe")
+  $inDefaultDir = [System.IO.Path]::Combine(${Env:ProgramFiles}, "CMake\bin\cmake.exe")
   if ([System.IO.File]::Exists($inDefaultDir)) {
     return $inDefaultDir
   }
