@@ -1,6 +1,6 @@
 @if not defined _echo @echo off
 setlocal
-TIMEOUT /T 10 /NOBREAK 
+:: TIMEOUT /T 10 /NOBREAK 
 set INIT_TOOLS_LOG=%~dp0init-tools.log
 if [%PACKAGES_DIR%]==[] set PACKAGES_DIR=%~dp0packages\
 if [%TOOLRUNTIME_DIR%]==[] set TOOLRUNTIME_DIR=%~dp0Tools
@@ -46,7 +46,7 @@ echo Running %0 > "%INIT_TOOLS_LOG%"
 
 set /p DOTNET_VERSION=< "%~dp0DotnetCLIVersion.txt"
 echo %DOTNET_CMD%
-TIMEOUT /T 10 /NOBREAK 
+:: TIMEOUT /T 10 /NOBREAK 
 if exist %DOTNET_CMD% goto :afterdotnetrestore
 
 echo Installing dotnet cli...
