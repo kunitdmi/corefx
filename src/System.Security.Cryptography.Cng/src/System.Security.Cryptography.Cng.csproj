@@ -321,7 +321,7 @@
     <Reference Include="System.Security.Cryptography.Primitives" />
     <Reference Include="System.Threading" />
   </ItemGroup>
-  <ItemGroup Condition="'$(IsPartialFacadeAssembly)' != 'true'">
+  <ItemGroup Condition="'$(IsPartialFacadeAssembly)' != 'true' AND '$(TargetsWindows)' == 'true'">
     <Compile Include="$(CommonPath)\System\Security\Cryptography\Gost3410Cng.ImportExport.cs">
       <Link>Common\System\Security\Cryptography\Gost3410Cng.ImportExport.cs</Link>
     </Compile>
@@ -332,7 +332,7 @@
       <Link>Common\System\Security\Cryptography\Gost3410Cng.SignVerify.cs</Link>
     </Compile>
   </ItemGroup>
-  <ItemGroup Condition="'$(IsPartialFacadeAssembly)' != 'true'">
+  <ItemGroup Condition="'$(IsPartialFacadeAssembly)' != 'true' AND '$(TargetsWindows)' == 'true'">
     <Compile Include="System\Security\Cryptography\Gost3410Cng.ImportExport.cs" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
