@@ -77,7 +77,7 @@ namespace Internal.Cryptography.Pal
                 ,
                 delegate (CngKey cngKey)
                 {
-                    return new Gost3410Cng(cngKey);
+                    throw new NotSupportedException("CNG Gost3410 keys are not supported.");//(SR.NotSupported_Gost3410_Cng); 
                 }
             );
         }
