@@ -1,15 +1,7 @@
-﻿// Copyright (C) 2006-2012 Крипто-Про. Все права защищены.
-//
-// Этот файл содержит информацию, являющуюся
-// собственностью компании Крипто-Про.
-// 
-// Любая часть этого файла не может быть скопирована,
-// исправлена, переведена на другие языки,
-// локализована или модифицирована любым способом,
-// откомпилирована, передана по сети с или на
-// любую компьютерную систему без предварительного
-// заключения соглашения с компанией Крипто-Про.
-// 
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
 namespace System.Security.Cryptography
 {
     /// <summary>

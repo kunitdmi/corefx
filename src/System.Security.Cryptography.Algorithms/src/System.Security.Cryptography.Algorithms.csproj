@@ -92,6 +92,11 @@
     <Compile Include="System\Security\Cryptography\RSASignaturePaddingMode.cs" />
     <Compile Include="System\Security\Cryptography\SignatureDescription.cs" />
     <Compile Include="System\Security\Cryptography\TripleDES.cs" />
+    <Compile Include="System\Security\Cryptography\Gost3410.cs" />
+    <Compile Include="System\Security\Cryptography\Gost3410.Xml.cs" />
+    <Compile Include="System\Security\Cryptography\Gost3410CSPObject.cs" />
+    <Compile Include="System\Security\Cryptography\Gost3410Parameters.cs" />
+    <Compile Include="System\Security\Cryptography\Gost3411.cs" />
     <Compile Include="$(CommonPath)\Internal\Cryptography\BasicSymmetricCipher.cs">
       <Link>Internal\Cryptography\BasicSymmetricCipher.cs</Link>
     </Compile>
@@ -306,16 +311,6 @@
     <Compile Include="$(CommonPath)\System\Security\Cryptography\RSACng.SignVerify.cs">
       <Link>Common\System\Security\Cryptography\RSACng.SignVerify.cs</Link>
     </Compile>
-    <Compile Include="$(CommonPath)\System\Security\Cryptography\Gost3410Cng.ImportExport.cs">
-      <Link>Common\System\Security\Cryptography\Gost3410Cng.ImportExport.cs</Link>
-    </Compile>
-    <Compile Include="$(CommonPath)\System\Security\Cryptography\Gost3410Cng.cs">
-      <Link>Common\System\Security\Cryptography\Gost3410Cng.cs</Link>
-    </Compile>
-    <Compile Include="$(CommonPath)\System\Security\Cryptography\Gost3410Cng.SignVerify.cs">
-      <Link>Common\System\Security\Cryptography\Gost3410Cng.SignVerify.cs</Link>
-    </Compile>
-    <Compile Include="System\Security\Cryptography\Gost3410Cng.cs" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetsUnix)' == 'true' AND '$(TargetsOSX)' != 'true' ">
     <Compile Include="$(CommonPath)\Interop\Unix\Interop.Libraries.cs">
@@ -577,12 +572,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Compile Include="System\Security\Cryptography\IncrementalHash.net46.cs" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(IsPartialFacadeAssembly)' != 'true'">
-    <Compile Include="System\Security\Cryptography\Gost3410.cs" />
-    <Compile Include="System\Security\Cryptography\Gost3410CSPObject.cs" />
-    <Compile Include="System\Security\Cryptography\Gost3410Parameters.cs" />
-    <Compile Include="System\Security\Cryptography\Gost3411.cs" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>
