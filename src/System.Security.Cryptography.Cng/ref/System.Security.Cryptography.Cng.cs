@@ -348,24 +348,4 @@ namespace System.Security.Cryptography
         public override void GenerateIV() { }
         public override void GenerateKey() { }
     }
-
-    //add: sk
-    public sealed partial class Gost3410Cng : System.Security.Cryptography.Gost3410
-    {
-        public Gost3410Cng() { }
-        public Gost3410Cng(int keySize) { }
-        public Gost3410Cng(System.Security.Cryptography.CngKey key) { }
-        public System.Security.Cryptography.CngKey Key { get { throw null; } }
-        public override System.Security.Cryptography.KeySizes[] LegalKeySizes { get { throw null; } }
-        public override byte[] Decrypt(byte[] data) { throw null; }
-        protected override void Dispose(bool disposing) { }
-        public override byte[] Encrypt(byte[] data) { throw null; }
-        public override System.Security.Cryptography.Gost3410Parameters ExportParameters(bool includePrivateParameters) { throw null; }
-        protected override byte[] HashData(byte[] data, int offset, int count, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
-        protected override byte[] HashData(System.IO.Stream data, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
-        public override void ImportParameters(System.Security.Cryptography.Gost3410Parameters parameters) { }
-        public override byte[] SignHash(byte[] hash, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
-        public override bool VerifyHash(byte[] hash, byte[] signature, System.Security.Cryptography.HashAlgorithmName hashAlgorithm) { throw null; }
-    }
-    //end: sk
 }

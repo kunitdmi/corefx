@@ -130,7 +130,6 @@ namespace Internal.NativeCrypto
                     throw new CryptographicException(SR.Cryptography_CSP_WrongKeySpec);
             }
 
-
             byte[] data = new byte[16 + paramBlob.Length
                 + keyBlob.Length];
             data[0] = GostConstants.PUBLICKEYBLOB;
@@ -207,22 +206,6 @@ namespace Internal.NativeCrypto
 
             byte[] tmp = new byte[data.Length - 16 - keySize / 8];
             Array.Copy(data, 16, tmp, 0, data.Length - 16 - keySize / 8);
-
-
-            //!!!!!!
-            //cpAsnUtils.DecodeParameters(tmp, cspObject, alg);
-            //Asn1BerDecodeBuffer buffer = 
-            //    new Asn1BerDecodeBuffer(tmp);
-            //GostR3410_2001_PublicKeyParameters asnParams =
-            //    new GostR3410_2001_PublicKeyParameters();
-            //asnParams.Decode(buffer);
-            //cspObject._digestParamSet =
-            //    asnParams.digestParamSet;
-            //cspObject._encryptionParamSet =
-            //    asnParams.encryptionParamSet;
-            //cspObject._publicKeyParamSet =
-            //    asnParams.publicKeyParamSet;
-
 
             cspObject._publicKey = new byte[keySize / 8];
             Array.Copy(data, data.Length - keySize / 8,
@@ -351,60 +334,6 @@ namespace Internal.NativeCrypto
         //    byte[] tmp = new byte[data.Length - pos];
         //    Array.Copy(data, pos, tmp, 0, data.Length - pos);
         //    cspObject.encryptionParamSet_ = cpAsnUtils.DecodeGost28147_89_BlobParameters(tmp);
-        //}
-
-        //internal static Gost3410Parameters ToGost3410Parameters(this byte[] cspBlob, bool includePrivateParameters)
-        //{
-        //    try
-        //    {
-        //        BinaryReader br = new BinaryReader(new MemoryStream(cspBlob));
-
-        //        byte bType = br.ReadByte();    // BLOBHEADER.bType: Expected to be 0x6 (PUBLICKEYBLOB) or 0x7 (PRIVATEKEYBLOB), though there's no check for backward compat reasons. 
-        //        byte bVersion = br.ReadByte(); // BLOBHEADER.bVersion: Expected to be 0x2, though there's no check for backward compat reasons.
-        //        br.ReadUInt16();               // BLOBHEADER.wReserved
-        //        int algId = br.ReadInt32();    // BLOBHEADER.aiKeyAlg
-        //        if (algId != GostConstants.CALG_G28147)
-        //            throw new CryptographicException(GostConstants.NTE_BAD_DATA);
-
-        //        //if (algId != CALG_RSA_KEYX && algId != CALG_RSA_SIGN)
-        //        //    throw new PlatformNotSupportedException();  // The FCall this code was ported from supports other algid's but we're only porting what we use.
-
-        //        int magic = br.ReadInt32();    // RSAPubKey.magic: Expected to be 0x31415352 ('RSA1') or 0x32415352 ('RSA2') 
-        //        int bitLen = br.ReadInt32();   // RSAPubKey.bitLen
-
-        //        int modulusLength = bitLen / 8;
-        //        int halfModulusLength = (modulusLength + 1) / 2;
-
-        //        uint expAsDword = br.ReadUInt32();
-
-        //        Gost3410Parameters gost3410Parameters = new Gost3410Parameters();
-        //        //GostR3410_2001_PublicKeyParameters
-        //        gost3410Parameters.DigestParamSet = ;
-        //        gost3410Parameters.EncryptionParamSet = ;
-        //        gost3410Parameters.PrivateKey = ;
-        //        gost3410Parameters.PublicKey = ;
-        //        gost3410Parameters.PublicKeyParamSet = ;
-
-        //        //gost3410Parameters.Exponent = ExponentAsBytes(expAsDword);
-        //        //gost3410Parameters.Modulus = br.ReadReversed(modulusLength);
-        //        //if (includePrivateParameters)
-        //        //{
-        //        //    gost3410Parameters.P = br.ReadReversed(halfModulusLength);
-        //        //    gost3410Parameters.Q = br.ReadReversed(halfModulusLength);
-        //        //    gost3410Parameters.DP = br.ReadReversed(halfModulusLength);
-        //        //    gost3410Parameters.DQ = br.ReadReversed(halfModulusLength);
-        //        //    gost3410Parameters.InverseQ = br.ReadReversed(halfModulusLength);
-        //        //    gost3410Parameters.D = br.ReadReversed(modulusLength);
-        //        //}
-
-        //        return gost3410Parameters;
-        //    }
-        //    catch (EndOfStreamException)
-        //    {
-        //        // For compat reasons, we throw an E_FAIL CrytoException if CAPI returns a smaller blob than expected.
-        //        // For compat reasons, we ignore the extra bits if the CAPI returns a larger blob than expected.
-        //        throw GetEFailException();
-        //    }
-        //}
+       //}
     }
 }

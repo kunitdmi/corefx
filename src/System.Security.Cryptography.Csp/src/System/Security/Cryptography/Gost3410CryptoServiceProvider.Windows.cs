@@ -472,7 +472,7 @@ namespace System.Security.Cryptography
 
             GetKeyPair();
             bool ret = CapiHelper.VerifySign(SafeProvHandle, SafeKeyHandle,
-                CapiHelper.CALG_RSA_SIGN, GostConstants.CALG_GR3411, hash, signature);
+                CapiHelper.CALG_RSA_SIGN, GostConstants.CALG_GR3411, hash, signature); //????
             return ret;
         }
 

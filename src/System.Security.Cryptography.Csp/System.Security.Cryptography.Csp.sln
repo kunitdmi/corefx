@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2000
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Security.Cryptography.Csp.Tests", "tests\System.Security.Cryptography.Csp.Tests.csproj", "{A05C2EF2-A986-448C-9C63-735CC17409AA}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -46,5 +46,8 @@ Global
 		{A05C2EF2-A986-448C-9C63-735CC17409AA} = {1A2F9F4A-A032-433E-B914-ADD5992BB178}
 		{3B7F91D7-0677-40CA-B4E7-D4E09D89A74E} = {E107E9C1-E893-4E87-987E-04EF0DCEAEFD}
 		{FD10679A-8C98-42E6-B7E5-9424E5443912} = {2E666815-2EDB-464B-9DF6-380BF4789AD4}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FDF868F8-9DE0-48D5-82F0-275748401E65}
 	EndGlobalSection
 EndGlobal

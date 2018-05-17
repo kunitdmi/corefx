@@ -9,6 +9,11 @@ namespace System.Security.Cryptography
 {
     public abstract partial class Gost3410 : AsymmetricAlgorithm
     {
+        public static new Gost3410 Create()
+        {
+            throw new PlatformNotSupportedException();
+        }
+
         public static new Gost3410 Create(string algName)
         {
             return (Gost3410)CryptoConfig.CreateFromName(algName);
