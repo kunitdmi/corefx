@@ -265,6 +265,11 @@ namespace Internal.Cryptography.Pal
             return new RSAOpenSsl(_privateKey);
         }
 
+        public Gost3410 GetGost3410PrivateKey()
+        {
+            throw new PlatformNotSupportedException();
+        }
+
         public DSA GetDSAPrivateKey()
         {
             if (_privateKey == null || _privateKey.IsInvalid)
@@ -431,6 +436,8 @@ namespace Internal.Cryptography.Pal
 
             return duplicate;
         }
+
+
 
         internal static DateTime ExtractValidityDateTime(IntPtr validityDatePtr)
         {
