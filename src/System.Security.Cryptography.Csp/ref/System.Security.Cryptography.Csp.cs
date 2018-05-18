@@ -282,12 +282,6 @@ namespace System.Security.Cryptography
         public static bool UseMachineKeyStore { get { throw null; } set { } }
         public Gost3410CryptoServiceProvider() { throw null; }
         public Gost3410CryptoServiceProvider(CspParameters parameters) { throw null; }
-        public byte[] SignData(byte[] buffer, object hashAlg) { throw null; }
-        public byte[] SignData(byte[] buffer, int offset, int count, object hashAlg) { throw null; }
-        public byte[] SignData(System.IO.Stream inputStream, object hashAlg) { throw null; }
-        //public byte[] SignHash(byte[] hash) { throw null; }
-        public bool VerifyData(byte[] buffer, object hashAlg, byte[] signature) { throw null; }
-        public bool VerifyData(System.IO.Stream inputStream, object hashAlg, byte[] signature) { throw null; }
         public bool VerifyHash(byte[] hash, byte[] signature) { throw null; }
         public override bool VerifyHash(byte[] hash, byte[] signature, HashAlgorithmName hashAlgName) { throw null; }
 
