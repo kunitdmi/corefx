@@ -6,8 +6,6 @@ using Internal.Cryptography;
 using Microsoft.Win32.SafeHandles;
 using System;
 using System.Diagnostics;
-using System.IO;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -1922,16 +1920,6 @@ namespace Internal.NativeCrypto
             CRYPT_ARCHIVABLE = 0x00004000
         }
 
-
-        internal enum CspAlgorithmType
-        {
-            Rsa = 0,
-            Dss = 1,
-            PROV_GOST_2001_DH = 75,
-            PROV_GOST_2012_256 = 80,
-            PROV_GOST_2012_512 = 81
-        }
-
         [Flags]
         internal enum CryptCreateHashFlags : int
         {
@@ -1952,6 +1940,15 @@ namespace Internal.NativeCrypto
         {
             AT_KEYEXCHANGE = 1,
             AT_SIGNATURE = 2,
+        }
+
+        internal enum CspAlgorithmType
+        {
+            Rsa = 0,
+            Dss = 1,
+            PROV_GOST_2001_DH = 75,
+            PROV_GOST_2012_256 = 80,
+            PROV_GOST_2012_512 = 81
         }
 
         [Flags]

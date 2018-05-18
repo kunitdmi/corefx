@@ -18,12 +18,5 @@ namespace Internal.NativeCrypto
         {
             return new CryptographicException(E_FAIL);
         }
-
-        internal enum CspAlgorithmType
-        {
-            PROV_GOST_2001_DH = 75,
-            PROV_GOST_2012_256 = 80,
-            PROV_GOST_2012_512 = 81
-        }
     }
 }
