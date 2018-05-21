@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Diagnostics;
 using Microsoft.Win32.SafeHandles;
+using Internal.Cryptography;
 using Libraries = Interop.Libraries;
 using CryptProvParam = global::Interop.CapiLite.CryptProvParam;
 
@@ -125,6 +126,39 @@ namespace Internal.NativeCrypto
     /// </summary>
     internal static partial class CapiHelper
     {
+        /// <summary>
+        /// Helper for RSACryptoServiceProvider.SignData/SignHash apis.
+        /// </summary>
+        public static byte[] SignValue(SafeProvHandle hProv, SafeKeyHandle hKey, int keyNumber, int calgKey, int calgHash, byte[] hash)
+        {
+            using (SafeHashHandle hHash = hProv.CreateHashHandle(hash, calgHash))
+            {
+                int cbSignature = 0;
+                if (!Interop.CryptSignHash(hHash, (KeySpec)keyNumber, null, CryptSignAndVerifyHashFlags.None, null, ref cbSignature))
+                {
+                    int hr = Marshal.GetHRForLastWin32Error();
+                    throw new CryptographicException(hr);
+                }
+
+                byte[] signature = new byte[cbSignature];
+                if (!Interop.CryptSignHash(hHash, (KeySpec)keyNumber, null, CryptSignAndVerifyHashFlags.None, signature, ref cbSignature))
+                {
+                    int hr = Marshal.GetHRForLastWin32Error();
+                    throw new CryptographicException(hr);
+                }
+
+                switch (calgKey)
+                {
+                    case CALG_RSA_SIGN:
+                        Array.Reverse(signature);
+                        break;
+
+                    default:
+                        throw new InvalidOperationException();
+                }
+                return signature;
+            }
+        }
         /// <summary>
         /// Find the default provider name to be used in the case that we
         /// were not actually passed in a provider name. The main purpose
@@ -1006,6 +1040,112 @@ namespace Internal.NativeCrypto
         public static bool CryptDestroyHash(IntPtr hHash)
         {
             return Interop.CryptDestroyHash(hHash);
+        }
+
+        /// <summary>
+        /// Create a CAPI-1 hash handle that contains the specified bits as its hash value.
+        /// </summary>
+        private static SafeHashHandle CreateHashHandle(this SafeProvHandle hProv, byte[] hash, int calgHash)
+        {
+            SafeHashHandle hHash;
+            if (!Interop.CryptCreateHash(hProv, calgHash, SafeKeyHandle.InvalidHandle, CryptCreateHashFlags.None, out hHash))
+            {
+                int hr = Marshal.GetHRForLastWin32Error();
+
+                hHash.Dispose();
+
+                throw new CryptographicException(hr);
+            }
+
+            try
+            {
+                int dwHashSize = 0;
+                int cbHashSize = sizeof(int);
+                if (!Interop.CryptGetHashParam(hHash, CryptHashProperty.HP_HASHSIZE, out dwHashSize, ref cbHashSize, 0))
+                {
+                    int hr = Marshal.GetHRForLastWin32Error();
+                    throw new CryptographicException(hr);
+                }
+                if (dwHashSize != hash.Length)
+                    throw new CryptographicException(unchecked((int)CryptKeyError.NTE_BAD_HASH));
+
+                if (!Interop.CryptSetHashParam(hHash, CryptHashProperty.HP_HASHVAL, hash, 0))
+                {
+                    int hr = Marshal.GetHRForLastWin32Error();
+                    throw new CryptographicException(hr);
+                }
+
+                SafeHashHandle hHashPermanent = hHash;
+                hHash = null;
+                return hHashPermanent;
+            }
+            finally
+            {
+                if (hHash != null)
+                {
+                    hHash.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Helper for GostCryptoServiceProvider.VerifyData/VerifyHash apis.
+        /// </summary>
+        public static bool VerifySign(SafeProvHandle hProv, SafeKeyHandle hKey, int calgKey, int calgHash, byte[] hash, byte[] signature)
+        {
+            switch (calgKey)
+            {
+                case CALG_RSA_SIGN:
+                    signature = signature.CloneByteArray();
+                    Array.Reverse(signature);
+                    break;
+                default:
+                    throw new InvalidOperationException();
+            }
+
+            using (SafeHashHandle hHash = hProv.CreateHashHandle(hash, calgHash))
+            {
+                bool verified = Interop.CryptVerifySignature(hHash, signature, signature.Length, hKey, null, CryptSignAndVerifyHashFlags.None);
+                return verified;
+            }
+        }
+        /// <summary>
+        /// Helper for Import CSP
+        /// </summary>
+        internal static void ImportKeyBlob(SafeProvHandle saveProvHandle, CspProviderFlags flags, bool addNoSaltFlag, byte[] keyBlob, out SafeKeyHandle safeKeyHandle)
+        {
+            // Compat note: This isn't the same check as the one done by the CLR _ImportCspBlob QCall,
+            // but this does match the desktop CLR behavior and the only scenarios it
+            // affects are cases where a corrupt blob is passed in.
+            bool isPublic = keyBlob.Length > 0 && keyBlob[0] == CapiHelper.PUBLICKEYBLOB;
+
+            int dwCapiFlags = MapCspKeyFlags((int)flags);
+            if (isPublic)
+            {
+                dwCapiFlags &= ~(int)(CryptGenKeyFlags.CRYPT_EXPORTABLE);
+            }
+
+            if (addNoSaltFlag)
+            {
+                // For RC2 running in rsabase.dll compatibility mode, make sure 11 bytes of
+                // zero salt are generated when using a 40 bit RC2 key.
+                dwCapiFlags |= (int)CryptGenKeyFlags.CRYPT_NO_SALT;
+            }
+
+            SafeKeyHandle hKey;
+            if (!Interop.CryptImportKey(saveProvHandle, keyBlob, keyBlob.Length, SafeKeyHandle.InvalidHandle, dwCapiFlags, out hKey))
+            {
+                int hr = Marshal.GetHRForLastWin32Error();
+
+                hKey.Dispose();
+
+                throw new CryptographicException(hr);
+            }
+
+            hKey.PublicOnly = isPublic;
+            safeKeyHandle = hKey;
+
+            return;
         }
     }//End of class CapiHelper : Wrappers
 

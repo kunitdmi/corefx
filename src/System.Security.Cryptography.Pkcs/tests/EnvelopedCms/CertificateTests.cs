@@ -37,6 +37,22 @@ namespace System.Security.Cryptography.Pkcs.EnvelopedCmsTests.Tests
         }
 
         [Fact]
+        [Trait("MyTrait", "MyTraitValue")]
+        public static void DecodeCertificatesGost0_RoundTrip()
+        {
+            ContentInfo contentInfo = new ContentInfo(new byte[] { 1, 2, 3 });
+            EnvelopedCms ecms = new EnvelopedCms(contentInfo);
+            using (X509Certificate2 cert = Certificates.GostKeyTransfer1.GetCertificate())
+            {
+                CmsRecipient cmsRecipient = new CmsRecipient(cert);
+                ecms.Encrypt(cmsRecipient);
+            }
+            byte[] encodedMessage = ecms.Encode();
+
+            VerifyCertificates0(encodedMessage);
+        }
+
+        [Fact]
         public static void DecodeCertificates0_FixedValue()
         {
             byte[] encodedMessage =
@@ -162,6 +178,7 @@ namespace System.Security.Cryptography.Pkcs.EnvelopedCmsTests.Tests
             Certificates.RSAKeyTransfer1.GetCertificate(),
             Certificates.RSAKeyTransfer2.GetCertificate(),
             Certificates.DHKeyAgree1.GetCertificate(),
+            Certificates.GostKeyTransfer1.GetCertificate()
         };
     }
 }
