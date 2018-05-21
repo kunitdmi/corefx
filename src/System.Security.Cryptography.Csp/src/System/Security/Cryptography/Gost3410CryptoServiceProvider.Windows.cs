@@ -580,44 +580,44 @@ namespace System.Security.Cryptography
         [SecuritySafeCritical]
         public void ImportCspBlob(byte[] rawData)
         {
-            //SafeKeyHandle safeKeyHandle;
+            SafeKeyHandle safeKeyHandle;
 
-            // Права на экспорт / импорт проверять бесполезно
-            // CSP все равно не поддерживает. Бесполезно да же эмулировать:
+            //Права на экспорт / импорт проверять бесполезно
+            // CSP все равно не поддерживает.Бесполезно да же эмулировать:
             // сделать с этим BLOB потом ничего нельзя.
 
             // Это открытый ключ, поэтому можно его export
             // в verify context.
             // Нет обращения к секретному ключу, поэтому
             // не создаем контейнер без надобности.
-            //if (IsPublic(rawData))
-            //{
-            //SafeProvHandle safeProvHandleTemp = AcquireSafeProviderHandle();
+            if (IsPublic(rawData))
+            {
+                SafeProvHandle safeProvHandleTemp = AcquireSafeProviderHandle();
 
-            //CapiHelper.ImportKeyBlob(safeProvHandleTemp, CspProviderFlags.NoFlags,
-            //   false, //?
-            //   rawData,
-            //   out safeKeyHandle);
+                CapiHelper.ImportKeyBlob(safeProvHandleTemp, CspProviderFlags.NoFlags,
+                   false, //?
+                   rawData,
+                   out safeKeyHandle);
 
-            //// The property set will take care of releasing any already-existing resources.
-            //SafeProvHandle = safeProvHandleTemp;
-            //}
-            //else
-            //{
-            //    throw new CryptographicException(SR.CspParameter_invalid, "Cryptography_UserExportBulkBlob");
-            //}
+                // The property set will take care of releasing any already-existing resources.
+                SafeProvHandle = safeProvHandleTemp;
+            }
+            else
+            {
+                throw new CryptographicException(SR.CspParameter_invalid, "Cryptography_UserExportBulkBlob");
+            }
 
-            //// The property set will take care of releasing any already-existing resources.
-            //SafeKeyHandle = safeKeyHandle;
+            // The property set will take care of releasing any already-existing resources.
+            SafeKeyHandle = safeKeyHandle;
 
-            //if (_parameters != null)
-            //{
-            //    _parameters.KeyNumber = SafeKeyHandle.KeySpec;
-            //}
+            if (_parameters != null)
+            {
+                _parameters.KeyNumber = SafeKeyHandle.KeySpec;
+            }
 
-            //// Эмулируем MS HANDLE
-            //SafeKeyHandle.PublicOnly = true;
-            throw new PlatformNotSupportedException(SR.Format(SR.Cryptography_CAPI_Required, nameof(CspKeyContainerInfo)));
+            // Эмулируем MS HANDLE
+            SafeKeyHandle.PublicOnly = true;
+            //throw new PlatformNotSupportedException(SR.Format(SR.Cryptography_CAPI_Required, nameof(CspKeyContainerInfo)));
         }
 
         /// <summary>
