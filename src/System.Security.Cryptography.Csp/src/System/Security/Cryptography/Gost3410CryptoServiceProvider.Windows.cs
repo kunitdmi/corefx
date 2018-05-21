@@ -460,21 +460,21 @@ namespace System.Security.Cryptography
         [SecuritySafeCritical]
         public bool VerifyHash(byte[] hash, byte[] signature)
         {
-            //if (hash == null)
-            //    throw new ArgumentNullException("hash");
-            //if (signature == null)
-            //    throw new ArgumentNullException("signature");
-            //if (hash.Length != (GostConstants.GOST3411_SIZE / 8))
-            //{
-            //    throw new CryptographicException(SR.Cryptography_InvalidHashSize,
-            //        string.Format("{0} - {1}", "GOST3411", GostConstants.GOST3411_SIZE / 8));
-            //}
+            if (hash == null)
+                throw new ArgumentNullException("hash");
+            if (signature == null)
+                throw new ArgumentNullException("signature");
+            if (hash.Length != (GostConstants.GOST3411_SIZE / 8))
+            {
+                throw new CryptographicException(SR.Cryptography_InvalidHashSize,
+                    string.Format("{0} - {1}", "GOST3411", GostConstants.GOST3411_SIZE / 8));
+            }
 
-            //GetKeyPair();
-            //bool ret = CapiHelper.VerifySign(SafeProvHandle, SafeKeyHandle,
-            //    CapiHelper.CALG_RSA_SIGN, GostConstants.CALG_GR3411, hash, signature); //????
-            //return ret;
-            throw new PlatformNotSupportedException(SR.Format(SR.Cryptography_CAPI_Required, nameof(CspKeyContainerInfo)));
+            GetKeyPair();
+            bool ret = CapiHelper.VerifySign(SafeProvHandle, SafeKeyHandle,
+                CapiHelper.CALG_RSA_SIGN, GostConstants.CALG_GR3411, hash, signature); 
+            return ret;
+            //throw new PlatformNotSupportedException(SR.Format(SR.Cryptography_CAPI_Required, nameof(CspKeyContainerInfo)));
         }
 
         // <summary>
