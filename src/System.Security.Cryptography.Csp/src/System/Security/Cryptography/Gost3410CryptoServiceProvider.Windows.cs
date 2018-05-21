@@ -335,25 +335,25 @@ namespace System.Security.Cryptography
         [SecuritySafeCritical]
         private byte[] SignHash(byte[] hash)
         {
-            //if (hash == null)
-            //    throw new ArgumentNullException("hash");
-            //if (PublicOnly)
-            //    throw new CryptographicException(SR.Cryptography_CSP_NoPrivateKey);
+            if (hash == null)
+                throw new ArgumentNullException("hash");
+            if (PublicOnly)
+                throw new CryptographicException(SR.Cryptography_CSP_NoPrivateKey);
 
-            //if (hash.Length != (GostConstants.GOST3411_SIZE / 8))
-            //{
-            //    throw new CryptographicException(SR.Cryptography_InvalidHashSize,
-            //        string.Format("{0} - {1}", "GOST3411", GostConstants.GOST3411_SIZE / 8));
-            //}
-            //GetKeyPair();
-            //return CapiHelper.SignValue(
-            //        SafeProvHandle,
-            //        SafeKeyHandle,
-            //        _parameters.KeyNumber, //2
-            //        CapiHelper.CALG_RSA_SIGN, //переворачиваем подпись
-            //        GostConstants.CALG_GR3411,
-            //        hash);
-            throw new PlatformNotSupportedException(SR.Format(SR.Cryptography_CAPI_Required, nameof(CspKeyContainerInfo)));
+            if (hash.Length != (GostConstants.GOST3411_SIZE / 8))
+            {
+                throw new CryptographicException(SR.Cryptography_InvalidHashSize,
+                    string.Format("{0} - {1}", "GOST3411", GostConstants.GOST3411_SIZE / 8));
+            }
+            GetKeyPair();
+            return CapiHelper.SignValue(
+                    SafeProvHandle,
+                    SafeKeyHandle,
+                    _parameters.KeyNumber, //2
+                    CapiHelper.CALG_RSA_SIGN, //переворачиваем подпись
+                    GostConstants.CALG_GR3411,
+                    hash);
+            //throw new PlatformNotSupportedException(SR.Format(SR.Cryptography_CAPI_Required, nameof(CspKeyContainerInfo)));
         }
 
         /// <summary>
