@@ -28,9 +28,15 @@ namespace System.Security.Cryptography.Pkcs
         static partial void PrepareRegistrationRsa(Dictionary<string, CmsSignature> lookup);
         static partial void PrepareRegistrationDsa(Dictionary<string, CmsSignature> lookup);
         static partial void PrepareRegistrationECDsa(Dictionary<string, CmsSignature> lookup);
+<<<<<<< HEAD
         //add: sk
         static partial void PrepareRegistrationGost(Dictionary<string, CmsSignature> lookup);
         //end: sk
+=======
+
+        protected abstract bool VerifyKeyType(AsymmetricAlgorithm key);
+
+>>>>>>> 3326f3f24dd083f0966c8f71c7d1e8c2caa1ddae
         internal abstract bool VerifySignature(
 #if netcoreapp
             ReadOnlySpan<byte> valueHash,
@@ -52,14 +58,20 @@ namespace System.Security.Cryptography.Pkcs
 #endif
             HashAlgorithmName hashAlgorithmName,
             X509Certificate2 certificate,
+            AsymmetricAlgorithm key,
             bool silent,
             out Oid signatureAlgorithm,
             out byte[] signatureValue);
 
-        internal static CmsSignature Resolve(string signatureAlgorithmOid)
+        internal static CmsSignature ResolveAndVerifyKeyType(string signatureAlgorithmOid, AsymmetricAlgorithm key)
         {
             if (s_lookup.TryGetValue(signatureAlgorithmOid, out CmsSignature processor))
             {
+                if (key != null && !processor.VerifyKeyType(key))
+                {
+                    return null;
+                }
+
                 return processor;
             }
 
@@ -74,11 +86,12 @@ namespace System.Security.Cryptography.Pkcs
 #endif
             HashAlgorithmName hashAlgorithmName,
             X509Certificate2 certificate,
+            AsymmetricAlgorithm key,
             bool silent,
             out Oid oid,
             out ReadOnlyMemory<byte> signatureValue)
         {
-            CmsSignature processor = Resolve(certificate.GetKeyAlgorithm());
+            CmsSignature processor = ResolveAndVerifyKeyType(certificate.GetKeyAlgorithm(), key);
 
             if (processor == null)
             {
@@ -88,7 +101,8 @@ namespace System.Security.Cryptography.Pkcs
             }
 
             byte[] signature;
-            bool signed = processor.Sign(dataHash, hashAlgorithmName, certificate, silent, out oid, out signature);
+            bool signed = processor.Sign(dataHash, hashAlgorithmName, certificate, key, silent, out oid, out signature);
+
             signatureValue = signature;
             return signed;
         }
