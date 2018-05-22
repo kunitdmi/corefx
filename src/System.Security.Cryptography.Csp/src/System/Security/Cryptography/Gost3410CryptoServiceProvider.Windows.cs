@@ -1186,7 +1186,7 @@ namespace System.Security.Cryptography
         //public void SetContainerPassword(SecureString password)
         //{
         //    // Дополнительных прав не требуем.
-        //    // ниpublic bool PublicOnlyчего плохого в окне выбора контейнера нет.
+        //    // ничего плохого в окне выбора контейнера нет.
         //    SecurityPermission perm = new SecurityPermission(SecurityPermissionFlag.UnmanagedCode);
         //    perm.Assert();
         //    // Специально не документируем поведение при password == null
