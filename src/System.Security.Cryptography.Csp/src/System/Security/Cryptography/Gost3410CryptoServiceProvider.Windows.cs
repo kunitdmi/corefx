@@ -34,7 +34,50 @@ namespace System.Security.Cryptography
     public sealed class Gost3410CryptoServiceProvider :
         Gost3410, ICspAsymmetricAlgorithm
     {
+        /// <summary>
+        /// Признак наличия только открытого ключа, без секретного.
+        /// </summary>
+        /// <intdoc><para>
+        /// Не существует способа определить, какому ключу 
+        /// соответствует HANDLE: секретному или открытому. Мы держим 
+        /// эту информацию прямо внутри класса, MS скорее всего
+        /// держит ее внутри HANDLE (НЕ CSP HANDLE).</para>
+        /// <para>Считаем, что единственно возможный способ
+        /// получить открытый ключ, это импорт BLOB, 
+        /// во всех остальных случаях он стоит в <see langword="false"/>.</para>
+        /// </intdoc>
+        private bool _publicOnly;
+
+        /// <summary>
+        /// Флаг LOCALMACHINE для использования 
+        /// </summary>
         private static volatile CspProviderFlags s_useMachineKeyStore = 0;
+
+        /// <summary>
+        /// Тип ключа
+        /// </summary>
+        private int _keySpec;
+
+        /// <summary>
+        /// Признак наличия ключа в CSP.
+        /// </summary>
+        /// <intdoc>
+        /// <para>Поведение очень запутанное, поэтому описываю все что 
+        /// удалось выяснить.</para>
+        /// <para>1. Установка PersistKeyInCsp в <see langword="false"/> 
+        /// не удаляет контейнер немедленно.</para>
+        /// <para>2. Получение флага PersistKeyInCsp не обращается на прямую к 
+        /// контейнеру.</para>
+        /// <para>3. После генерации ключа в случайном контейнере, 
+        /// PersistKeyInCsp <see langword="true"/>, но контейнер будет удален 
+        /// после закрытия.
+        /// </para>
+        /// <para>4. До генерации ключа в в случайном контейнере, </para>
+        /// установка PersistKeyInCsp <see langword="true"/>, контейнер НЕ 
+        /// будет удален после закрытия.
+        /// </intdoc>
+        private bool _peristKeyInCsp;
+
         private CspParameters _parameters;
         private bool _randomKeyContainer;
         private SafeKeyHandle _safeKeyHandle;
@@ -101,9 +144,7 @@ namespace System.Security.Cryptography
                 parameters,
                 s_useMachineKeyStore,
                 out _randomKeyContainer);
-            SafeKeyHandle.PublicOnly = false;
-            SafeKeyHandle.KeySpec = _parameters.KeyNumber;
-            SafeProvHandle.PersistKeyInCsp = false;
+            _keySpec = _parameters.KeyNumber;
             LegalKeySizesValue = new KeySizes[] { new KeySizes(
                 GostConstants.EL_SIZE, GostConstants.EL_SIZE,  0) };
             if (!_randomKeyContainer)
@@ -349,7 +390,7 @@ namespace System.Security.Cryptography
             return CapiHelper.SignValue(
                     SafeProvHandle,
                     SafeKeyHandle,
-                    _parameters.KeyNumber, //2
+                    _keySpec, //2
                     CapiHelper.CALG_RSA_SIGN, //переворачиваем подпись
                     GostConstants.CALG_GR3411,
                     hash);
@@ -471,7 +512,7 @@ namespace System.Security.Cryptography
             }
 
             GetKeyPair();
-            bool ret = CapiHelper.VerifySign(SafeProvHandle, SafeKeyHandle,
+            bool ret = CapiHelper.VerifySign(_safeProvHandle, _safeKeyHandle,
                 CapiHelper.CALG_RSA_SIGN, GostConstants.CALG_GR3411, hash, signature); 
             return ret;
             //throw new PlatformNotSupportedException(SR.Format(SR.Cryptography_CAPI_Required, nameof(CspKeyContainerInfo)));
@@ -594,13 +635,15 @@ namespace System.Security.Cryptography
             {
                 SafeProvHandle safeProvHandleTemp = AcquireSafeProviderHandle();
 
-                CapiHelper.ImportKeyBlob(safeProvHandleTemp, CspProviderFlags.NoFlags,
-                   false, //?
-                   rawData,
-                   out safeKeyHandle);
+                CapiHelper.ImportKeyBlob(
+                    safeProvHandleTemp, 
+                    CspProviderFlags.NoFlags,
+                    false, //?
+                    rawData,
+                    out safeKeyHandle);
 
                 // The property set will take care of releasing any already-existing resources.
-                SafeProvHandle = safeProvHandleTemp;
+                _safeProvHandle = safeProvHandleTemp;
             }
             else
             {
@@ -608,15 +651,15 @@ namespace System.Security.Cryptography
             }
 
             // The property set will take care of releasing any already-existing resources.
-            SafeKeyHandle = safeKeyHandle;
+            _safeKeyHandle = safeKeyHandle;
 
             if (_parameters != null)
             {
-                _parameters.KeyNumber = SafeKeyHandle.KeySpec;
+                _parameters.KeyNumber = _safeKeyHandle.KeySpec;
             }
 
             // Эмулируем MS HANDLE
-            SafeKeyHandle.PublicOnly = true;
+            _publicOnly = true;
             //throw new PlatformNotSupportedException(SR.Format(SR.Cryptography_CAPI_Required, nameof(CspKeyContainerInfo)));
         }
 
@@ -904,7 +947,8 @@ namespace System.Security.Cryptography
                 {
                     return; // Do nothing
                 }
-                CapiHelper.SetPersistKeyInCsp(SafeProvHandle, value);
+                _peristKeyInCsp = value;
+                CapiHelper.SetPersistKeyInCsp(_safeProvHandle, _peristKeyInCsp);
             }
         }
 
@@ -932,28 +976,6 @@ namespace System.Security.Cryptography
                 }
 
                 return _safeProvHandle;
-            }
-            set
-            {
-                lock (_parameters)
-                {
-                    SafeProvHandle current = _safeProvHandle;
-
-                    if (ReferenceEquals(value, current))
-                    {
-                        return;
-                    }
-
-                    if (current != null)
-                    {
-                        SafeKeyHandle keyHandle = _safeKeyHandle;
-                        _safeKeyHandle = null;
-                        keyHandle?.Dispose();
-                        current.Dispose();
-                    }
-
-                    _safeProvHandle = value;
-                }
             }
         }
 
@@ -984,22 +1006,6 @@ namespace System.Security.Cryptography
 
                 return _safeKeyHandle;
             }
-
-            set
-            {
-                lock (_parameters)
-                {
-                    SafeKeyHandle current = _safeKeyHandle;
-
-                    if (ReferenceEquals(value, current))
-                    {
-                        return;
-                    }
-
-                    _safeKeyHandle = value;
-                    current?.Dispose();
-                }
-            }
         }
 
         /// <summary>
@@ -1028,7 +1034,7 @@ namespace System.Security.Cryptography
                 // нет официального способа его получения. Поэтому 
                 // просто его храним.
                 GetKeyPair();
-                return SafeKeyHandle.PublicOnly;
+                return _publicOnly;
             }
         }
 

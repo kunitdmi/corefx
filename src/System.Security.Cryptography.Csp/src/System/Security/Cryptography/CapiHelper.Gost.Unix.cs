@@ -820,9 +820,24 @@ namespace Internal.NativeCrypto
                 parameters.KeyNumber = (int)KeyNumber.Exchange;
             }
             //add: sk
-            else if ((parameters.KeyNumber == -1) && ((keyType == CspAlgorithmType.PROV_GOST_2001_DH) || (keyType == CspAlgorithmType.PROV_GOST_2012_256) || (keyType == CspAlgorithmType.PROV_GOST_2012_512)))
+            else if (parameters.KeyNumber == -1)
             {
-                parameters.KeyNumber = (int)KeyNumber.Signature;
+                if (keyType == CspAlgorithmType.PROV_GOST_2001_DH)
+                {
+                    parameters.KeyNumber = GostConstants.CALG_GR3410EL;
+                }
+                else if (keyType == CspAlgorithmType.PROV_GOST_2012_256)
+                {
+                    parameters.KeyNumber = GostConstants.CALG_GR3410_12_256;
+                }
+                else if (keyType == CspAlgorithmType.PROV_GOST_2012_512)
+                {
+                    parameters.KeyNumber = GostConstants.CALG_GR3410_12_512;
+                }
+                else
+                {
+                    parameters.KeyNumber = (int)KeyNumber.Signature;
+                }
             }
             //end: sk
             // If no key container was specified and UseDefaultKeyContainer is not used, then use CRYPT_VERIFYCONTEXT

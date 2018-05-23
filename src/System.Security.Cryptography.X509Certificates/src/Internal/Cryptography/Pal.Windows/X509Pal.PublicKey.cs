@@ -50,12 +50,7 @@ namespace Internal.Cryptography.Pal
                         cspObject.DecodePublicKey(encodedKeyValue);
                         var cspBlobData = GostKeyExchangeParameters.EncodePublicBlob(cspObject);
 
-                        CspParameters cspParams = new CspParameters(); 
-                        cspParams.Flags |= CspProviderFlags.NoPrompt;
-                        cspParams.Flags |= CspProviderFlags.UseExistingKey;
-                        cspParams.Flags |= CspProviderFlags.UseDefaultKeyContainer;
-                        cspParams.KeyNumber = (int)KeyNumber.Exchange; 
-                        Gost3410CryptoServiceProvider gost3410 = new Gost3410CryptoServiceProvider(cspParams);
+                        Gost3410CryptoServiceProvider gost3410 = new Gost3410CryptoServiceProvider();
 
                         //gost3410.ImportCspBlob(encodedKeyValue, encodedParameters);
                         gost3410.ImportCspBlob(cspBlobData);
