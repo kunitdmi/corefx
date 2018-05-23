@@ -24,16 +24,10 @@ namespace System.Security.Cryptography.Pkcs.Tests
         public static readonly CertLoader TwoEkuTsaCert = new CertLoaderFromRawData(RawData.TwoEkuTsaCert, RawData.TwoEkuTsaPfx, "export");
         public static readonly CertLoader NonCriticalTsaEku = new CertLoaderFromRawData(RawData.NonCriticalTsaEkuCert, RawData.NonCriticalTsaEkuPfx, "export");
         public static readonly CertLoader TlsClientServerCert = new CertLoaderFromRawData(RawData.TlsClientServerEkuCert, RawData.TlsClientServerEkuPfx, "export");
-<<<<<<< HEAD
         public static readonly CertLoader GostKeyTransfer1 = new CertLoaderFromRawData(RawData.s_GostKeyTransfer1Cer, RawData.s_GostKeyTransfer1Pfx, "123");
-        
-=======
         public static readonly CertLoader RSAKeyTransfer4_ExplicitSki = new CertLoaderFromRawData(RawData.s_RSAKeyTransfer4_ExplicitSkiCer, RawData.s_RSAKeyTransfer4_ExplicitSkiPfx, "1111");
         public static readonly CertLoader RSAKeyTransfer5_ExplicitSkiOfRSAKeyTransfer4 = new CertLoaderFromRawData(RawData.s_RSAKeyTransfer5_ExplicitSkiOfRSAKeyTransfer4Cer, RawData.s_RSAKeyTransfer5_ExplicitSkiOfRSAKeyTransfer4Pfx, "1111");
         public static readonly CertLoader NegativeSerialNumber = new CertLoaderFromRawData(RawData.NegativeSerialNumberCert, RawData.NegativeSerialNumberPfx, "1234");
-
->>>>>>> 3326f3f24dd083f0966c8f71c7d1e8c2caa1ddae
-        // Note: the raw data is its own (nested) class to avoid problems with static field initialization ordering.
         private static class RawData
         {
             public static byte[] s_GostKeyTransfer1Cer =

@@ -20,6 +20,11 @@ namespace System.Security.Cryptography.Pkcs
 
         private sealed class GostCmsSignature : CmsSignature
         {
+            protected override bool VerifyKeyType(AsymmetricAlgorithm key)
+            {
+                return (key as Gost3410) != null;
+            }
+
             internal override bool VerifySignature(
 #if netcoreapp
                 ReadOnlySpan<byte> valueHash,
@@ -58,16 +63,15 @@ namespace System.Security.Cryptography.Pkcs
 #endif
                 HashAlgorithmName hashAlgorithmName,
                     X509Certificate2 certificate,
+                    AsymmetricAlgorithm key,
                     bool silent,
                     out Oid signatureAlgorithm,
                     out byte[] signatureValue)
             {
                 // If there's no private key, fall back to the public key for a "no private key" exception.
-                Gost3410 privateKey =
+                Gost3410 privateKey = key as Gost3410 ??
                     PkcsPal.Instance.GetPrivateKeyForSigning<Gost3410>(certificate, silent) ?? 
                     null; 
-
-                //certificate.GetRSAPublicKey();
 
                 if (privateKey == null)
                 {

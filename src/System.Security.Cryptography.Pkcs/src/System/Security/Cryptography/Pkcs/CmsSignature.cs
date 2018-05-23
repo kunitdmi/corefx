@@ -28,15 +28,11 @@ namespace System.Security.Cryptography.Pkcs
         static partial void PrepareRegistrationRsa(Dictionary<string, CmsSignature> lookup);
         static partial void PrepareRegistrationDsa(Dictionary<string, CmsSignature> lookup);
         static partial void PrepareRegistrationECDsa(Dictionary<string, CmsSignature> lookup);
-<<<<<<< HEAD
         //add: sk
         static partial void PrepareRegistrationGost(Dictionary<string, CmsSignature> lookup);
         //end: sk
-=======
-
         protected abstract bool VerifyKeyType(AsymmetricAlgorithm key);
 
->>>>>>> 3326f3f24dd083f0966c8f71c7d1e8c2caa1ddae
         internal abstract bool VerifySignature(
 #if netcoreapp
             ReadOnlySpan<byte> valueHash,
