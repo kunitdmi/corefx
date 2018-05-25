@@ -11,7 +11,8 @@ namespace System.Security.Cryptography
     {
         public static new Gost3410 Create()
         {
-            throw new PlatformNotSupportedException();
+            // Пока нету реализций возвращаем просто из CryptoConfig
+            return (Gost3410)CryptoConfig.CreateFromName(typeof(Gost3410).Name);
         }
 
         public static new Gost3410 Create(string algName)
