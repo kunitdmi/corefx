@@ -30,6 +30,16 @@ namespace System.Security.Cryptography
         private const string OID_OIWSEC_SHA512 = "2.16.840.1.101.3.4.2.3";
         private const string OID_OIWSEC_RIPEMD160 = "1.3.36.3.2.1";
 
+        //add: sk
+        private const string OID_GOST3410 = "1.2.643.2.2.19";
+        private const string OID_GOST3410_2012_256 = "1.2.643.7.1.1.1.1";
+        private const string OID_GOST3410_2012_512 = "1.2.643.7.1.1.1.2";
+        private const string OID_GOST3411 = "1.2.643.2.2.9";
+        private const string OID_GOST3411_2012_256 = "1.2.643.7.1.1.2.2";
+        private const string OID_GOST3411_2012_512 = "1.2.643.7.1.1.2.3";
+        private const string OID_GOST28147 = "1.2.643.2.2.21";
+        //end: sk
+
         private const string ECDsaIdentifier = "ECDsa";
 
         private static volatile Dictionary<string, string> s_defaultOidHT = null;
@@ -101,6 +111,16 @@ namespace System.Security.Cryptography
                 ht.Add("TripleDES", OID_RSA_DES_EDE3_CBC);
                 ht.Add("System.Security.Cryptography.TripleDESCryptoServiceProvider", OID_RSA_DES_EDE3_CBC);
 
+                //add: sk
+                ht.Add("Gost3410", OID_GOST3410);
+                ht.Add("System.Security.Cryptography.Gost3410", OID_GOST3410);
+                ht.Add("System.Security.Cryptography.Gost3410CryptoServiceProvider", OID_GOST3410);
+
+                ht.Add("Gost3411", OID_GOST3411);
+                ht.Add("System.Security.Cryptography.Gost3411", OID_GOST3410);
+                ht.Add("System.Security.Cryptography.Gost3411CryptoServiceProvider", OID_GOST3411);
+                //end: sk
+
                 s_defaultOidHT = ht;
                 return s_defaultOidHT;
             }
@@ -140,6 +160,11 @@ namespace System.Security.Cryptography
 
                 string ECDsaCngType = "System.Security.Cryptography.ECDsaCng, " + AssemblyName_Cng;
 
+                //add: sk
+                string Gost3410Type = "System.Security.Cryptography.Gost3410CryptoServiceProvider, " + AssemblyName_Csp;
+                string Gost3411Type = "System.Security.Cryptography.Gost3411CryptoServiceProvider, " + AssemblyName_Csp;
+                //end: sk
+
                 // Random number generator
                 ht.Add("RandomNumberGenerator", RNGCryptoServiceProviderType);
                 ht.Add("System.Security.Cryptography.RandomNumberGenerator", RNGCryptoServiceProviderType);
@@ -149,6 +174,11 @@ namespace System.Security.Cryptography
                 ht.Add("SHA1", SHA1CryptoServiceProviderType);
                 ht.Add("System.Security.Cryptography.SHA1", SHA1CryptoServiceProviderType);
                 ht.Add("System.Security.Cryptography.HashAlgorithm", SHA1CryptoServiceProviderType);
+
+                //add: sk
+                ht.Add("Gost3411", Gost3411Type);
+                ht.Add("System.Security.Cryptography.Gost3411", Gost3411Type);
+                //end: sk
 
                 ht.Add("MD5", MD5CryptoServiceProviderType);
                 ht.Add("System.Security.Cryptography.MD5", MD5CryptoServiceProviderType);
@@ -196,6 +226,11 @@ namespace System.Security.Cryptography
                 ht.Add("ECDsaCng", ECDsaCngType);
                 ht.Add("System.Security.Cryptography.ECDsaCng", ECDsaCngType);
 
+                //add: sk
+                ht.Add("Gost3410", Gost3410Type);
+                ht.Add("System.Security.Cryptography.Gost3410", Gost3410Type);
+                //end: sk
+
                 // Symmetric algorithms
                 ht.Add("DES", DESCryptoServiceProviderType);
                 ht.Add("System.Security.Cryptography.DES", DESCryptoServiceProviderType);
@@ -224,6 +259,11 @@ namespace System.Security.Cryptography
                 // Add the other hash algorithms introduced with XML Encryption
                 ht.Add("http://www.w3.org/2001/04/xmlenc#sha256", SHA256DefaultType);
                 ht.Add("http://www.w3.org/2001/04/xmlenc#sha512", SHA512DefaultType);
+
+                //add: sk
+                ht.Add("urn:ietf:params:xml:ns:cpxmlsec:algorithms:gostr3411",
+                    Gost3411Type);
+                //end: sk
 
                 // Xml Encryption symmetric keys
                 ht.Add("http://www.w3.org/2001/04/xmlenc#des-cbc", DESCryptoServiceProviderType);

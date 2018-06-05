@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using Internal.NativeCrypto;
 using static Internal.NativeCrypto.CapiHelper;
+
 namespace System.Security.Cryptography
 {
     /// <summary>
@@ -31,8 +32,7 @@ namespace System.Security.Cryptography
     /// </intdoc>
     /// 
     /// <cspversions />
-    public sealed class Gost3410CryptoServiceProvider :
-        Gost3410, ICspAsymmetricAlgorithm
+    public sealed class Gost3410CryptoServiceProvider : Gost3410, ICspAsymmetricAlgorithm
     {
         /// <summary>
         /// Признак наличия только открытого ключа, без секретного.
@@ -79,9 +79,14 @@ namespace System.Security.Cryptography
         private bool _peristKeyInCsp;
 
         private CspParameters _parameters;
+
         private bool _randomKeyContainer;
+
         private SafeKeyHandle _safeKeyHandle;
+
         private SafeProvHandle _safeProvHandle;
+
+        private Gost3411 _gost3411;
 
         /// <summary>
         /// Конструктор, создающий объект класса 
@@ -103,9 +108,12 @@ namespace System.Security.Cryptography
         ///  </doc-sample>
         [SecuritySafeCritical]
         public Gost3410CryptoServiceProvider()
-            : this(new CspParameters(
-            GostConstants.PROV_GOST_2001_DH, null, null,
-            Gost3410CryptoServiceProvider.s_useMachineKeyStore))
+            : this(
+                new CspParameters(
+                    GostConstants.PROV_GOST_2001_DH,
+                    null,
+                    null,
+                    Gost3410CryptoServiceProvider.s_useMachineKeyStore))
         {
         }
 
@@ -140,139 +148,17 @@ namespace System.Security.Cryptography
         [SecuritySafeCritical]
         public Gost3410CryptoServiceProvider(CspParameters parameters)
         {
-            _parameters = CapiHelper.SaveCspParameters(CapiHelper.CspAlgorithmType.PROV_GOST_2001_DH,
+            _parameters = CapiHelper.SaveCspParameters(
+                CapiHelper.CspAlgorithmType.PROV_GOST_2001_DH,
                 parameters,
                 s_useMachineKeyStore,
                 out _randomKeyContainer);
             _keySpec = _parameters.KeyNumber;
-            LegalKeySizesValue = new KeySizes[] { new KeySizes(
-                GostConstants.EL_SIZE, GostConstants.EL_SIZE,  0) };
-            if (!_randomKeyContainer)
-                GetKeyPair();
+            LegalKeySizesValue = new KeySizes[] { new KeySizes(GostConstants.EL_SIZE, GostConstants.EL_SIZE, 0) };
+
+            _gost3411 = Gost3411.Create();
+            if (!_randomKeyContainer) GetKeyPair();
         }
-
-
-        /// <summary>
-        /// Вычисляет значение хэш для байтового массива и подписывает его.
-        /// </summary>
-        /// 
-        /// <param name="buffer">Данные, для которых вычисляется 
-        /// подпись.</param>
-        /// <param name="hashAlg">Объект, реализующий алгоритм 
-        /// хэширования.</param>
-        /// 
-        /// <returns>Подпись данных, выполненная по алгоритму 
-        /// ГОСТ Р 34.10.</returns>
-        /// 
-        /// <doc-sample path="Simple\Sign" name="SignData1">Пример подписи и 
-        ///  проверки подписи данных.</doc-sample>
-        /// <doc-sample path="Simple\Sign" name="SignFile1">Пример подписи и 
-        ///  проверки подписи для файла.</doc-sample>
-        ///  
-        ///  <exception cref="CryptographicException"><c>hashAlg</c> не является
-        ///  алгоритмом хеширования по ГОСТ Р 34.11.</exception>
-        /// 
-        /// <containerperm flag="Open">Для открытия существующего 
-        /// контейнера.</containerperm>
-        /// <containerperm flag="Create">Для создания контейнера с заданным
-        /// (не случайным именем).</containerperm>
-        /// <containerperm flag="Sign">Для подписи на не случайном контейнере.
-        /// </containerperm>
-        //[SecuritySafeCritical]
-        //public byte[] SignData(byte[] buffer, object hashAlg)
-        //{
-        //    // SignHash допускает только хеш по ГОСТ Р 34.11, в отличии
-        //    // от RSA. Поэтому проверяем корректность типа хеша
-        //    // и на подпись передаем правильный.
-        //    string oid = CapiHelper.ObjToOidValue(hashAlg);
-        //    if (!oid.Equals(GostConstants.OID_CP_GOST_R3411))
-        //        throw new CryptographicException(SR.Cryptography_UnknownHashAlgorithm, oid.ToString());
-
-
-        //    int calgHash = CapiHelper.ObjToHashAlgId(hashAlg);
-        //    HashAlgorithm hash = CapiHelper.ObjToHashAlgorithm(hashAlg);
-        //    byte[] hashVal = hash.ComputeHash(buffer);
-        //    return SignHash(hashVal);
-        //}
-
-        /// <summary>
-        /// Вычисление значения хэш для указанного интервала из байтового 
-        /// массива и его подпись.
-        /// </summary>
-        /// 
-        /// <param name="buffer">Данные, для которых вычисляется 
-        /// подпись.</param>
-        /// <param name="offset">Смещение от начала массива. </param>
-        /// <param name="count">Число байтов для подсчета хэша.</param>
-        /// <param name="hashAlg">Объект, реализующий алгоритм 
-        /// хэширования.</param>
-        /// 
-        /// <returns>Подпись данных, выполненная по алгоритму 
-        /// ГОСТ Р 34.10</returns>
-        /// 
-        /// <doc-sample path="Simple\Sign" name="SignData3">Пример подписи и 
-        ///  проверки подписи данных.</doc-sample>
-        ///  
-        ///  <exception cref="CryptographicException"><c>halg</c> не является
-        ///  алгоритмом хеширования по ГОСТ Р 34.11.</exception>
-        /// 
-        /// <containerperm flag="Open">Для открытия существующего 
-        /// контейнера.</containerperm>
-        /// <containerperm flag="Create">Для создания контейнера с заданным
-        /// (не случайным именем).</containerperm>
-        /// <containerperm flag="Sign">Для подписи на не случайном контейнере.
-        /// </containerperm>
-        //[SecuritySafeCritical]
-        //public byte[] SignData(byte[] buffer, int offset, int count,
-        //    object hashAlg)
-        //{
-        //    // SignHash допускает только хеш по ГОСТ Р 34.11, в отличии
-        //    // от RSA. Поэтому проверяем корректность типа хеша
-        //    // и на подпись передаем правильный.
-        //    // SignHash допускает только хеш по ГОСТ Р 34.11, в отличии
-        //    // от RSA. Поэтому проверяем корректность типа хеша
-        //    // и на подпись передаем правильный.
-        //    string oid = CapiHelper.ObjToOidValue(hashAlg);
-        //    if (!oid.Equals(GostConstants.OID_CP_GOST_R3411))
-        //        throw new CryptographicException(SR.Cryptography_UnknownHashAlgorithm, oid.ToString());
-
-        //    HashAlgorithm algorithm = CapiHelper.ObjToHashAlgorithm(hashAlg);
-        //    byte[] bufferTemp = algorithm.ComputeHash(buffer, offset, count);
-        //    return SignHash(bufferTemp);
-        //}
-
-        /// <summary>
-        /// Вычисляет значение хэш для данных из потока и подписывает его.
-        /// </summary>
-        /// <param name="inputStream">Данные, для которых вычисляется подпись.</param>
-        /// <param name="hashAlg">Объект, реализующий алгоритм хэширования.</param>
-        /// <returns>Подпись данных, выполненная по алгоритму ГОСТ-34.10.</returns>
-        /// <doc-sample path="Simple\Sign" name="SignData2">Пример подписи и 
-        ///  проверки подписи данных.</doc-sample>
-        /// 
-        /// <containerperm flag="Open">Для открытия существующего 
-        /// контейнера.</containerperm>
-        /// <containerperm flag="Create">Для создания контейнера с заданным
-        /// (не случайным именем).</containerperm>
-        /// <containerperm flag="Sign">Для подписи на не случайном контейнере.
-        /// </containerperm>
-        //[SecuritySafeCritical]
-        //public byte[] SignData(Stream inputStream, object hashAlg)
-        //{
-        //    // SignHash допускает только хеш по ГОСТ Р 34.11, в отличии
-        //    // от RSA. Поэтому проверяем корректность типа хеша
-        //    // и на подпись передаем правильный.
-        //    // SignHash допускает только хеш по ГОСТ Р 34.11, в отличии
-        //    // от RSA. Поэтому проверяем корректность типа хеша
-        //    // и на подпись передаем правильный.
-        //    string oid = CapiHelper.ObjToOidValue(hashAlg);
-        //    if (!oid.Equals(GostConstants.OID_CP_GOST_R3411))
-        //        throw new CryptographicException(SR.Cryptography_UnknownHashAlgorithm, oid.ToString());
-
-        //    HashAlgorithm algorithm = CapiHelper.ObjToHashAlgorithm(hashAlg);
-        //    byte[] bufferTemp = algorithm.ComputeHash(inputStream);
-        //    return SignHash(bufferTemp);
-        //}
 
         protected override byte[] HashData(Stream data, HashAlgorithmName hashAlgorithm)
         {
@@ -280,7 +166,7 @@ namespace System.Security.Cryptography
             Debug.Assert(data != null);
             Debug.Assert(!string.IsNullOrEmpty(hashAlgorithm.Name));
 
-            using (HashAlgorithm hash = Gost3411.Create())//GetHashAlgorithm(hashAlgorithm))
+            using (HashAlgorithm hash = Gost3411.Create())
             {
                 return hash.ComputeHash(data);
             }
@@ -294,62 +180,65 @@ namespace System.Security.Cryptography
             Debug.Assert(offset >= 0 && offset <= data.Length - count);
             Debug.Assert(!string.IsNullOrEmpty(hashAlgorithm.Name));
 
-            using (HashAlgorithm hash = Gost3411.Create())//GetHashAlgorithm(hashAlgorithm))
+            using (HashAlgorithm hash = Gost3411.Create())
             {
                 return hash.ComputeHash(data, offset, count);
             }
         }
 
-        /// <summary>
-        /// Вычисляет подпись для заданного значения хэш.
-        /// </summary>
-        /// 
-        /// <param name="hash">Подписываемое значение хэш.</param>
-        /// 
-        /// <returns>Подпись хэша, выполненная по алгоритму 
-        /// ГОСТ Р 34.10.</returns>
-        /// 
-        /// <doc-sample path="Simple\Sign" name="SignHash">Пример подписи и 
-        ///  проверки подписи хэш.</doc-sample>
-        ///  
-        /// <intdoc><para>Стандарт допускает только алгоритм хеширования 
-        /// ГОСТ Р 34.11. 
-        /// </para></intdoc>
-        /// 
-        /// <remarks><para>Функция тождественна 
-        /// <see cref="CreateSignature"/>.</para></remarks>
-        /// 
-        /// <argnull name="hash" />
-        /// <exception cref="CryptographicException">Объект не содержит 
-        /// секретного ключа или хеш имееет неправильный размер.</exception>
-        /// 
-        /// <containerperm flag="Open">Для открытия существующего 
-        /// контейнера.</containerperm>
-        /// <containerperm flag="Create">Для создания контейнера с заданным
-        /// (не случайным именем).</containerperm>
-        /// <containerperm flag="Sign">Для подписи на не случайном контейнере.
-        /// </containerperm>
-        public override byte[] SignHash(
-    byte[] hash,
-    HashAlgorithmName hashAlgorithm
-    )
+        public override byte[] SignData(byte[] data, int offset, int count, HashAlgorithmName hashAlgorithm)
         {
-            if (hash == null)
-                throw new ArgumentNullException(nameof(hash));
-            if (string.IsNullOrEmpty(hashAlgorithm.Name))
-                throw new CryptographicException(SR.Cryptography_HashAlgorithmNameNullOrEmpty);
-            if (hashAlgorithm != HashAlgorithmName.Gost3411)
-                throw new CryptographicException(SR.Cryptography_UnknownHashAlgorithm);
-
-            return SignHash(hash);
+            byte[] hashVal = _gost3411.ComputeHash(data, offset, count);
+            return SignHash(hashVal, hashAlgorithm);
         }
 
+        public override byte[] SignData(Stream data, HashAlgorithmName hashAlgorithm)
+        {
+            byte[] hashVal = _gost3411.ComputeHash(data);
+            return SignHash(hashVal, hashAlgorithm);
+        }
+
+        ///// <summary>
+        ///// Computes the hash value of the specified input stream and signs the resulting hash value.
+        ///// </summary>
+        ///// <param name="inputStream">The input data for which to compute the hash.</param>
+        ///// <returns>The DSA signature for the specified data.</returns>
+        //public byte[] SignData(Stream inputStream)
+        //{
+        //    byte[] hashVal = _gost3411.ComputeHash(inputStream);
+        //    return SignHash(hashVal);
+        //}
+
+        ///// <summary>
+        ///// Computes the hash value of the specified input stream and signs the resulting hash value.
+        ///// </summary>
+        ///// <param name="buffer">The input data for which to compute the hash.</param>
+        ///// <returns>The DSA signature for the specified data.</returns>
+        //public byte[] SignData(byte[] buffer)
+        //{
+        //    byte[] hashVal = _gost3411.ComputeHash(buffer);
+        //    return SignHash(hashVal);
+        //}
+
+        ///// <summary>
+        ///// Signs a byte array from the specified start point to the specified end point.
+        ///// </summary>
+        ///// <param name="buffer">The input data to sign.</param>
+        ///// <param name="offset">The offset into the array from which to begin using data.</param>
+        ///// <param name="count">The number of bytes in the array to use as data.</param>
+        ///// <returns>The DSA signature for the specified data.</returns>
+        //public byte[] SignData(byte[] buffer, int offset, int count)
+        //{
+        //    byte[] hashVal = _gost3411.ComputeHash(buffer, offset, count);
+        //    return SignHash(hashVal);
+        //}
+
         /// <summary>
         /// Вычисляет подпись для заданного значения хэш.
         /// </summary>
         /// 
-        /// <param name="hash">Подписываемое значение хэш.</param>
-        /// 
+        /// <param name="rgbHash">Подписываемое значение хэш.</param>
+        /// <param name="hashAlgName">Алгоритм ГОСТ 34.11-94</param>
         /// <returns>Подпись хэша, выполненная по алгоритму 
         /// ГОСТ Р 34.10.</returns>
         /// 
@@ -373,108 +262,35 @@ namespace System.Security.Cryptography
         /// (не случайным именем).</containerperm>
         /// <containerperm flag="Sign">Для подписи на не случайном контейнере.
         /// </containerperm>
-        [SecuritySafeCritical]
-        private byte[] SignHash(byte[] hash)
+        public override byte[] SignHash(byte[] rgbHash, HashAlgorithmName hashAlgName)
         {
-            if (hash == null)
-                throw new ArgumentNullException("hash");
-            if (PublicOnly)
-                throw new CryptographicException(SR.Cryptography_CSP_NoPrivateKey);
-
-            if (hash.Length != (GostConstants.GOST3411_SIZE / 8))
+            if (hashAlgName != HashAlgorithmName.Gost3411)
             {
-                throw new CryptographicException(SR.Cryptography_InvalidHashSize,
+                throw new CryptographicException(string.Format(SR.Cryptography_UnknownHashAlgorithm, hashAlgName.Name));
+            }
+            return SignHash(rgbHash);
+        }
+
+        private byte[] SignHash(byte[] rgbHash)
+        {
+            if (rgbHash == null) throw new ArgumentNullException(nameof(rgbHash));
+            if (PublicOnly) throw new CryptographicException(SR.Cryptography_CSP_NoPrivateKey);
+
+            if (rgbHash.Length != (GostConstants.GOST3411_SIZE / 8))
+            {
+                throw new CryptographicException(
+                    SR.Cryptography_InvalidHashSize,
                     string.Format("{0} - {1}", "GOST3411", GostConstants.GOST3411_SIZE / 8));
             }
             GetKeyPair();
             return CapiHelper.SignValue(
-                    SafeProvHandle,
-                    SafeKeyHandle,
-                    _keySpec, //2
-                    CapiHelper.CALG_RSA_SIGN, //переворачиваем подпись
-                    GostConstants.CALG_GR3411,
-                    hash);
-            //throw new PlatformNotSupportedException(SR.Format(SR.Cryptography_CAPI_Required, nameof(CspKeyContainerInfo)));
+                SafeProvHandle,
+                SafeKeyHandle,
+                _keySpec, //2
+                CapiHelper.CALG_RSA_SIGN, //переворачиваем подпись
+                GostConstants.CALG_GR3411,
+                rgbHash);
         }
-
-        /// <summary>
-        /// Проверка подписи для указанных данных.
-        /// </summary>
-        /// 
-        /// <param name="buffer">Данные, для которых проверяется 
-        /// подпись.</param>
-        /// <param name="hashAlg">Объект, реализующий алгоритм вычисления 
-        /// хэш по ГОСТ Р 34.11.</param>
-        /// <param name="signature">Подпись, которую необходимо 
-        /// проверить.</param>
-        /// 
-        /// <returns><see langword="true"/>, если подпись подлинна, 
-        /// <see langword="false"/> - иначе.</returns>
-        /// 
-        /// <doc-sample path="Simple\Sign" name="SignData1">Пример подписи и 
-        ///  проверки подписи данных.</doc-sample>
-        ///  
-        /// <exception cref="CryptographicException"><c>halg</c> не является
-        ///  алгоритмом хеширования по ГОСТ Р 34.11.</exception>
-        ///  
-        /// <containerperm flag="Open">Для открытия существующего 
-        /// контейнера.</containerperm>
-        /// <containerperm flag="Create">Для создания контейнера с заданным
-        /// (не случаыным именем).</containerperm>
-        //[SecuritySafeCritical]
-        //public bool VerifyData(byte[] buffer, object hashAlg, byte[] signature)
-        //{
-        //    // VerifyHash допускает только хеш по ГОСТ Р 34.11, в отличии
-        //    // от RSA. Поэтому проверяем корректность типа хеша
-        //    // и на подпись передаем правильный.
-        //    string oid = CapiHelper.ObjToOidValue(hashAlg);
-        //    if (!oid.Equals(GostConstants.OID_CP_GOST_R3411))
-        //        throw new CryptographicException(SR.Cryptography_UnknownHashAlgorithm, oid.ToString());
-
-        //    HashAlgorithm hashAlgorithm = CapiHelper.ObjToHashAlgorithm(hashAlg);
-        //    byte[] bufferTemp = hashAlgorithm.ComputeHash(buffer);
-        //    return VerifyHash(bufferTemp, signature);
-        //}
-
-        /// <summary>
-        /// Проверка подписи для указанных данных.
-        /// </summary>
-        /// 
-        /// <param name="inputStream">Данные, для которых проверяется 
-        /// подпись.</param>
-        /// <param name="hashAlg">Объект, реализующий алгоритм вычисления 
-        /// хэш по ГОСТ Р 34.11.</param>
-        /// <param name="signature">Подпись, подлинность которой необходимо
-        /// проверить.</param>
-        /// 
-        /// <returns><see langword="true"/>, если продпись подлинна, 
-        /// <see langword="false"/> - иначе.</returns>
-        /// 
-        /// <doc-sample path="Simple\Sign" name="SignData2">Пример подписи и 
-        ///  проверки подписи данных.</doc-sample>
-        ///  
-        /// <exception cref="CryptographicException"><c>halg</c> не является
-        /// алгоритмом хеширования по ГОСТ Р 34.11.</exception>
-        /// 
-        /// <containerperm flag="Open">Для открытия существующего 
-        /// контейнера.</containerperm>
-        /// <containerperm flag="Create">Для создания контейнера с заданным
-        /// (не случаыным именем).</containerperm>
-        //[SecuritySafeCritical]
-        //public bool VerifyData(Stream inputStream, object hashAlg,
-        //    byte[] signature)
-        //{
-        //    // VerifyHash допускает только хеш по ГОСТ Р 34.11, в отличии
-        //    // от RSA. Поэтому проверяем корректность типа хеша
-        //    // и на подпись передаем правильный.
-        //    string oid = CapiHelper.ObjToOidValue(hashAlg);
-        //    if (!oid.Equals(GostConstants.OID_CP_GOST_R3411))
-        //        throw new CryptographicException(SR.Cryptography_UnknownHashAlgorithm, oid.ToString());
-
-        //    HashAlgorithm hashAlgorithm = CapiHelper.ObjToHashAlgorithm(hashAlg);
-        //    byte[] buffer1 = hashAlgorithm.ComputeHash(inputStream);
-        //    return VerifyHash(buffer1, signature);
-        //}
 
         /// <summary>
         /// Проверяет подлинность подписи для указанного значения хэш.
@@ -484,8 +300,8 @@ namespace System.Security.Cryptography
         /// подпись.</param>
         /// <param name="signature">Подпись, подлинность которой 
         /// необходимо проверить.</param>
-        /// 
-        /// <returns><see langword="true"/>, если продпись подлинна, 
+        /// <param name="hashAlgName">Алгоритм ГОСТ 34.11-94</param>
+        /// <returns><see langword="true"/>, если подпись подлинна, 
         /// <see langword="false"/> - иначе.</returns>
         /// 
         /// <remarks>Алгоритм вычисления хэш для ГОСТ Р 34.10 
@@ -498,34 +314,23 @@ namespace System.Security.Cryptography
         /// контейнера.</containerperm>
         /// <containerperm flag="Create">Для создания контейнера с заданным
         /// (не случаыным именем).</containerperm>
-        [SecuritySafeCritical]
-        public bool VerifyHash(byte[] hash, byte[] signature)
+        public override bool VerifyHash(byte[] hash, byte[] signature, HashAlgorithmName hashAlgName)
         {
-            if (hash == null)
-                throw new ArgumentNullException("hash");
-            if (signature == null)
-                throw new ArgumentNullException("signature");
-            if (hash.Length != (GostConstants.GOST3411_SIZE / 8))
+            if (hashAlgName != HashAlgorithmName.Gost3411)
             {
-                throw new CryptographicException(SR.Cryptography_InvalidHashSize,
-                    string.Format("{0} - {1}", "GOST3411", GostConstants.GOST3411_SIZE / 8));
+                throw new CryptographicException(string.Format(SR.Cryptography_UnknownHashAlgorithm, hashAlgName.Name));
             }
-
-            GetKeyPair();
-            bool ret = CapiHelper.VerifySign(_safeProvHandle, _safeKeyHandle,
-                CapiHelper.CALG_RSA_SIGN, GostConstants.CALG_GR3411, hash, signature); 
+            bool ret = VerifyHash(hash, signature);
             return ret;
-            //throw new PlatformNotSupportedException(SR.Format(SR.Cryptography_CAPI_Required, nameof(CspKeyContainerInfo)));
         }
 
-        // <summary>
-        /// Для переопределения абстрактных методов класса Gost3410.
-        /// Потом переписать !!!!
+        /// <summary>
+        /// Проверяет подлинность подписи для указанного значения хэш.
         /// </summary>
         /// 
-        /// <param name="hash">Хэш, для которого проверяется 
+        /// <param name="rgbHash">Хэш, для которого проверяется 
         /// подпись.</param>
-        /// <param name="signature">Подпись, подлинность которой 
+        /// <param name="rgbSignature">Подпись, подлинность которой 
         /// необходимо проверить.</param>
         /// 
         /// <returns><see langword="true"/>, если продпись подлинна, 
@@ -541,23 +346,28 @@ namespace System.Security.Cryptography
         /// контейнера.</containerperm>
         /// <containerperm flag="Create">Для создания контейнера с заданным
         /// (не случаыным именем).</containerperm>
-        [SecuritySafeCritical]
-        public override bool VerifyHash(byte[] hash, byte[] signature, HashAlgorithmName hashAlgName)
+        public bool VerifyHash(byte[] rgbHash, byte[] rgbSignature)
         {
-            if (hash == null)
-                throw new ArgumentNullException("hash");
-            if (signature == null)
-                throw new ArgumentNullException("signature");
-            if (hash.Length != (GostConstants.GOST3411_SIZE / 8))
+            if (rgbHash == null) throw new ArgumentNullException(nameof(rgbHash));
+            if (rgbSignature == null) throw new ArgumentNullException(nameof(rgbSignature));
+            if (rgbHash.Length != (GostConstants.GOST3411_SIZE / 8))
             {
-                throw new CryptographicException(SR.Cryptography_InvalidHashSize,
+                throw new CryptographicException(
+                    SR.Cryptography_InvalidHashSize,
                     string.Format("{0} - {1}", "GOST3411", GostConstants.GOST3411_SIZE / 8));
             }
 
-
-            bool ret = VerifyHash(hash, signature);
+            GetKeyPair();
+            bool ret = CapiHelper.VerifySign(
+                _safeProvHandle,
+                _safeKeyHandle,
+                CapiHelper.CALG_RSA_SIGN,
+                GostConstants.CALG_GR3411,
+                rgbHash,
+                rgbSignature);
             return ret;
         }
+
         /// <summary>
         /// Экспортирует параметры алгоритма в BLOB.
         /// </summary>
@@ -582,28 +392,25 @@ namespace System.Security.Cryptography
         /// не требуются права на экспорт. При экспорте открытого
         /// ключа может потребоваться открытие (создание) контейнера,
         /// поэтому требование прав на открытие.</intdoc>
-        [SecuritySafeCritical]
         public byte[] ExportCspBlob(bool includePrivateParameters)
         {
             // Права на экспорт / импорт проверять бесполезно
             // CSP все равно не поддерживает. Бесполезно да же эмулировать:
             // сделать с этим BLOB потом ничего нельзя.
-            //if (includePrivateParameters)
-            //    throw new CryptographicException(SR.Argument_InvalidValue, "includePrivateParameters equal true ");
-            //return CapiHelper.ExportKeyBlob(includePrivateParameters, SafeKeyHandle);
-            throw new PlatformNotSupportedException(SR.Format(SR.Cryptography_CAPI_Required, nameof(CspKeyContainerInfo)));
-
+            if (includePrivateParameters)
+                throw new CryptographicException(SR.Argument_InvalidValue, "includePrivateParameters equal true ");
+            return CapiHelper.ExportKeyBlob(includePrivateParameters, SafeKeyHandle);
         }
 
-        /// <summary>
-        /// This method helps Acquire the default CSP and avoids the need for static SafeProvHandle
-        /// in CapiHelper class
-        /// </summary>
-        private SafeProvHandle AcquireSafeProviderHandle()
+        public override bool VerifyData(
+            byte[] data,
+            int offset,
+            int count,
+            byte[] rgbSignature,
+            HashAlgorithmName hashAlgorithm)
         {
-            SafeProvHandle safeProvHandleTemp;
-            CapiHelper.AcquireCsp(new CspParameters(GostConstants.PROV_GOST_2001_DH), out safeProvHandleTemp);
-            return safeProvHandleTemp;
+            byte[] hashVal = _gost3411.ComputeHash(data, offset, count);
+            return VerifyHash(hashVal, rgbSignature);
         }
 
         /// <summary>
@@ -618,7 +425,6 @@ namespace System.Security.Cryptography
         /// 
         /// <exception cref="CryptographicException">При экспорте секретного
         /// ключа.</exception>
-        [SecuritySafeCritical]
         public void ImportCspBlob(byte[] rawData)
         {
             SafeKeyHandle safeKeyHandle;
@@ -636,7 +442,7 @@ namespace System.Security.Cryptography
                 SafeProvHandle safeProvHandleTemp = AcquireSafeProviderHandle();
 
                 CapiHelper.ImportKeyBlob(
-                    safeProvHandleTemp, 
+                    safeProvHandleTemp,
                     CspProviderFlags.NoFlags,
                     false, //?
                     rawData,
@@ -678,7 +484,6 @@ namespace System.Security.Cryptography
         /// 
         /// <exception cref="CryptographicException">При экспорте секретного
         /// ключа.</exception>
-        [SecuritySafeCritical]
         public void ImportCspBlob(byte[] keyBlob, byte[] paramBlob)
         {
             //SafeKeyHandle safeKeyHandle;
@@ -697,11 +502,11 @@ namespace System.Security.Cryptography
             //    SafeProvHandle safeProvHandleTemp = AcquireSafeProviderHandle();
 
             //    CapiHelper.ImportKeyBlob(safeProvHandleTemp, CspProviderFlags.NoFlags,
-            //       false, //?
+            //false, ?
             //       rawData,
             //       out safeKeyHandle);
 
-            //    // The property set will take care of releasing any already-existing resources.
+            //The property set will take care of releasing any already-existing resources.
             //    SafeProvHandle = safeProvHandleTemp;
             //}
             //else
@@ -719,7 +524,8 @@ namespace System.Security.Cryptography
 
             //// Эмулируем MS HANDLE
             //SafeKeyHandle.PublicOnly = true;
-            throw new PlatformNotSupportedException(SR.Format(SR.Cryptography_CAPI_Required, nameof(CspKeyContainerInfo)));
+            throw new PlatformNotSupportedException(
+                SR.Format(SR.Cryptography_CAPI_Required, nameof(CspKeyContainerInfo)));
         }
 
         /// <summary>
@@ -750,7 +556,6 @@ namespace System.Security.Cryptography
         /// (не случаыным именем).</containerperm>
         /// <containerperm flag="Export">Для экспорта секретного ключа.
         /// </containerperm>
-        [SecuritySafeCritical]
         public override Gost3410Parameters ExportParameters(bool includePrivateParameters)
         {
             GetKeyPair();
@@ -795,37 +600,40 @@ namespace System.Security.Cryptography
         /// (не случайным именем).</containerperm>
         /// <containerperm flag="Import">Для импорта секретного ключа.
         /// </containerperm>
-        [SecuritySafeCritical]
         public override void ImportParameters(Gost3410Parameters parameters)
         {
-            //Gost3410CspObject pubKey = new Gost3410CspObject(parameters);
-            //if ((SafeKeyHandle != null) && !SafeKeyHandle.IsClosed)
-            //{
-            //    SafeKeyHandle.Dispose();
-            //}
+            Gost3410CspObject pubKey = new Gost3410CspObject(parameters);
+            if ((SafeKeyHandle != null) && !SafeKeyHandle.IsClosed)
+            {
+                SafeKeyHandle.Dispose();
+            }
 
-            //SafeKeyHandle = SafeKeyHandle.InvalidHandle;
-            //if (Gost3410CryptoServiceProvider.IsPublic(parameters))
-            //{
-            //    SafeKeyHandle safeKeyHandle;
-            //    // Это открытый ключ, поэтому можно его export
-            //    // в verify context.
-            //    // Нет обращения к секретному ключу, поэтому
-            //    // не создаем контейнер без надобности.
-            //    var safeProvHandleTemp = AcquireSafeProviderHandle();
-            //    if (pubKey == null)
-            //        throw new ArgumentNullException("pubKey");
+            _safeKeyHandle = SafeKeyHandle.InvalidHandle;
+            if (Gost3410CryptoServiceProvider.IsPublic(parameters))
+            {
+                SafeKeyHandle safeKeyHandle;
+                // Это открытый ключ, поэтому можно его export
+                // в verify context.
+                // Нет обращения к секретному ключу, поэтому
+                // не создаем контейнер без надобности.
+                var safeProvHandleTemp = AcquireSafeProviderHandle();
+                if (pubKey == null) throw new ArgumentNullException(nameof(pubKey));
 
-            //    byte[] keyBlob = EncodePublicBlob(pubKey, CspAlgorithmType.PROV_GOST_2001_DH);
-            //    CapiHelper.ImportKeyBlob(safeProvHandleTemp, CspProviderFlags.NoFlags, false, keyBlob, out safeKeyHandle);
+                byte[] keyBlob = EncodePublicBlob(pubKey, CspAlgorithmType.PROV_GOST_2001_DH);
+                CapiHelper.ImportKeyBlob(
+                    safeProvHandleTemp,
+                    CspProviderFlags.NoFlags,
+                    false,
+                    keyBlob,
+                    out safeKeyHandle);
 
-            //    SafeKeyHandle = safeKeyHandle;
-            //    SafeKeyHandle.PublicOnly = true;
-            //    return;
-            //}
+                _safeKeyHandle = safeKeyHandle;
+                _publicOnly = true;
+                return;
+            }
 
-            //throw new CryptographicException(SR.CspParameter_invalid, "Cryptography_UserExportBulkBlob");
-            throw new PlatformNotSupportedException(SR.Format(SR.Cryptography_CAPI_Required, nameof(CspKeyContainerInfo)));
+            throw new CryptographicException(SR.CspParameter_invalid, "Cryptography_UserExportBulkBlob");
+            //throw new PlatformNotSupportedException(SR.Format(SR.Cryptography_CAPI_Required, nameof(CspKeyContainerInfo)));
 
         }
 
@@ -837,7 +645,6 @@ namespace System.Security.Cryptography
         /// <param name="disposing"><see langword="true"/>, чтобы освободить 
         /// и управляемые, и неупавляемые ресурсы; <see langword="false"/>, 
         /// чтобы освободить только неуправляемые.</param>
-        [SecuritySafeCritical]
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
@@ -869,14 +676,12 @@ namespace System.Security.Cryptography
             [SecuritySafeCritical]
             get
             {
-                //if (_parameters == null)
-                //{
-                //    return null;
-                //}
-                //GetKeyPair();
-                //return new CspKeyContainerInfo(_parameters,
-                //    _randomKeyContainer);
-                throw new PlatformNotSupportedException(SR.Format(SR.Cryptography_CAPI_Required, nameof(CspKeyContainerInfo)));
+                if (_parameters == null)
+                {
+                    return null;
+                }
+                GetKeyPair();
+                return new CspKeyContainerInfo(_parameters, _randomKeyContainer);
             }
         }
 
@@ -1103,12 +908,12 @@ namespace System.Security.Cryptography
         //public override GostSharedSecretAlgorithm CreateAgree(
         //    Gost3410Parameters alg)
         //{
-        //    // TODO: Еще одно дополнительное право доступа!
+        //TODO: Еще одно дополнительное право доступа!
 
-        //    // Получаем собственный ключ.
+        ////Получаем собственный ключ.
         //    GetKeyPair();
 
-        //    // Превращаем его в объект для экспорта.
+        ////Превращаем его в объект для экспорта.
         //    Gost3410CspObject obj1 = new Gost3410CspObject(alg);
 
         //    return new GostSharedSecretCryptoServiceProvider(_safeKeyHandle,
@@ -1135,14 +940,14 @@ namespace System.Security.Cryptography
         //        if (rawData == null)
         //            return null;
         //        X509Certificate2 ret = new X509Certificate2(rawData);
-        //        // Ошибка до сборки 1.0.4015.0 включительно.
-        //        // возвращался сертификат, без обратной привязки на собственный секретный ключ
-        //        // Есть способ просто установить ссылку, через документированный интерфейс:
-        //        // ret.PrivateKey = this;
-        //        // но, во-первых, он излишне долгий, т.к. происходит генерация открытого ключа
-        //        // и проверка соответствия, что делать не требуется так как сертификат
-        //        // уже есть в контейнере.
-        //        // во-вторых, требует обработки исключений при несоответсвии
+        ////Ошибка до сборки 1.0.4015.0 включительно.
+        ////возвращался сертификат, без обратной привязки на собственный секретный ключ
+        ////Есть способ просто установить ссылку, через документированный интерфейс:
+        ////ret.PrivateKey = this;
+        ////но, во-первых, он излишне долгий, т.к. происходит генерация открытого ключа
+        ////и проверка соответствия, что делать не требуется так как сертификат
+        ////уже есть в контейнере.
+        ////во-вторых, требует обработки исключений при несоответсвии
         //        object m_safeCertContext = CPX509Certificate2.SafeCertContextFieldInfo.GetValue(ret);
         //        try
         //        {
@@ -1185,12 +990,12 @@ namespace System.Security.Cryptography
         //[SecuritySafeCritical]
         //public void SetContainerPassword(SecureString password)
         //{
-        //    // Дополнительных прав не требуем.
-        //    // ничего плохого в окне выбора контейнера нет.
-        //    SecurityPermission perm = new SecurityPermission(SecurityPermissionFlag.UnmanagedCode);
-        //    perm.Assert();
-        //    // Специально не документируем поведение при password == null
-        //    // комментарий см. CPUtils.SetPin
+        ////Дополнительных прав не требуем.
+        //ничего плохого в окне выбора контейнера нет.
+        ////    SecurityPermission perm = new SecurityPermission(SecurityPermissionFlag.UnmanagedCode);
+        ////    perm.Assert();
+        ////Специально не документируем поведение при password == null
+        ////комментарий см. CPUtils.SetPin
         //    if (PublicOnly)
         //        throw new CryptographicException(
         //            Resources.Cryptography_CSP_NoPrivateKey);
@@ -1206,8 +1011,8 @@ namespace System.Security.Cryptography
         //[SecuritySafeCritical]
         //public void PreloadContainer()
         //{
-        //    // Дополнительных прав не требуем.
-        //    // ничего плохого в окне выбора контейнера нет.
+        ////Дополнительных прав не требуем.
+        ////ничего плохого в окне выбора контейнера нет.
         //    SecurityPermission perm = new SecurityPermission(SecurityPermissionFlag.UnmanagedCode);
         //    perm.Assert();
         //    if (PublicOnly)
@@ -1235,10 +1040,10 @@ namespace System.Security.Cryptography
         //public static string SelectContainer(bool fullyQualifiedContainerName,
         //    bool machine, IntPtr parent)
         //{
-        //    // Дополнительных прав не требуем.
-        //    // ничего плохого в окне выбора контейнера нет.
-        //    //SecurityPermission perm = new SecurityPermission(SecurityPermissionFlag.UnmanagedCode);
-        //    //perm.Assert();
+        ////Дополнительных прав не требуем.
+        ////ничего плохого в окне выбора контейнера нет.
+        //SecurityPermission perm = new SecurityPermission(SecurityPermissionFlag.UnmanagedCode);
+        //perm.Assert();
         //    return COMCryptography.SelectContainer(fullyQualifiedContainerName,
         //        machine, parent, GostConstants.PROV_GOST_2001_DH);
         //}
@@ -1252,7 +1057,6 @@ namespace System.Security.Cryptography
         /// контейнера.</containerperm>
         /// <containerperm flag="Create">Для создания контейнера с заданным
         /// (не случаыным именем).</containerperm>
-        [SecurityCritical]
         private void GetKeyPair()
         {
 
@@ -1292,14 +1096,11 @@ namespace System.Security.Cryptography
             // WORD reserved    2
             // ALG_ID aiKeyAlg  4
             // DWORD magic      8
-            if (keyBlob == null)
-                throw new ArgumentNullException("keyBlob");
-            if (keyBlob[0] != GostConstants.PUBLICKEYBLOB || keyBlob.Length < 12)
-                return false;
+            if (keyBlob == null) throw new ArgumentNullException("keyBlob");
+            if (keyBlob[0] != GostConstants.PUBLICKEYBLOB || keyBlob.Length < 12) return false;
             byte[] magic = BitConverter.GetBytes(GostConstants.GR3410_1_MAGIC);
-            if (magic[0] != keyBlob[8] || magic[1] != keyBlob[9] ||
-                magic[2] != keyBlob[10] || magic[3] != keyBlob[11])
-                return false;
+            if (magic[0] != keyBlob[8] || magic[1] != keyBlob[9] || magic[2] != keyBlob[10]
+                || magic[3] != keyBlob[11]) return false;
             return true;
         }
 
@@ -1320,5 +1121,16 @@ namespace System.Security.Cryptography
         //    CapiHelper.CryptHashData(this.SafeHashHandle, data, count, 0);
         //    return CapiHelper.EndHash(this.SafeHashHandle);
         //}
+
+        /// <summary>
+        /// This method helps Acquire the default CSP and avoids the need for static SafeProvHandle
+        /// in CapiHelper class
+        /// </summary>
+        private SafeProvHandle AcquireSafeProviderHandle()
+        {
+            SafeProvHandle safeProvHandleTemp;
+            CapiHelper.AcquireCsp(new CspParameters(GostConstants.PROV_GOST_2001_DH), out safeProvHandleTemp);
+            return safeProvHandleTemp;
+        }
     }
 }
