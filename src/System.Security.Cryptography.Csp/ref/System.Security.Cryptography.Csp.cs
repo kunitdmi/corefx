@@ -31,7 +31,8 @@ namespace System.Security.Cryptography
     }
     public sealed partial class CspKeyContainerInfo
     {
-        public CspKeyContainerInfo(System.Security.Cryptography.CspParameters parameters) { }
+        public CspKeyContainerInfo(CspParameters parameters) { }
+        internal CspKeyContainerInfo(System.Security.Cryptography.CspParameters parameters, bool randomKeyContainer) { }
         public bool Accessible { get { throw null; } }
         public bool Exportable { get { throw null; } }
         public bool HardwareDevice { get { throw null; } }

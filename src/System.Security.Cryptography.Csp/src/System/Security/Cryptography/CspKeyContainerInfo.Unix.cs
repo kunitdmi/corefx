@@ -7,6 +7,7 @@ namespace System.Security.Cryptography
     public sealed class CspKeyContainerInfo
     {
         public CspKeyContainerInfo(CspParameters parameters) { throw GetPlatformNotSupported(); }
+        internal CspKeyContainerInfo(CspParameters parameters, bool randomKeyContainer) { throw GetPlatformNotSupported(); }
         public bool Accessible { get { throw GetPlatformNotSupported(); } }
         public bool Exportable { get { throw GetPlatformNotSupported(); } }
         public bool HardwareDevice { get { throw GetPlatformNotSupported(); } }
