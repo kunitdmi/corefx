@@ -58,10 +58,8 @@ namespace Internal.NativeCrypto
 
             if (cspObject == null)
                 throw new ArgumentNullException("cspObject");
-            //!!!!!!
-            //byte[] encodedParameters = cpAsnUtils.EncodeParameters(cspObject, alg);
 
-            byte[] encodedParameters = new byte[1]; //??? временная полная фигня, просто заглушка, работать не будет!!!
+            byte[] encodedParameters = cspObject.EncodeParameters();
 
             byte[] data = new byte[16 + encodedParameters.Length
                 + cspObject._publicKey.Length];
@@ -207,9 +205,20 @@ namespace Internal.NativeCrypto
             byte[] tmp = new byte[data.Length - 16 - keySize / 8];
             Array.Copy(data, 16, tmp, 0, data.Length - 16 - keySize / 8);
 
-            cspObject._publicKey = new byte[keySize / 8];
-            Array.Copy(data, data.Length - keySize / 8,
-                cspObject._publicKey, 0, keySize / 8);
+
+            //#Q_ ToDo убрать волшебные константы (64) заменив на вычисления от длины ключа (предположительно keySize / 8)
+            var publicKeyParameters = new GostKeyExchangeParameters();
+            var encodeKeyParameters = new byte[(data.Length - 16) - 64];
+            Array.Copy(data, 16, encodeKeyParameters, 0, (data.Length - 16) - 64);
+            publicKeyParameters.DecodeParameters(encodeKeyParameters);
+
+            var publicKey = new byte[64];
+            Array.Copy(data, data.Length - 64, publicKey, 0, 64);
+            publicKeyParameters.PublicKey = publicKey;
+
+            cspObject._publicKey = publicKeyParameters.PublicKey;
+            cspObject._publicKeyParamSet = publicKeyParameters.PublicKeyParamSet;
+            cspObject._digestParamSet = publicKeyParameters.DigestParamSet;
         }
 
         /// <summary>

@@ -16,7 +16,7 @@ namespace Internal.Cryptography
         public const string SHA256 = "SHA256";
         public const string SHA384 = "SHA384";
         public const string SHA512 = "SHA512";
-        public const string GOST3411 = "Gost3411";
+        public const string GOST3411 = "GOST R 34.11-94";
 
         private static readonly HashSet<string> s_allNames = CreateAllNames();
 

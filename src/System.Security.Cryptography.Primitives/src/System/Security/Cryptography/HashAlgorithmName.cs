@@ -17,7 +17,7 @@ namespace System.Security.Cryptography
     /// As with CNG, the names are case-sensitive. 
     /// 
     /// Asymmetric Algorithms implemented using other technologies:
-    ///    * Must recognize at least "MD5", "SHA1", "SHA256", "SHA384", "SHA512", "Gost3410".
+    ///    * Must recognize at least "MD5", "SHA1", "SHA256", "SHA384", "SHA512", "Gost3411".
     ///    * Should recognize additional CNG IDs for any other hash algorithms that they also support.
     /// </remarks>
     public readonly struct HashAlgorithmName : IEquatable<HashAlgorithmName>
@@ -48,12 +48,7 @@ namespace System.Security.Cryptography
         /// <summary>
         /// Gets a <see cref="HashAlgorithmName" /> representing "SHA512"
         /// </summary>
-        public static HashAlgorithmName SHA512 { get { return new HashAlgorithmName("SHA512"); } }
-
-        /// <summary>
-        /// Gets a <see cref="HashAlgorithmName" /> representing "Gost3410"
-        /// </summary>
-        public static HashAlgorithmName Gost3410 { get { return new HashAlgorithmName("Gost3410"); } }
+        public static HashAlgorithmName SHA512 { get { return new HashAlgorithmName("SHA512"); } }                                                                                                      
 
         /// <summary>
         /// Gets a <see cref="HashAlgorithmName" /> representing "Gost3410"
