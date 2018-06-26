@@ -287,7 +287,7 @@ namespace System.Security.Cryptography
                 SafeProvHandle,
                 SafeKeyHandle,
                 _keySpec, //2
-                CapiHelper.CALG_RSA_SIGN, //переворачиваем подпись
+                CapiHelper.CALG_RSA_SIGN, //переворачиваем подпись, раньше (Sharpei) переворачивали только в форматтерах
                 GostConstants.CALG_GR3411,
                 rgbHash);
         }
@@ -361,7 +361,7 @@ namespace System.Security.Cryptography
             bool ret = CapiHelper.VerifySign(
                 _safeProvHandle,
                 _safeKeyHandle,
-                CapiHelper.CALG_RSA_SIGN,
+                CapiHelper.CALG_RSA_SIGN, //переворачиваем подпись, раньше (Sharpei) переворачивали только в форматтерах
                 GostConstants.CALG_GR3411,
                 rgbHash,
                 rgbSignature);

@@ -50,7 +50,14 @@ namespace Internal.Cryptography
                 else
                 {
                     _hHash = hHash;
-                    _reusable = true;
+                    // add:sk
+                    if (hashAlgId != "GOST R 34.11-94")
+                    {
+                    // end: sk
+                        _reusable = true;
+                    // add:sk
+                    }
+                    // end: sk
                 }
             }
 

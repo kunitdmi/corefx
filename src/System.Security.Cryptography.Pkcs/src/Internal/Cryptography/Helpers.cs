@@ -54,21 +54,15 @@ namespace Internal.Cryptography
                     return HashAlgorithmName.SHA512;
                 //add: sk
                 case Oids.Gost3411:
-                    return new HashAlgorithmName("GOST R 34.11-94");
-                case Oids.Gost28147:
-                    return new HashAlgorithmName("HMAC GOST 28147-89");
-                case Oids.Gost34112012256:
-                    return new HashAlgorithmName("GR 34.11-2012 256");
-                case Oids.Gost34112012512:
-                    return new HashAlgorithmName("GR 34.11-2012 512");
-                case Oids.Gost3410:
-                    return new HashAlgorithmName("GOST DH 34.10-2001");
-                /*
-                 case Oids.Gost34102012256:
-                    return new HashAlgorithmName("GOST DH 34.10-2012 256");
-                 case Oids.Gost34102012512:
-                    return new HashAlgorithmName("GOST DH 34.10-2012 512");
-                */
+                    return HashAlgorithmName.Gost3411;
+                //case Oids.Gost28147:
+                //    return new HashAlgorithmName("HMAC GOST 28147-89");
+                //case Oids.Gost34112012256:
+                //    return new HashAlgorithmName("GR 34.11-2012 256");
+                //case Oids.Gost34112012512:
+                //    return new HashAlgorithmName("GR 34.11-2012 512");
+                //case Oids.Gost3410:
+                //    return new HashAlgorithmName("GOST DH 34.10-2001");
                 //end: sk 
                 default:
                     throw new CryptographicException(SR.Cryptography_UnknownHashAlgorithm, oidValue);

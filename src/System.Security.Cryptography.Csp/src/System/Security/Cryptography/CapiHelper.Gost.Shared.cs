@@ -206,14 +206,13 @@ namespace Internal.NativeCrypto
             Array.Copy(data, 16, tmp, 0, data.Length - 16 - keySize / 8);
 
 
-            //#Q_ ToDo убрать волшебные константы (64) заменив на вычисления от длины ключа (предположительно keySize / 8)
             var publicKeyParameters = new GostKeyExchangeParameters();
-            var encodeKeyParameters = new byte[(data.Length - 16) - 64];
-            Array.Copy(data, 16, encodeKeyParameters, 0, (data.Length - 16) - 64);
+            var encodeKeyParameters = new byte[(data.Length - 16) - keySize / 8];
+            Array.Copy(data, 16, encodeKeyParameters, 0, (data.Length - 16) - keySize / 8);
             publicKeyParameters.DecodeParameters(encodeKeyParameters);
 
-            var publicKey = new byte[64];
-            Array.Copy(data, data.Length - 64, publicKey, 0, 64);
+            var publicKey = new byte[keySize / 8];
+            Array.Copy(data, data.Length - keySize / 8, publicKey, 0, keySize / 8);
             publicKeyParameters.PublicKey = publicKey;
 
             cspObject._publicKey = publicKeyParameters.PublicKey;
