@@ -127,7 +127,7 @@ namespace Internal.NativeCrypto
     internal static partial class CapiHelper
     {
         /// <summary>
-        /// Helper for RSACryptoServiceProvider.SignData/SignHash apis.
+        /// Helper for Gost3410CryptoServiceProvider.SignData/SignHash apis.
         /// </summary>
         public static byte[] SignValue(SafeProvHandle hProv, SafeKeyHandle hKey, int keyNumber, int calgKey, int calgHash, byte[] hash)
         {
@@ -163,7 +163,7 @@ namespace Internal.NativeCrypto
         /// Find the default provider name to be used in the case that we
         /// were not actually passed in a provider name. The main purpose
         /// of this code is really to deal with the enhanced/default provider
-        /// problems given to us by CAPI.
+        /// problems given to us by CAPILite.
         /// </summary>
         /// <param name="dwType">Type of the provider</param>
         /// <returns>Name of the provider to be used</returns>
@@ -899,18 +899,6 @@ namespace Internal.NativeCrypto
                                         (uint)keySize, out hKey);
             }
 
-            // check that this is indeed an RSA/DSS key.
-            //byte[] algid = CapiHelper.GetKeyParameter(hKey, Constants.CLR_ALGID);
-
-            //int dwAlgId = (algid[0] | (algid[1] << 8) | (algid[2] << 16) | (algid[3] << 24));
-
-            //if ((keyType == CspAlgorithmType.Rsa && dwAlgId != CALG_RSA_KEYX && dwAlgId != CALG_RSA_SIGN) ||
-            //    (keyType == CspAlgorithmType.Dss && dwAlgId != CALG_DSS_SIGN))
-            //{
-            //    hKey.Dispose();
-            //    throw new CryptographicException(SR.Format(SR.Cryptography_CSP_WrongKeySpec, Convert.ToString(keyType)));
-            //}
-
             return hKey;
         }
 
@@ -983,6 +971,30 @@ namespace Internal.NativeCrypto
             if (s == null)
                 throw new ArgumentException(SR.Argument_InvalidValue, nameof(hashAlg));
             return s;
+        }
+
+        /// <summary>
+        /// Helper for Export CSP
+        /// </summary>
+        internal static byte[] ExportKeyBlob(bool includePrivateParameters, SafeKeyHandle safeKeyHandle)
+        {
+            VerifyValidHandle(safeKeyHandle);
+
+            byte[] pbRawData = null;
+            int cbRawData = 0;
+            int dwBlobType = includePrivateParameters ? PRIVATEKEYBLOB : PUBLICKEYBLOB;
+
+            if (!Interop.CryptExportKey(safeKeyHandle, SafeKeyHandle.InvalidHandle, dwBlobType, 0, null, ref cbRawData))
+            {
+                throw new CryptographicException(Marshal.GetLastWin32Error());
+            }
+            pbRawData = new byte[cbRawData];
+
+            if (!Interop.CryptExportKey(safeKeyHandle, SafeKeyHandle.InvalidHandle, dwBlobType, 0, pbRawData, ref cbRawData))
+            {
+                throw new CryptographicException(Marshal.GetLastWin32Error());
+            }
+            return pbRawData;
         }
         //end: SK
 
