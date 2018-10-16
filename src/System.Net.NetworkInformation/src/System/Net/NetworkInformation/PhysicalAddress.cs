@@ -127,10 +127,15 @@ namespace System.Net.NetworkInformation
             }
 
             // Has dashes?
-            if (address.IndexOf('-') >= 0)
+            if (address.Contains('-'))
             {
                 hasDashes = true;
                 buffer = new byte[(address.Length + 1) / 3];
+
+                if ((address.Length + 1) % 3 != 0)
+                {
+                    throw new FormatException(SR.net_bad_mac_address);
+                }
             }
             else
             {

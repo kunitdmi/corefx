@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -18,10 +20,8 @@ namespace System.Runtime.Serialization.Formatters.Tests
 {
     public partial class BinaryFormatterTests : RemoteExecutorTestBase
     {
-        private static unsafe bool Is64Bit => sizeof(void*) == 8;
-
         // On 32-bit we can't test these high inputs as they cause OutOfMemoryExceptions.
-        [ConditionalTheory(nameof(Is64Bit))]
+        [ConditionalTheory(typeof(Environment), nameof(Environment.Is64BitProcess))]
         [InlineData(2 * 6_584_983 - 2)] // previous limit
         [InlineData(2 * 7_199_369 - 2)] // last pre-computed prime number
         public void SerializeHugeObjectGraphs(int limit)
@@ -96,6 +96,12 @@ namespace System.Runtime.Serialization.Formatters.Tests
                     BinaryFormatterHelpers.ToBase64String(obj, FormatterAssemblyStyle.Full));
             }
 
+            // Check if the passed in value in a serialization entry is assignable by the passed in type.
+            if (obj is ISerializable customSerializableObj && HasObjectTypeIntegrity(customSerializableObj))
+            {
+                CheckObjectTypeIntegrity(customSerializableObj);
+            }
+
             SanityCheckBlob(obj, blobs);
 
             // SqlException, ReflectionTypeLoadException and LicenseException aren't deserializable from Desktop --> Core.
@@ -105,7 +111,7 @@ namespace System.Runtime.Serialization.Formatters.Tests
                 var tmpList = new List<TypeSerializableValue>(blobs);
                 tmpList.RemoveAt(1);
 
-                int index = tmpList.FindIndex(b => b.Platform == TargetFrameworkMoniker.netfx461 || b.Platform == TargetFrameworkMoniker.netfx471);
+                int index = tmpList.FindIndex(b => b.Platform.IsNetfxPlatform());
                 if (index >= 0)
                     tmpList.RemoveAt(index);
 
@@ -113,7 +119,7 @@ namespace System.Runtime.Serialization.Formatters.Tests
             }
 
             // We store our framework blobs in index 1
-            int platformBlobIndex = TypeSerializableValue.GetPlatformIndex(blobs);
+            int platformBlobIndex = blobs.GetPlatformIndex();
             for (int i = 0; i < blobs.Length; i++)
             {
                 // Check if the current blob is from the current running platform.
@@ -532,11 +538,40 @@ namespace System.Runtime.Serialization.Formatters.Tests
             Assert.Equal(obj.GetType().GetGenericArguments()[0], objType.GetGenericArguments()[0]);
         }
 
+        private static bool HasObjectTypeIntegrity(ISerializable serializable)
+        {
+            return !PlatformDetection.IsFullFramework ||
+                !(serializable is NotFiniteNumberException);
+        }
+
+        private static void CheckObjectTypeIntegrity(ISerializable serializable)
+        {
+            SerializationInfo testData = new SerializationInfo(serializable.GetType(), new FormatterConverter());
+            serializable.GetObjectData(testData, new StreamingContext(StreamingContextStates.Other));
+
+            foreach (SerializationEntry entry in testData)
+            {
+                if (entry.Value != null)
+                {
+                    Assert.IsAssignableFrom(entry.ObjectType, entry.Value);
+                }
+            }
+        }
+
         private static void SanityCheckBlob(object obj, TypeSerializableValue[] blobs)
         {
             // These types are unstable during serialization and produce different blobs.
             if (obj is WeakReference<Point> ||
-                obj is Collections.Specialized.HybridDictionary)
+                obj is Collections.Specialized.HybridDictionary ||
+                obj is Color)
+            {
+                return;
+            }
+
+            // The blobs aren't identical because of different implementations on Unix vs. Windows.
+            if (obj is Bitmap ||
+                obj is Icon ||
+                obj is Metafile)
             {
                 return;
             }
@@ -549,7 +584,7 @@ namespace System.Runtime.Serialization.Formatters.Tests
             }
 
             // Check if runtime generated blob is the same as the stored one
-            int frameworkBlobNumber = TypeSerializableValue.GetPlatformIndex(blobs);
+            int frameworkBlobNumber = blobs.GetPlatformIndex();
             if (frameworkBlobNumber < blobs.Length)
             {
                 string runtimeBlob = BinaryFormatterHelpers.ToBase64String(obj, FormatterAssemblyStyle.Full);

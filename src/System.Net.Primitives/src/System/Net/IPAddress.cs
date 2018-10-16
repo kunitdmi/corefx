@@ -515,7 +515,7 @@ namespace System.Net
             }
         }
 
-        [Obsolete("This property has been deprecated. It is address family dependent. Please use IPAddress.Equals method to perform comparisons. http://go.microsoft.com/fwlink/?linkid=14202")]
+        [Obsolete("This property has been deprecated. It is address family dependent. Please use IPAddress.Equals method to perform comparisons. https://go.microsoft.com/fwlink/?linkid=14202")]
         public long Address
         {
             get
@@ -608,8 +608,8 @@ namespace System.Net
             int hashCode;
             if (IsIPv6)
             {
-                const int addressAndScopeIdLength = IPAddressParserStatics.IPv6AddressBytes + sizeof(uint);
-                Span<byte> addressAndScopeIdSpan = stackalloc byte[addressAndScopeIdLength];
+                const int AddressAndScopeIdLength = IPAddressParserStatics.IPv6AddressBytes + sizeof(uint);
+                Span<byte> addressAndScopeIdSpan = stackalloc byte[AddressAndScopeIdLength];
 
                 MemoryMarshal.AsBytes(new ReadOnlySpan<ushort>(_numbers)).CopyTo(addressAndScopeIdSpan);
                 Span<byte> scopeIdSpan = addressAndScopeIdSpan.Slice(IPAddressParserStatics.IPv6AddressBytes);

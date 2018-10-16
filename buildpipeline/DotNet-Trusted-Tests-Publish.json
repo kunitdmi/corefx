@@ -90,8 +90,8 @@
         "definitionType": "task"
       },
       "inputs": {
-        "filename": "sync.cmd",
-        "arguments": "-ab -AzureAccount=$(CloudDropAccountName) -AzureToken=$(CloudDropAccessToken) -Container=$(Container) -- /p:\"DownloadDirectory=$(Build.SourcesDirectory)\\$(DownloadDirectory)\" /verbosity:$(MSBuildVerbosity)",
+        "filename": "msbuild",
+        "arguments": "src/syncAzure.proj /flp:v=normal;LogFile=sync.log /p:CloudDropAccountName=$(CloudDropAccountName) /p:CloudDropAccessToken=$(CloudDropAccessToken) /p:ContainerName=$(Container) /p:\"DownloadDirectory=$(Build.SourcesDirectory)\\$(DownloadDirectory)\" /verbosity:$(MSBuildVerbosity)",
         "workingFolder": "",
         "failOnStandardError": "false"
       }
@@ -144,6 +144,7 @@
       "alwaysRun": true,
       "displayName": "run end.ps1",
       "timeoutInMinutes": 0,
+      "condition": "always()",
       "task": {
         "id": "e213ff0f-5d5c-4791-802d-52ea3e7be1f1",
         "versionSpec": "2.*",

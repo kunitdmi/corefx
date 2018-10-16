@@ -23,8 +23,6 @@ namespace System
     /// ReadOnlySpan represents a contiguous region of arbitrary memory. Unlike arrays, it can point to either managed
     /// or native memory, or to memory allocated on the stack. It is type- and memory-safe.
     /// </summary>
-    [DebuggerTypeProxy(typeof(SpanDebugView<>))]
-    [DebuggerDisplay("{ToString(),raw}")]
     [NonVersionable]
     public readonly ref partial struct ReadOnlySpan<T>
     {
@@ -155,7 +153,13 @@ namespace System
         /// It can be used for pinning and is required to support the use of span within a fixed statement.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public unsafe ref readonly T GetPinnableReference() => ref (_length != 0) ? ref _pointer.Value : ref Unsafe.AsRef<T>(null);
+        public unsafe ref readonly T GetPinnableReference()
+        {
+            // Ensure that the native code has just one forward branch that is predicted-not-taken.
+            ref T ret = ref Unsafe.AsRef<T>(null);
+            if (_length != 0) ret = ref _pointer.Value;
+            return ref ret;
+        }
 
         /// <summary>
         /// Copies the contents of this read-only span into destination span. If the source
@@ -167,6 +171,7 @@ namespace System
         /// Thrown when the destination Span is shorter than the source Span.
         /// </exception>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(Span<T> destination)
         {
             // Using "if (!TryCopyTo(...))" results in two branches: one for the length

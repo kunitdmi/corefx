@@ -48,6 +48,7 @@ internal partial class Interop
         internal const int ERROR_PIPE_NOT_CONNECTED = 0xE9;
         internal const int ERROR_MORE_DATA = 0xEA;
         internal const int ERROR_NO_MORE_ITEMS = 0x103;
+        internal const int ERROR_DIRECTORY = 0x10B;
         internal const int ERROR_PARTIAL_COPY = 0x12B;
         internal const int ERROR_ARITHMETIC_OVERFLOW = 0x216;
         internal const int ERROR_PIPE_CONNECTED = 0x217;
@@ -56,6 +57,7 @@ internal partial class Interop
         internal const int ERROR_IO_INCOMPLETE = 0x3E4;
         internal const int ERROR_IO_PENDING = 0x3E5;
         internal const int ERROR_NO_TOKEN = 0x3f0;
+        internal const int ERROR_SERVICE_DOES_NOT_EXIST = 0x424;
         internal const int ERROR_DLL_INIT_FAILED = 0x45A;
         internal const int ERROR_COUNTER_TIMEOUT = 0x461;
         internal const int ERROR_NO_ASSOCIATION = 0x483;
