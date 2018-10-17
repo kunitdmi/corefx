@@ -143,5 +143,13 @@ namespace System.Security.Cryptography
         internal const string secp256r1 = "1.2.840.10045.3.1.7";
         internal const string secp384r1 = "1.3.132.0.34";
         internal const string secp521r1 = "1.3.132.0.35";
+
+        // GOST identifiers
+        //add: sk
+        public const string Gost3410 = "1.2.643.2.2.19";
+        public const string Gost3410EL = "1.2.643.2.2.19";
+        public const string Gost3410_2012_256 = "1.2.643.7.1.1.1.1";
+        public const string Gost3410_2012_512 = "1.2.643.7.1.1.1.2";
+        //end: sk
     }
 }
