@@ -212,6 +212,7 @@ namespace Internal.Cryptography.Pal.Windows
                 AlgId algId = keyAlgorithmOid.ToAlgId();
                 switch (algId)
                 {
+                    case AlgId.CALG_GOST3410:
                     case AlgId.CALG_RSA_KEYX:
                         recipientChoice = CMsgCmsRecipientChoice.CMSG_KEY_TRANS_RECIPIENT;
                         break;
