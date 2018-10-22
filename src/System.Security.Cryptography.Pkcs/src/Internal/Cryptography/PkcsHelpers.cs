@@ -48,6 +48,12 @@ namespace Internal.Cryptography
                     return HashAlgorithmName.SHA384;
                 case Oids.Sha512:
                     return HashAlgorithmName.SHA512;
+                case Oids.Gost3411:
+                    return HashAlgorithmName.Gost3411;
+                case Oids.Gost3411_2012_256:
+                    return HashAlgorithmName.Gost3411_2012_256;
+                case Oids.Gost3411_2012_512:
+                    return HashAlgorithmName.Gost3411_2012_512;
                 default:
                     throw new CryptographicException(SR.Cryptography_UnknownHashAlgorithm, oidValue);
             }
