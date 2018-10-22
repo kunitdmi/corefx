@@ -51,9 +51,24 @@ namespace System.Security.Cryptography
         public static HashAlgorithmName SHA512 { get { return new HashAlgorithmName("SHA512"); } }                                                                                                      
 
         /// <summary>
-        /// Gets a <see cref="HashAlgorithmName" /> representing "Gost3410"
+        /// Gets a <see cref="HashAlgorithmName" /> representing "Gost3411"
         /// </summary>
         public static HashAlgorithmName Gost3411 { get { return new HashAlgorithmName("GOST R 34.11-94"); } }
+
+        /// <summary>
+        /// Gets a <see cref="HashAlgorithmName" /> representing "Gost3411_2012_256"
+        /// </summary>
+        public static HashAlgorithmName Gost3411_2012_256 { get { return new HashAlgorithmName("GR 34.11-2012 256"); } }
+
+        /// <summary>
+        /// Gets a <see cref="HashAlgorithmName" /> representing "Gost3411_2012_512"
+        /// </summary>
+        public static HashAlgorithmName Gost3411_2012_512 { get { return new HashAlgorithmName("GR 34.11-2012 512"); } }
+
+        /// <summary>
+        /// Gets a <see cref="HashAlgorithmName" /> representing "Gost28147"
+        /// </summary>
+        public static HashAlgorithmName Gost28147 { get { return new HashAlgorithmName("GOST 28147-89"); } }
 
         private readonly string _name;
 
