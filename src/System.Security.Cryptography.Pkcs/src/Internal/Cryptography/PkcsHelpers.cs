@@ -65,6 +65,12 @@ namespace Internal.Cryptography
                 return Oids.Sha384;
             if (algName == HashAlgorithmName.SHA512)
                 return Oids.Sha512;
+            if (algName == HashAlgorithmName.Gost3411)
+                return Oids.Gost3411;
+            if (algName == HashAlgorithmName.Gost3411_2012_256)
+                return Oids.Gost3411_2012_256;
+            if (algName == HashAlgorithmName.Gost3411_2012_512)
+                return Oids.Gost3411_2012_512;
 
             throw new CryptographicException(SR.Cryptography_Cms_UnknownAlgorithm, algName.Name);
         }
