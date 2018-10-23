@@ -219,6 +219,8 @@
     <Compile Include="System\Security\Cryptography\CspProviderFlags.cs" />
     <Compile Include="System\Security\Cryptography\Gost3410CryptoServiceProvider.Windows.cs" />
     <Compile Include="System\Security\Cryptography\Gost3410CSPObject.cs" />
+    <Compile Include="System\Security\Cryptography\Gost3411_512_2012CryptoServiceProvider.cs" />
+    <Compile Include="System\Security\Cryptography\Gost3411_256_2012CryptoServiceProvider.cs" />
     <Compile Include="System\Security\Cryptography\Gost3411CryptoServiceProvider.cs" />
     <Compile Include="System\Security\Cryptography\GostConstants.cs" />
     <Compile Include="System\Security\Cryptography\ICspAsymmetricAlgorithm.cs" />
