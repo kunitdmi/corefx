@@ -144,8 +144,10 @@ namespace System.Security.Cryptography
 
             set
             {
-                if (!(value == CipherMode.CBC || value == CipherMode.ECB))
+                //add sk CipherMode.CFB for GOST
+                if (!(value == CipherMode.CBC || value == CipherMode.ECB || value == CipherMode.CFB))
                     throw new CryptographicException(SR.Cryptography_InvalidCipherMode);
+                //add sk 
 
                 ModeValue = value;
             }
