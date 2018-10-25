@@ -685,7 +685,7 @@ namespace System.Security.Cryptography
         public abstract byte[] SignHash(byte[] hash, HashAlgorithmName hashAlgorithm);
         public abstract bool VerifyHash(byte[] hash, byte[] signature, HashAlgorithmName hashAlgorithm);
         protected abstract byte[] HashData(byte[] data, int offset, int count, HashAlgorithmName hashAlgorithm);
-        protected abstract byte[] HashData(IO.Stream data, HashAlgorithmName hashAlgorithm); 
+        protected abstract byte[] HashData(IO.Stream data, HashAlgorithmName hashAlgorithm);
         public virtual bool TryDecrypt(ReadOnlySpan<byte> data, Span<byte> destination, out int bytesWritten) { throw null; }
         public virtual bool TryEncrypt(ReadOnlySpan<byte> data, Span<byte> destination, out int bytesWritten) { throw null; }
         protected virtual bool TryHashData(ReadOnlySpan<byte> data, Span<byte> destination, HashAlgorithmName hashAlgorithm, out int bytesWritten) { throw null; }
@@ -724,6 +724,29 @@ namespace System.Security.Cryptography
         protected Gost3411() { }
         public static new System.Security.Cryptography.Gost3411 Create() { throw null; }
         public static new System.Security.Cryptography.Gost3411 Create(string hashName) { throw null; }
+    }
+
+    public enum GostKeyExchangeExportMethod
+    {
+        GostKeyExport,
+        CryptoProKeyExport
+    }
+
+    public abstract class Gost28147 : SymmetricAlgorithm
+    {
+        protected Gost28147() { }
+
+        public const int DefaultIvSize = 8;
+        public const int DefaultKeySize = 256;
+        public const int DefaultBlockSize = 64;
+        public const int DefaultFeedbackSize = 64;
+        public static readonly KeySizes[] DefaultLegalKeySizes = { };
+        public static readonly KeySizes[] DefaultLegalBlockSizes = { };
+        public static new System.Security.Cryptography.Gost28147 Create() { throw null; }
+        public static new System.Security.Cryptography.Gost28147 Create(string algName) { throw null; }
+        public abstract byte[] ComputeHash(HashAlgorithm hash);
+        public abstract byte[] EncodePrivateKey(System.Security.Cryptography.Gost28147 keyExchangeAlgorithm, System.Security.Cryptography.GostKeyExchangeExportMethod keyExchangeExportMethod);
+        public abstract SymmetricAlgorithm DecodePrivateKey(byte[] encodedKeyExchangeData, System.Security.Cryptography.GostKeyExchangeExportMethod keyExchangeExportMethod);
     }
 
     //end: SK
