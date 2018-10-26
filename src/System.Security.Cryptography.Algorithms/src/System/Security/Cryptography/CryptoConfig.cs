@@ -53,7 +53,7 @@ namespace System.Security.Cryptography
         public static bool AllowOnlyFipsAlgorithms => false;
 
         // Private object for locking instead of locking on a public type for SQL reliability work.
-        private static Object s_InternalSyncObject = new Object();
+        private static object s_InternalSyncObject = new object();
 
         private static Dictionary<string, string> DefaultOidHT
         {
@@ -349,7 +349,7 @@ namespace System.Security.Cryptography
             // throw an exception if we find an invalid name partway through the list.
             foreach (string name in algorithmNames)
             {
-                if (String.IsNullOrEmpty(name))
+                if (string.IsNullOrEmpty(name))
                 {
                     throw new ArgumentException(SR.Cryptography_AddNullOrEmptyName);
                 }
@@ -439,7 +439,7 @@ namespace System.Security.Cryptography
 
             if (args == null)
             {
-                args = new object[] { };
+                args = Array.Empty<object>();
             }
 
             List<MethodBase> candidates = new List<MethodBase>();
@@ -507,7 +507,7 @@ namespace System.Security.Cryptography
             // exception if an invalid name is found further down the array. 
             foreach (string name in oidNames)
             {
-                if (String.IsNullOrEmpty(name))
+                if (string.IsNullOrEmpty(name))
                 {
                     throw new ArgumentException(SR.Cryptography_AddNullOrEmptyName);
                 }

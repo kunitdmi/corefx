@@ -72,7 +72,7 @@ namespace System.Net.Http.Functional.Tests
             }
         }
 
-        [OuterLoop] // TODO: Issue #11345
+        [OuterLoop("Uses external server")]
         [Fact]
         public async Task Automatic_SSLBackendNotSupported_ThrowsPlatformNotSupportedException()
         {
@@ -89,7 +89,7 @@ namespace System.Net.Http.Functional.Tests
             }
         }
 
-        [OuterLoop] // TODO: Issue #11345
+        [OuterLoop("Uses external server")]
         [Fact]
         public async Task Manual_SSLBackendNotSupported_ThrowsPlatformNotSupportedException()
         {
@@ -106,7 +106,7 @@ namespace System.Net.Http.Functional.Tests
             }
         }
 
-        [OuterLoop] // TODO: Issue #11345
+        [OuterLoop("Uses external server")]
         [Fact]
         public void Manual_SendClientCertificateWithClientAuthEKUToRemoteServer_OK()
         {
@@ -139,7 +139,7 @@ namespace System.Net.Http.Functional.Tests
             }, UseSocketsHttpHandler.ToString()).Dispose();
         }
 
-        [OuterLoop] // TODO: Issue #11345
+        [OuterLoop("Uses external server")]
         [Fact]
         public void Manual_SendClientCertificateWithServerAuthEKUToRemoteServer_Forbidden()
         {
@@ -167,7 +167,7 @@ namespace System.Net.Http.Functional.Tests
             }, UseSocketsHttpHandler.ToString()).Dispose();
         }
 
-        [OuterLoop] // TODO: Issue #11345
+        [OuterLoop("Uses external server")]
         [Fact]
         public void Manual_SendClientCertificateWithNoEKUToRemoteServer_OK()
         {
@@ -200,8 +200,8 @@ namespace System.Net.Http.Functional.Tests
             }, UseSocketsHttpHandler.ToString()).Dispose();
         }
 
-        [ActiveIssue(29802, TargetFrameworkMonikers.Uap)]
-        [OuterLoop] // TODO: Issue #11345
+        [ActiveIssue(30056, TargetFrameworkMonikers.Uap)]
+        [OuterLoop("Uses GC and waits for finalizers")]
         [Theory]
         [InlineData(6, false)]
         [InlineData(3, true)]
@@ -279,8 +279,7 @@ namespace System.Net.Http.Functional.Tests
             }, options);
         }
 
-        [ActiveIssue(29802, TargetFrameworkMonikers.Uap)]
-        [OuterLoop] // TODO: Issue #11345
+        [ActiveIssue(30056, TargetFrameworkMonikers.Uap)]
         [Theory]
         [InlineData(ClientCertificateOption.Manual)]
         [InlineData(ClientCertificateOption.Automatic)]
@@ -322,17 +321,11 @@ namespace System.Net.Http.Functional.Tests
 #else
                 if (UseSocketsHttpHandler)
                 {
+                    // Socket Handler is independent of platform curl.
                     return true;
                 }
 
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                {
-                    return false;
-                }
-
-                // For other Unix-based systems it's true if (and only if) the openssl backend
-                // is used with libcurl.
-                return (Interop.Http.GetSslVersionDescription()?.StartsWith(Interop.Http.OpenSsl10Description, StringComparison.OrdinalIgnoreCase) ?? false);
+                return TestHelper.NativeHandlerSupportsSslConfiguration();
 #endif
             }
         }

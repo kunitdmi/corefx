@@ -320,6 +320,26 @@ namespace System.Security.Cryptography
         protected override bool TryHashFinal(Span<byte> destination, out int bytesWritten) { throw null; }
     }
 
+    public sealed partial class Gost3411_256_2012CryptoServiceProvider : Gost3411
+    {
+        protected override void Dispose(bool disposing) { throw null; }
+        public override void Initialize() { throw null; }
+        protected override void HashCore(byte[] array, int ibStart, int cbSize) { throw null; }
+        protected override void HashCore(ReadOnlySpan<byte> source) { throw null; }
+        protected override byte[] HashFinal() { throw null; }
+        protected override bool TryHashFinal(Span<byte> destination, out int bytesWritten) { throw null; }
+    }
+
+    public sealed partial class Gost3411_512_2012CryptoServiceProvider : Gost3411
+    {
+        protected override void Dispose(bool disposing) { throw null; }
+        public override void Initialize() { throw null; }
+        protected override void HashCore(byte[] array, int ibStart, int cbSize) { throw null; }
+        protected override void HashCore(ReadOnlySpan<byte> source) { throw null; }
+        protected override byte[] HashFinal() { throw null; }
+        protected override bool TryHashFinal(Span<byte> destination, out int bytesWritten) { throw null; }
+    }
+
     public sealed class GostKeyExchangeParameters
     {
         public GostKeyExchangeParameters() { }

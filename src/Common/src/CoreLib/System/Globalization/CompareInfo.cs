@@ -107,7 +107,7 @@ namespace System.Globalization
             {
                 throw new ArgumentNullException(nameof(assembly));
             }
-            if (assembly != typeof(Object).Module.Assembly)
+            if (assembly != typeof(object).Module.Assembly)
             {
                 throw new ArgumentException(SR.Argument_OnlyMscorlib);
             }
@@ -134,7 +134,7 @@ namespace System.Globalization
                 throw new ArgumentNullException(name == null ? nameof(name) : nameof(assembly));
             }
 
-            if (assembly != typeof(Object).Module.Assembly)
+            if (assembly != typeof(object).Module.Assembly)
             {
                 throw new ArgumentException(SR.Argument_OnlyMscorlib);
             }
@@ -297,7 +297,7 @@ namespace System.Globalization
 
         public virtual int Compare(string string1, string string2)
         {
-            return (Compare(string1, string2, CompareOptions.None));
+            return Compare(string1, string2, CompareOptions.None);
         }
 
         public virtual int Compare(string string1, string string2, CompareOptions options)
@@ -633,7 +633,7 @@ namespace System.Globalization
         //  IsPrefix
         //
         //  Determines whether prefix is a prefix of string.  If prefix equals
-        //  String.Empty, true is returned.
+        //  string.Empty, true is returned.
         //
         ////////////////////////////////////////////////////////////////////////
         public virtual bool IsPrefix(string source, string prefix, CompareOptions options)
@@ -698,7 +698,7 @@ namespace System.Globalization
         //  IsSuffix
         //
         //  Determines whether suffix is a suffix of string.  If suffix equals
-        //  String.Empty, true is returned.
+        //  string.Empty, true is returned.
         //
         ////////////////////////////////////////////////////////////////////////
         public virtual bool IsSuffix(string source, string suffix, CompareOptions options)
@@ -765,7 +765,7 @@ namespace System.Globalization
         //
         //  Returns the first index where value is found in string.  The
         //  search starts from startIndex and ends at endIndex.  Returns -1 if
-        //  the specified value is not found.  If value equals String.Empty,
+        //  the specified value is not found.  If value equals string.Empty,
         //  startIndex is returned.  Throws IndexOutOfRange if startIndex or
         //  endIndex is less than zero or greater than the length of string.
         //  Throws ArgumentException if value is null.
@@ -939,7 +939,15 @@ namespace System.Globalization
             Debug.Assert(!_invariantMode);
             Debug.Assert(!source.IsEmpty);
             Debug.Assert(!value.IsEmpty);
-            return IndexOfOrdinalCore(source, value, ignoreCase);
+            return IndexOfOrdinalCore(source, value, ignoreCase, fromBeginning: true);
+        }
+
+        internal int LastIndexOfOrdinal(ReadOnlySpan<char> source, ReadOnlySpan<char> value, bool ignoreCase)
+        {
+            Debug.Assert(!_invariantMode);
+            Debug.Assert(!source.IsEmpty);
+            Debug.Assert(!value.IsEmpty);
+            return IndexOfOrdinalCore(source, value, ignoreCase, fromBeginning: false);
         }
 
         internal unsafe int IndexOf(ReadOnlySpan<char> source, ReadOnlySpan<char> value, CompareOptions options)
@@ -947,7 +955,15 @@ namespace System.Globalization
             Debug.Assert(!_invariantMode);
             Debug.Assert(!source.IsEmpty);
             Debug.Assert(!value.IsEmpty);
-            return IndexOfCore(source, value, options, null);
+            return IndexOfCore(source, value, options, null, fromBeginning: true);
+        }
+
+        internal unsafe int LastIndexOf(ReadOnlySpan<char> source, ReadOnlySpan<char> value, CompareOptions options)
+        {
+            Debug.Assert(!_invariantMode);
+            Debug.Assert(!source.IsEmpty);
+            Debug.Assert(!value.IsEmpty);
+            return IndexOfCore(source, value, options, null, fromBeginning: false);
         }
 
         // The following IndexOf overload is mainly used by String.Replace. This overload assumes the parameters are already validated
@@ -1013,7 +1029,7 @@ namespace System.Globalization
         //
         //  Returns the last index where value is found in string.  The
         //  search starts from startIndex and ends at endIndex.  Returns -1 if
-        //  the specified value is not found.  If value equals String.Empty,
+        //  the specified value is not found.  If value equals string.Empty,
         //  endIndex is returned.  Throws IndexOutOfRange if startIndex or
         //  endIndex is less than zero or greater than the length of string.
         //  Throws ArgumentException if value is null.
@@ -1021,7 +1037,7 @@ namespace System.Globalization
         ////////////////////////////////////////////////////////////////////////
 
 
-        public virtual int LastIndexOf(String source, char value)
+        public virtual int LastIndexOf(string source, char value)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -1236,7 +1252,7 @@ namespace System.Globalization
         ////////////////////////////////////////////////////////////////////////
 
 
-        public override bool Equals(Object value)
+        public override bool Equals(object value)
         {
             CompareInfo that = value as CompareInfo;
 
@@ -1263,35 +1279,6 @@ namespace System.Globalization
         public override int GetHashCode()
         {
             return (this.Name.GetHashCode());
-        }
-
-        internal static unsafe int GetIgnoreCaseHash(string source)
-        {
-            Debug.Assert(source != null, "source must not be null");
-
-            // Do not allocate on the stack if string is empty
-            if (source.Length == 0)
-            {
-                return source.GetHashCode();
-            }
-
-            char[] borrowedArr = null;
-            Span<char> span = source.Length <= 255 ?
-                stackalloc char[255] :
-                (borrowedArr = ArrayPool<char>.Shared.Rent(source.Length));
-
-            int charsWritten = source.AsSpan().ToUpperInvariant(span);
-
-            // Slice the array to the size returned by ToUpperInvariant.
-            int hash = Marvin.ComputeHash32(MemoryMarshal.AsBytes(span.Slice(0, charsWritten)), Marvin.DefaultSeed);
-
-            // Return the borrowed array if necessary.
-            if (borrowedArr != null)
-            {
-                ArrayPool<char>.Shared.Return(borrowedArr);
-            }
-
-            return hash;
         }
 
         ////////////////////////////////////////////////////////////////////////
@@ -1335,7 +1322,7 @@ namespace System.Globalization
 
             if (_invariantMode)
             {
-                return ((options & CompareOptions.IgnoreCase) != 0) ? GetIgnoreCaseHash(source) : source.GetHashCode();
+                return ((options & CompareOptions.IgnoreCase) != 0) ? source.GetHashCodeOrdinalIgnoreCase() : source.GetHashCode();
             }
 
             return GetHashCodeOfStringCore(source, options);
@@ -1355,7 +1342,7 @@ namespace System.Globalization
 
             if (options == CompareOptions.OrdinalIgnoreCase)
             {
-                return GetIgnoreCaseHash(source);
+                return source.GetHashCodeOrdinalIgnoreCase();
             }
 
             //

@@ -207,8 +207,17 @@ namespace System.ComponentModel
         public override int GetHashCode() { throw null; }
     }
 }
+namespace System.Reflection
+{
+    public interface ICustomTypeProvider
+    {
+        Type GetCustomType();
+    }
+}
 namespace System.Windows.Input
 {
+    [System.ComponentModel.TypeConverterAttribute("System.Windows.Input.CommandConverter, PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, Custom=null")]
+    [System.Windows.Markup.ValueSerializerAttribute("System.Windows.Input.CommandValueSerializer, PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, Custom=null")]
     public partial interface ICommand
     {
         event System.EventHandler CanExecuteChanged;

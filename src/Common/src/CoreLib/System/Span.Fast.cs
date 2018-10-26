@@ -23,8 +23,6 @@ namespace System
     /// Span represents a contiguous region of arbitrary memory. Unlike arrays, it can point to either managed
     /// or native memory, or to memory allocated on the stack. It is type- and memory-safe.
     /// </summary>
-    [DebuggerTypeProxy(typeof(SpanDebugView<>))]
-    [DebuggerDisplay("{ToString(),raw}")]
     [NonVersionable]
     public readonly ref partial struct Span<T>
     {
@@ -160,7 +158,13 @@ namespace System
         /// It can be used for pinning and is required to support the use of span within a fixed statement.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public unsafe ref T GetPinnableReference() => ref (_length != 0) ? ref _pointer.Value : ref Unsafe.AsRef<T>(null);
+        public unsafe ref T GetPinnableReference()
+        {
+            // Ensure that the native code has just one forward branch that is predicted-not-taken.
+            ref T ret = ref Unsafe.AsRef<T>(null);
+            if (_length != 0) ret = ref _pointer.Value;
+            return ref ret;
+        }
 
         /// <summary>
         /// Clears the contents of this span.
@@ -240,6 +244,7 @@ namespace System
         /// <exception cref="System.ArgumentException">
         /// Thrown when the destination Span is shorter than the source Span.
         /// </exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(Span<T> destination)
         {
             // Using "if (!TryCopyTo(...))" results in two branches: one for the length

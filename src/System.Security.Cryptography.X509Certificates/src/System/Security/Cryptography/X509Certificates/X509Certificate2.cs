@@ -118,6 +118,8 @@ namespace System.Security.Cryptography.X509Certificates
             throw new PlatformNotSupportedException();
         }
 
+        internal new ICertificatePal Pal => (ICertificatePal)base.Pal;
+
         public bool Archived
         {
             get
@@ -204,10 +206,10 @@ namespace System.Security.Cryptography.X509Certificates
                 {
                     switch (GetKeyAlgorithm())
                     {
-                        case Oids.RsaRsa:
+                        case Oids.Rsa:
                             _lazyPrivateKey = Pal.GetRSAPrivateKey();
                             break;
-                        case Oids.DsaDsa:
+                        case Oids.Dsa:
                             _lazyPrivateKey = Pal.GetDSAPrivateKey();
                             break;
                         //add: sk
@@ -216,7 +218,7 @@ namespace System.Security.Cryptography.X509Certificates
                             break;
                         //end: sk
                         default:
-                            // This includes ECDSA, because an Oids.Ecc key can be
+                            // This includes ECDSA, because an Oids.EcPublicKey key can be
                             // many different algorithm kinds, not necessarily with mutual exclusion.
                             //
                             // Plus, .NET Framework only supports RSA and DSA in this property.
@@ -293,9 +295,7 @@ namespace System.Security.Cryptography.X509Certificates
         {
             get
             {
-                byte[] serialNumber = GetSerialNumber();
-                Array.Reverse(serialNumber);
-                return serialNumber.ToHexStringUpper();
+                return GetSerialNumberString();
             }
         }
 
@@ -332,8 +332,7 @@ namespace System.Security.Cryptography.X509Certificates
         {
             get
             {
-                byte[] thumbPrint = GetCertHash();
-                return thumbPrint.ToHexStringUpper();
+                return GetCertHashString();
             }
         }
 

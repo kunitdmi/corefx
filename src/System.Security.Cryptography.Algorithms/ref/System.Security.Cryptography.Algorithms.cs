@@ -13,6 +13,30 @@ namespace System.Security.Cryptography
         public static new System.Security.Cryptography.Aes Create() { throw null; }
         public static new System.Security.Cryptography.Aes Create(string algorithmName) { throw null; }
     }
+    public sealed class AesGcm : IDisposable
+    {
+        public AesGcm(ReadOnlySpan<byte> key) { }
+        public AesGcm(byte[] key) { }
+        public static KeySizes TagByteSizes { get => throw null; }
+        public static KeySizes NonceByteSizes { get => throw null; }
+        public void Encrypt(ReadOnlySpan<byte> nonce, ReadOnlySpan<byte> plaintext, Span<byte> ciphertext, Span<byte> tag, ReadOnlySpan<byte> associatedData = default) => throw null;
+        public void Encrypt(byte[] nonce, byte[] plaintext, byte[] ciphertext, byte[] tag, byte[] associatedData = null) => throw null;
+        public void Decrypt(ReadOnlySpan<byte> nonce, ReadOnlySpan<byte> ciphertext, ReadOnlySpan<byte> tag, Span<byte> plaintext, ReadOnlySpan<byte> associatedData = default) => throw null;
+        public void Decrypt(byte[] nonce, byte[] ciphertext, byte[] tag, byte[] plaintext, byte[] associatedData = default) => throw null;
+        public void Dispose() { }
+    }
+    public sealed class AesCcm : IDisposable
+    {
+        public AesCcm(ReadOnlySpan<byte> key) { }
+        public AesCcm(byte[] key) { }
+        public static KeySizes TagByteSizes { get => throw null; }
+        public static KeySizes NonceByteSizes { get => throw null; }
+        public void Encrypt(ReadOnlySpan<byte> nonce, ReadOnlySpan<byte> plaintext, Span<byte> ciphertext, Span<byte> tag, ReadOnlySpan<byte> associatedData = default) => throw null;
+        public void Encrypt(byte[] nonce, byte[] plaintext, byte[] ciphertext, byte[] tag, byte[] associatedData = null) => throw null;
+        public void Decrypt(ReadOnlySpan<byte> nonce, ReadOnlySpan<byte> ciphertext, ReadOnlySpan<byte> tag, Span<byte> plaintext, ReadOnlySpan<byte> associatedData = default) => throw null;
+        public void Decrypt(byte[] nonce, byte[] ciphertext, byte[] tag, byte[] plaintext, byte[] associatedData = default) => throw null;
+        public void Dispose() { }
+    }
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public sealed partial class AesManaged : System.Security.Cryptography.Aes
     {
@@ -661,7 +685,7 @@ namespace System.Security.Cryptography
         public abstract byte[] SignHash(byte[] hash, HashAlgorithmName hashAlgorithm);
         public abstract bool VerifyHash(byte[] hash, byte[] signature, HashAlgorithmName hashAlgorithm);
         protected abstract byte[] HashData(byte[] data, int offset, int count, HashAlgorithmName hashAlgorithm);
-        protected abstract byte[] HashData(IO.Stream data, HashAlgorithmName hashAlgorithm); 
+        protected abstract byte[] HashData(IO.Stream data, HashAlgorithmName hashAlgorithm);
         public virtual bool TryDecrypt(ReadOnlySpan<byte> data, Span<byte> destination, out int bytesWritten) { throw null; }
         public virtual bool TryEncrypt(ReadOnlySpan<byte> data, Span<byte> destination, out int bytesWritten) { throw null; }
         protected virtual bool TryHashData(ReadOnlySpan<byte> data, Span<byte> destination, HashAlgorithmName hashAlgorithm, out int bytesWritten) { throw null; }
@@ -700,6 +724,29 @@ namespace System.Security.Cryptography
         protected Gost3411() { }
         public static new System.Security.Cryptography.Gost3411 Create() { throw null; }
         public static new System.Security.Cryptography.Gost3411 Create(string hashName) { throw null; }
+    }
+
+    public enum GostKeyExchangeExportMethod
+    {
+        GostKeyExport,
+        CryptoProKeyExport
+    }
+
+    public abstract class Gost28147 : SymmetricAlgorithm
+    {
+        protected Gost28147() { }
+
+        public const int DefaultIvSize = 8;
+        public const int DefaultKeySize = 256;
+        public const int DefaultBlockSize = 64;
+        public const int DefaultFeedbackSize = 64;
+        public static readonly KeySizes[] DefaultLegalKeySizes = { };
+        public static readonly KeySizes[] DefaultLegalBlockSizes = { };
+        public static new System.Security.Cryptography.Gost28147 Create() { throw null; }
+        public static new System.Security.Cryptography.Gost28147 Create(string algName) { throw null; }
+        public abstract byte[] ComputeHash(HashAlgorithm hash);
+        public abstract byte[] EncodePrivateKey(System.Security.Cryptography.Gost28147 keyExchangeAlgorithm, System.Security.Cryptography.GostKeyExchangeExportMethod keyExchangeExportMethod);
+        public abstract SymmetricAlgorithm DecodePrivateKey(byte[] encodedKeyExchangeData, System.Security.Cryptography.GostKeyExchangeExportMethod keyExchangeExportMethod);
     }
 
     //end: SK

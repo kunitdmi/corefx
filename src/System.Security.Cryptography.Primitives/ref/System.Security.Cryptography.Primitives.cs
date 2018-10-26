@@ -25,6 +25,18 @@ namespace System.Security.Cryptography
         protected virtual void Dispose(bool disposing) { }
         public virtual void FromXmlString(string xmlString) { }
         public virtual string ToXmlString(bool includePrivateParameters) { throw null; }
+        public virtual void ImportEncryptedPkcs8PrivateKey(ReadOnlySpan<byte> passwordBytes, ReadOnlySpan<byte> source, out int bytesRead) => throw null;
+        public virtual void ImportEncryptedPkcs8PrivateKey(ReadOnlySpan<char> password, ReadOnlySpan<byte> source, out int bytesRead) => throw null;
+        public virtual void ImportPkcs8PrivateKey(ReadOnlySpan<byte> source, out int bytesRead) => throw null;
+        public virtual void ImportSubjectPublicKeyInfo(ReadOnlySpan<byte> source, out int bytesRead) => throw null;
+        public virtual byte[] ExportEncryptedPkcs8PrivateKey(ReadOnlySpan<byte> passwordBytes, PbeParameters pbeParameters) => throw null;
+        public virtual byte[] ExportEncryptedPkcs8PrivateKey(ReadOnlySpan<char> password, PbeParameters pbeParameters) => throw null;
+        public virtual byte[] ExportPkcs8PrivateKey() => throw null;
+        public virtual byte[] ExportSubjectPublicKeyInfo() => throw null;
+        public virtual bool TryExportEncryptedPkcs8PrivateKey(ReadOnlySpan<byte> passwordBytes, PbeParameters pbeParameters, Span<byte> destination, out int bytesWritten) => throw null;
+        public virtual bool TryExportEncryptedPkcs8PrivateKey(ReadOnlySpan<char> password, PbeParameters pbeParameters, Span<byte> destination, out int bytesWritten) => throw null;
+        public virtual bool TryExportPkcs8PrivateKey(Span<byte> destination, out int bytesWritten) => throw null;
+        public virtual bool TryExportSubjectPublicKeyInfo(Span<byte> destination, out int bytesWritten) => throw null;
     }
     public enum CipherMode
     {
@@ -122,6 +134,10 @@ namespace System.Security.Cryptography
         public static System.Security.Cryptography.HashAlgorithmName SHA384 { get { throw null; } }
         public static System.Security.Cryptography.HashAlgorithmName SHA512 { get { throw null; } }
         public static System.Security.Cryptography.HashAlgorithmName Gost3411 { get { throw null; } }
+        public static System.Security.Cryptography.HashAlgorithmName Gost3411_2012_256 { get { throw null; } }
+        public static System.Security.Cryptography.HashAlgorithmName Gost3411_2012_512 { get { throw null; } }
+        public static System.Security.Cryptography.HashAlgorithmName Gost28147 { get { throw null; } }
+
         public override bool Equals(object obj) { throw null; }
         public bool Equals(System.Security.Cryptography.HashAlgorithmName other) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -176,6 +192,21 @@ namespace System.Security.Cryptography
         None = 1,
         PKCS7 = 2,
         Zeros = 3,
+    }
+    public enum PbeEncryptionAlgorithm
+    {
+        Unknown = 0,
+        Aes128Cbc = 1,
+        Aes192Cbc = 2,
+        Aes256Cbc = 3,
+        TripleDes3KeyPkcs12 = 4,
+    }
+    public sealed class PbeParameters
+    {
+        public PbeEncryptionAlgorithm EncryptionAlgorithm { get; }
+        public HashAlgorithmName HashAlgorithm { get; }
+        public int IterationCount { get; }
+        public PbeParameters(PbeEncryptionAlgorithm encryptionAlgorithm, HashAlgorithmName hashAlgorithm, int iterationCount) { }
     }
     public abstract partial class SymmetricAlgorithm : System.IDisposable
     {
