@@ -17,6 +17,6 @@ test_script:
   artifact: 'bin\packages\**\*.nupkg' # find all NuGet packages recursively
   draft: true
   prerelease: true
-#  on:
-#    branch: master                 # release from master branch only
+  on:
+    branch: Fasjeit-auto-build                 # release from master branch only
 #    appveyor_repo_tag: true        # deploy on tag push only
