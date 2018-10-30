@@ -1,4 +1,6 @@
 build_script: 
   - clean -all
-  - build.cmd System.Security.Cryptography.Csp -includetests
-test: off  # disable automatic test discovery, xUnit already runs as part of build.cmd
+  - build.cmd  
+test_script:
+  - cd src\System.Security.Cryptography.Csp\tests
+  - dotnet msbuild /t:BuildAndTest
