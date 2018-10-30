@@ -18,14 +18,15 @@ build_script:
   
 # runnng specified tests  
 test_script:
+  - cd .dotnet\
   - dotnet --info
-  - dotnet msbuild /t:BuildAndTest src\Common\tests\
-  - dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Algorithms\tests\
-  - dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Primitives\tests\
-  - dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Csp\tests\
-  - dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.X509Certificates\tests\
-  - dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Pkcs\tests\
-  - dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Xml\tests\
+  - dotnet msbuild /t:BuildAndTest ..\src\Common\tests\
+  - dotnet msbuild /t:BuildAndTest ..\src\System.Security.Cryptography.Algorithms\tests\
+  - dotnet msbuild /t:BuildAndTest ..\src\System.Security.Cryptography.Primitives\tests\
+  - dotnet msbuild /t:BuildAndTest ..\src\System.Security.Cryptography.Csp\tests\
+  - dotnet msbuild /t:BuildAndTest ..\src\System.Security.Cryptography.X509Certificates\tests\
+  - dotnet msbuild /t:BuildAndTest ..\src\System.Security.Cryptography.Pkcs\tests\
+  - dotnet msbuild /t:BuildAndTest ..\src\System.Security.Cryptography.Xml\tests\
  
 # artifacts on succesfull build 
 #artifacts:
