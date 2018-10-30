@@ -1,5 +1,2 @@
-branches:
-  only:
-- Fasjeit-auto-build
 build_script: build.cmd System.Security.Cryptography.Csp -includetests
 test: off  # disable automatic test discovery, xUnit already runs as part of build.cmd
