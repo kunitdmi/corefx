@@ -51,3 +51,4 @@ deploy:
 on_finish:
   # pushing all *.nupkg files in build directory recursively
 - ps: Get-ChildItem "bin\packages\**\*.nupkg" | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+- ps: Get-ChildItem "bin\packages\**\symbols\*.nupkg" | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
