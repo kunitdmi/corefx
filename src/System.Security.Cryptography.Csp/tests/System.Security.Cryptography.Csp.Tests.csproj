@@ -10,6 +10,7 @@
     <Compile Include="RSACryptoServiceProviderBackCompat.cs" />
     <Compile Include="RSACryptoServiceProviderProvider.cs" />
     <Compile Include="RSACryptoServiceProviderTests.cs" />
+    <Compile Include="Gost3411CryptoServiceProviderTests.cs" />
     <Compile Include="ShimHelpers.cs" />
     <Compile Include="$(CommonTestPath)\System\Security\Cryptography\ByteUtils.cs">
       <Link>CommonTest\System\Security\Cryptography\ByteUtils.cs</Link>
