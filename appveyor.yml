@@ -25,24 +25,26 @@ test_script:
   - dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Pkcs\tests\
   - dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Xml\tests\
  
- 
-artifacts:
-  # pushing all *.nupkg files in build directory recursively
-  - path: '**\*.nupkg'
+# artifacts on succesfull build 
+#artifacts:
+#  - path: '**\*.nupkg'
  
 # deploy result
-
 deploy:
   release: myproduct-v$(appveyor_build_version)
   description: 'Release description'
   provider: GitHub
   auth_token:
     secure: AgLJJ7atvqq1zjQuSLvVlFxMFj5bc6MujZhmPWqgMrkuXnmCkRJWhDoTxniXoHIK # your encrypted token from GitHub
-  artifact: /.*\.nupkg/            # upload all NuGet packages to release assets
-  draft: false
-  prerelease: false
+  artifact: "**\*.nupkg"            # upload all NuGet packages to release assets
+  draft: true
+  prerelease: true
   on:
     branch: 
       - master                 # release from master branch only
       - Fasjeit-auto-build
     appveyor_repo_tag: false        # deploy not only on tag push
+    
+on_finish:
+  # pushing all *.nupkg files in build directory recursively
+- ps: Get-ChildItem "**\*.nupkg" | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
