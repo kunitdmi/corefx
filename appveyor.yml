@@ -26,6 +26,10 @@ test_script:
   - dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Xml\tests\
  
  
+artifacts:
+  # pushing all *.nupkg files in build directory recursively
+  - path: '**\*.nupkg'
+ 
 # deploy result
 
 deploy:
@@ -41,4 +45,4 @@ deploy:
     branch: 
       - master                 # release from master branch only
       - Fasjeit-auto-build
-    appveyor_repo_tag: true        # deploy on tag push only
+    appveyor_repo_tag: false        # deploy not only on tag push
