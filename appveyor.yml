@@ -17,15 +17,15 @@ build_script:
   - build.cmd  
   
 # runnng specified tests  
-test_script:
-  - .dotnet\dotnet --info
-  - .dotnet\dotnet msbuild /t:BuildAndTest src\Common\tests\
-  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Algorithms\tests\
-  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Primitives\tests\
-  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Csp\tests\
-  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.X509Certificates\tests\
-  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Pkcs\tests\
-  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Xml\tests\
+#test_script:
+#  - .dotnet\dotnet --info
+#  - .dotnet\dotnet msbuild /t:BuildAndTest src\Common\tests\
+#  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Algorithms\tests\
+#  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Primitives\tests\
+#  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Csp\tests\
+#  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.X509Certificates\tests\
+#  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Pkcs\tests\
+#  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Xml\tests\
  
 # artifacts on succesfull build 
 #artifacts:
@@ -45,7 +45,7 @@ deploy:
     branch: 
       - master                 # release from master branch only
       - Fasjeit-auto-build
-    appveyor_repo_tag: false        # deploy not only on tag push
+    appveyor_repo_tag: true        # deploy only on tag push
     
 on_finish:
   # pushing all *.nupkg files in build directory recursively
