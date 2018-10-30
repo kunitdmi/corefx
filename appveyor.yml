@@ -2,5 +2,22 @@ build_script:
   - clean -all
   - build.cmd  
 test_script:
-  - cd src\System.Security.Cryptography.Csp\tests
-  - dotnet msbuild /t:BuildAndTest
+  - dotnet msbuild /t:BuildAndTest src\Common\tests\
+  - dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Algorithms\tests\
+  - dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Primitives\tests\
+  - dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.X509Certificates\tests\
+  - dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Pkcs\tests\
+  - dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Xml\tests\
+ 
+ deploy:
+  release: myproduct-v$(appveyor_build_version)
+  description: 'Corefx with GOST algorithm support'
+  provider: GitHub
+  auth_token:
+    secure: AgLJJ7atvqq1zjQuSLvVlFxMFj5bc6MujZhmPWqgMrkuXnmCkRJWhDoTxniXoHIK # your encrypted token from GitHub
+  artifact: 'bin\packages\**\*.nupkg' # find all NuGet packages recursively
+  draft: true
+  prerelease: true
+#  on:
+#    branch: master                 # release from master branch only
+#    appveyor_repo_tag: true        # deploy on tag push only
