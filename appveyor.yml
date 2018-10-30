@@ -1,0 +1,57 @@
+# version format
+version: 1.0.{build}
+
+# branches to build
+branches:
+  # whitelist
+  only:
+    - master
+    
+# Build worker image (VM template)
+image: Visual Studio 2017
+
+# build script logic
+build_script: 
+  - clean -all
+  - build.cmd  
+
+# disable automatic test discovery, xUnit already runs as part of build.cmd
+test: off
+  
+# runnng specified tests  
+#test_script:
+#  - .dotnet\dotnet --info
+#  - .dotnet\dotnet msbuild /t:BuildAndTest src\Common\tests\
+#  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Algorithms\tests\
+#  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Primitives\tests\
+#  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Csp\tests\
+#  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.X509Certificates\tests\
+#  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Pkcs\tests\
+#  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Xml\tests\
+ 
+# artifacts on succesfull build 
+artifacts:
+  - path: bin\packages\**\*.nupkg
+    name: packages
+ 
+# deploy result
+deploy:
+  release: $(APPVEYOR_REPO_TAG_NAME)
+  tag: $(APPVEYOR_REPO_TAG_NAME)
+  description: $(APPVEYOR_REPO_COMMIT_MESSAGE)
+  provider: GitHub
+  auth_token:
+    secure: AgLJJ7atvqq1zjQuSLvVlFxMFj5bc6MujZhmPWqgMrkuXnmCkRJWhDoTxniXoHIK # your encrypted token from GitHub
+  artifact: packages
+  draft: true
+  prerelease: true
+  on:
+    #branch: 
+    #  - master                 # release from master branch only
+    #  - Fasjeit-auto-build
+    appveyor_repo_tag: true        # deploy only on tag push
+    
+#on_finish:
+  # pushing all *.nupkg files in build directory recursively
+#- ps: Get-ChildItem "bin\packages\**\*.nupkg" | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+#- ps: Get-ChildItem "bin\packages\**\symbols\*.nupkg" | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
