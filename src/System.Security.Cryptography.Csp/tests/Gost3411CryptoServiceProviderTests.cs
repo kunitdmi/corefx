@@ -5,9 +5,11 @@
 using Test.Cryptography;
 using Xunit;
 
-namespace System.Security.Cryptography.Encryption.SHA1.Tests
+namespace System.Security.Cryptography.Encryption.Gost3411.Tests
 {
     using System.Linq;
+
+    using Gost3411 = System.Security.Cryptography.Gost3411;
 
     /// <summary>
     /// Since SHAxCryptoServiceProvider types wraps IncrementalHash from Algorithms assembly, we only test minimally here.
