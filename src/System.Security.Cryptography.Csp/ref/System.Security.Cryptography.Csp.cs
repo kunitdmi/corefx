@@ -301,6 +301,8 @@ namespace System.Security.Cryptography
 
         protected override byte[] HashData(byte[] data, int offset, int count, HashAlgorithmName hashAlgorithm) { throw null; }
         protected override byte[] HashData(Stream data, HashAlgorithmName hashAlgorithm) { throw null; }
+
+        public override byte[] SignHash(byte[] hash) { throw null; }
         public override byte[] SignHash(byte[] hash, HashAlgorithmName hashAlgorithm) { throw null; }
         public byte[] ExportCspBlob(bool includePrivateParameters) { throw null; }
         public void ImportCspBlob(byte[] rawData) { throw null; }

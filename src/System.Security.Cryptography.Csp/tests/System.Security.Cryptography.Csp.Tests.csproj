@@ -6,6 +6,7 @@
   <ItemGroup>
     <Compile Include="CreateTransformCompat.cs" />
     <Compile Include="CspParametersTests.cs" />
+    <Compile Include="Gost3410CryptoServiceProviderTests.cs" />
     <Compile Include="RSAImportExportCspBlobTests.cs" />
     <Compile Include="RSACryptoServiceProviderBackCompat.cs" />
     <Compile Include="RSACryptoServiceProviderProvider.cs" />

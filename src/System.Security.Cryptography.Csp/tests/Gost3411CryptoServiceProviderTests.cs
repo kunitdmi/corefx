@@ -59,22 +59,5 @@ namespace System.Security.Cryptography.Encryption.Gost3411.Tests
             Gost3411 gost = Gost3411.Create("GOST3411");
             gost.ComputeHash(gost.ComputeHash(bytesToHash));
         }
-
-        private void Verify<T>(string rawText, string expected) where T:HashAlgorithm, new()
-        {
-            byte[] inputBytes = ByteUtils.AsciiBytes(rawText);
-            byte[] expectedBytes = ByteUtils.HexToByteArray(expected);
-
-            using (HashAlgorithm hash = new T())
-            {
-                Assert.True(hash.HashSize > 0);
-                byte[] actual = hash.ComputeHash(inputBytes, 0, inputBytes.Length);
-
-                Assert.Equal(expectedBytes, actual);
-
-                actual = hash.Hash;
-                Assert.Equal(expectedBytes, actual);
-            }
-        }
     }
 }

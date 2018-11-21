@@ -271,7 +271,7 @@ namespace System.Security.Cryptography
             return SignHash(rgbHash);
         }
 
-        private byte[] SignHash(byte[] rgbHash)
+        public override byte[] SignHash(byte[] rgbHash)
         {
             if (rgbHash == null) throw new ArgumentNullException(nameof(rgbHash));
             if (PublicOnly) throw new CryptographicException(SR.Cryptography_CSP_NoPrivateKey);
@@ -279,8 +279,9 @@ namespace System.Security.Cryptography
             if (rgbHash.Length != (GostConstants.GOST3411_SIZE / 8))
             {
                 throw new CryptographicException(
-                    SR.Cryptography_InvalidHashSize,
-                    string.Format("{0} - {1}", "GOST3411", GostConstants.GOST3411_SIZE / 8));
+                    string.Format(
+                        SR.Cryptography_InvalidHashSize,
+                        "GOST3411", GostConstants.GOST3411_SIZE / 8));
             }
             GetKeyPair();
             return CapiHelper.SignValue(
@@ -353,8 +354,9 @@ namespace System.Security.Cryptography
             if (rgbHash.Length != (GostConstants.GOST3411_SIZE / 8))
             {
                 throw new CryptographicException(
-                    SR.Cryptography_InvalidHashSize,
-                    string.Format("{0} - {1}", "GOST3411", GostConstants.GOST3411_SIZE / 8));
+                    string.Format(
+                        SR.Cryptography_InvalidHashSize,
+                        GostConstants.GOST3411_SIZE / 8));
             }
 
             GetKeyPair();

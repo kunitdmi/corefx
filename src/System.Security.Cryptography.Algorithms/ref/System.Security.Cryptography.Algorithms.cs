@@ -682,6 +682,7 @@ namespace System.Security.Cryptography
         public abstract void ImportParameters(Gost3410Parameters parameters);
         public virtual byte[] Encrypt(byte[] data) { throw null; }
         public virtual byte[] Decrypt(byte[] data) { throw null; }
+        public abstract byte[] SignHash(byte[] hash);
         public abstract byte[] SignHash(byte[] hash, HashAlgorithmName hashAlgorithm);
         public abstract bool VerifyHash(byte[] hash, byte[] signature, HashAlgorithmName hashAlgorithm);
         protected abstract byte[] HashData(byte[] data, int offset, int count, HashAlgorithmName hashAlgorithm);

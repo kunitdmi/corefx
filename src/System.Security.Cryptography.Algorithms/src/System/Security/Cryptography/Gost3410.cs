@@ -9,13 +9,13 @@ namespace System.Security.Cryptography
 {
     public abstract partial class Gost3410 : AsymmetricAlgorithm
     {
-        public static new Gost3410 Create()
+        public new static Gost3410 Create()
         {
             // Пока нету реализций возвращаем просто из CryptoConfig
             return (Gost3410)CryptoConfig.CreateFromName(typeof(Gost3410).Name);
         }
 
-        public static new Gost3410 Create(string algName)
+        public new static Gost3410 Create(string algName)
         {
             return (Gost3410)CryptoConfig.CreateFromName(algName);
         }
@@ -57,6 +57,7 @@ namespace System.Security.Cryptography
         public abstract void ImportParameters(Gost3410Parameters parameters);
         public virtual byte[] Encrypt(byte[] data) => throw DerivedClassMustOverride();
         public virtual byte[] Decrypt(byte[] data) => throw DerivedClassMustOverride();
+        public abstract byte[] SignHash(byte[] hash);
         public abstract byte[] SignHash(byte[] hash, HashAlgorithmName hashAlgorithm);//=> throw DerivedClassMustOverride();
         public abstract bool VerifyHash(byte[] hash, byte[] signature, HashAlgorithmName hashAlgorithm);// => throw DerivedClassMustOverride();
 
@@ -267,7 +268,7 @@ namespace System.Security.Cryptography
                 }
             }
         }
-
+        // #Q_
         public override string KeyExchangeAlgorithm => "Gost3410"; //???
         public override string SignatureAlgorithm => "Gost3410"; //???
 
