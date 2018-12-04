@@ -122,9 +122,23 @@ namespace Internal.NativeCrypto
         private static void CreateCSP(CspParameters parameters, bool randomKeyContainer, out SafeProvHandle safeProvHandle)
         {
             uint dwFlags = (uint)CryptAcquireContextFlags.CRYPT_NEWKEYSET;
-            if (randomKeyContainer)
+            switch (parameters.ProviderType)
             {
-                dwFlags |= (uint)CryptAcquireContextFlags.CRYPT_VERIFYCONTEXT;
+                case (int)CspAlgorithmType.PROV_GOST_2001_DH:
+                case (int)CspAlgorithmType.PROV_GOST_2012_256:
+                case (int)CspAlgorithmType.PROV_GOST_2012_512:
+                {
+                    // Gost does not support creating and using new keys in CRYPT_VERIFYCONTEXT
+                    break;
+                }
+                default:
+                {
+                    if (randomKeyContainer)
+                    {
+                        dwFlags |= (uint)CryptAcquireContextFlags.CRYPT_VERIFYCONTEXT;
+                    }
+                    break;
+                }
             }
 
             SafeProvHandle hProv;
@@ -291,7 +305,10 @@ namespace Internal.NativeCrypto
                 if (IsFlagBitSet((uint)parameters.Flags, (uint)CspProviderFlags.UseExistingKey) ||
                                                         ((hr != (uint)CryptKeyError.NTE_KEYSET_NOT_DEF && hr !=
                                                         (uint)CryptKeyError.NTE_BAD_KEYSET && hr !=
-                                                        (uint)CryptKeyError.NTE_FILENOTFOUND)))
+                                                        (uint)CryptKeyError.NTE_FILENOTFOUND && hr !=
+                                                        // add: sk
+                                                        unchecked((uint)GostConstants.SCARD_W_CANCELLED_BY_USER))))
+                                                        // end: sk
                 {
                     throw ((int)hr).ToCryptographicException();
                 }
@@ -673,7 +690,7 @@ namespace Internal.NativeCrypto
         {
             CspParameters parameters;
             //add: sk
-            if (userParameters != null && userParameters.ProviderType !=(int)keyType )
+            if (userParameters != null && userParameters.ProviderType != (int)keyType)
             {
                 switch (keyType)
                 {
@@ -683,7 +700,7 @@ namespace Internal.NativeCrypto
                     case CspAlgorithmType.PROV_GOST_2001_DH:
                     case CspAlgorithmType.PROV_GOST_2012_256:
                     case CspAlgorithmType.PROV_GOST_2012_512:
-                        userParameters.ProviderType = (int) keyType;
+                        userParameters.ProviderType = (int)keyType;
                         break;
                     case CspAlgorithmType.Rsa:
                     default:
@@ -718,41 +735,30 @@ namespace Internal.NativeCrypto
                 ValidateCspFlags(userParameters.Flags);
                 parameters = new CspParameters(userParameters);
             }
-            //add: sk Желательно переписать на более удобоваримую конструкцию
-            if (parameters.KeyNumber == -1 && (keyType != CspAlgorithmType.PROV_GOST_2001_DH))
-            //end: sk
+
+            if (parameters.KeyNumber == -1)
             {
-                parameters.KeyNumber = keyType == CapiHelper.CspAlgorithmType.Dss ? (int)KeyNumber.Signature : (int)KeyNumber.Exchange;
+                // if gost goes here it ends with KeyNumber.Exchange
+                parameters.KeyNumber = keyType == CapiHelper.CspAlgorithmType.Dss
+                                           ? (int)KeyNumber.Signature
+                                           : (int)KeyNumber.Exchange;
             }
-            else if (parameters.KeyNumber == CALG_DSS_SIGN || parameters.KeyNumber == CALG_RSA_SIGN)
+            else if (parameters.KeyNumber == CALG_DSS_SIGN || 
+                     parameters.KeyNumber == CALG_RSA_SIGN ||
+                     parameters.KeyNumber == GostConstants.CALG_GR3410EL ||
+                     parameters.KeyNumber == GostConstants.CALG_GR3410_12_256 ||
+                     parameters.KeyNumber == GostConstants.CALG_GR3410_12_256)
             {
                 parameters.KeyNumber = (int)KeyNumber.Signature;
             }
-            else if (parameters.KeyNumber == CALG_RSA_KEYX)
+            else if (parameters.KeyNumber == CALG_RSA_KEYX ||
+                     parameters.KeyNumber == GostConstants.CALG_DH_EL_SF ||
+                     parameters.KeyNumber == GostConstants.CALG_DH_EL_SF ||
+                     parameters.KeyNumber == GostConstants.CALG_DH_GR3410_12_512_SF)
             {
                 parameters.KeyNumber = (int)KeyNumber.Exchange;
             }
-            //add: sk
-            else if (parameters.KeyNumber == -1)
-            {
-                if (keyType == CspAlgorithmType.PROV_GOST_2001_DH)
-                {
-                    parameters.KeyNumber = GostConstants.CALG_GR3410EL;
-                }
-                else if (keyType == CspAlgorithmType.PROV_GOST_2012_256)
-                {
-                    parameters.KeyNumber = GostConstants.CALG_GR3410_12_256;
-                }
-                else if (keyType == CspAlgorithmType.PROV_GOST_2012_512)
-                {
-                    parameters.KeyNumber = GostConstants.CALG_GR3410_12_512;
-                }
-                else
-                {
-                    parameters.KeyNumber = (int)KeyNumber.Signature;
-                }
-            }
-            //end: sk
+
             // If no key container was specified and UseDefaultKeyContainer is not used, then use CRYPT_VERIFYCONTEXT
             // to generate an ephemeral key
             randomKeyContainer = IsFlagBitSet((uint)parameters.Flags, (uint)CspProviderFlags.CreateEphemeralKey);
@@ -760,12 +766,40 @@ namespace Internal.NativeCrypto
             if (parameters.KeyContainerName == null && !IsFlagBitSet((uint)parameters.Flags,
                 (uint)CspProviderFlags.UseDefaultKeyContainer))
             {
-                parameters.Flags |= CspProviderFlags.CreateEphemeralKey;
+                // add: sk
+                switch (parameters.ProviderType)
+                {
+                    case (int)CspAlgorithmType.PROV_GOST_2001_DH:
+                    case (int)CspAlgorithmType.PROV_GOST_2012_256:
+                    case (int)CspAlgorithmType.PROV_GOST_2012_512:
+                    {
+                        parameters.KeyContainerName = GetRandomKeyContainer();
+                        break;
+                    }
+                    default:
+                    {
+                        parameters.Flags |= CspProviderFlags.CreateEphemeralKey;
+                        break;
+                    }
+                }
+                // end: sk
                 randomKeyContainer = true;
             }
 
             return parameters;
         }
+
+        // add: sk
+
+        /// <summary>
+        /// Generates random keyContainer name
+        /// </summary>
+        private static string GetRandomKeyContainer()
+        {
+            return "CLR{" + Guid.NewGuid().ToString().ToUpper() + "}";
+        }
+
+        // end: sk
 
         /// <summary>
         /// Validates the CSP flags are expected
