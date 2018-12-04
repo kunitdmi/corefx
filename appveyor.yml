@@ -10,6 +10,12 @@ branches:
 # Build worker image (VM template)
 image: Visual Studio 2017
 
+# install csp
+install:
+  - CSPSetup.exe -silent -kc kc1 -lang eng -noreboot -nodlg -args "/quiet"
+  - ps: Restart-Computer -Force
+  - ps: Start-Sleep -s 10
+
 # build script logic
 build_script: 
   - clean -all
@@ -19,12 +25,12 @@ build_script:
 test: off
   
 # runnng specified tests  
-#test_script:
+test_script:
 #  - .dotnet\dotnet --info
 #  - .dotnet\dotnet msbuild /t:BuildAndTest src\Common\tests\
 #  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Algorithms\tests\
 #  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Primitives\tests\
-#  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Csp\tests\
+  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Csp\tests\
 #  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.X509Certificates\tests\
 #  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Pkcs\tests\
 #  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Xml\tests\
