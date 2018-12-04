@@ -89,7 +89,7 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
             }
         }
 
-        [Fact(DisplayName = "Тест лшибки при проверке при неверном алгоритме хэширования")]
+        [Fact(DisplayName = "Тест ошибки при проверке при неверном алгоритме хэширования")]
         public static void VerifyHashInvalidHashAlgorithmThrows()
         {
             byte[] hashVal;
