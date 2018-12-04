@@ -356,7 +356,7 @@ namespace System.Security.Cryptography
                 throw new CryptographicException(
                     string.Format(
                         SR.Cryptography_InvalidHashSize,
-                        GostConstants.GOST3411_SIZE / 8));
+                        "GOST3411", GostConstants.GOST3411_SIZE / 8));
             }
 
             GetKeyPair();
