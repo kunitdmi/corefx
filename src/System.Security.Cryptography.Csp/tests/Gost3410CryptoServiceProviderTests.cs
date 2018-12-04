@@ -35,8 +35,8 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
                 0x8A, 0x4C, 0xF8, 0xCE, 0xA9, 0x09, 0x9E, 0x0F
             };
 
-        [Fact(DisplayName = "Тест PublicOnly проперти при пустом конструкторе")]
-        public static void PublicOnlyDefaultKey()
+        //[Fact(DisplayName = "Тест PublicOnly проперти при пустом конструкторе")]
+        public void PublicOnlyDefaultKey()
         {
             using (var gost = new Gost3410CryptoServiceProvider())
             {
@@ -46,9 +46,9 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
             }
         }
 
-        [Fact(DisplayName = "Тест создания и получения информации о ключе")]
+        //[Fact(DisplayName = "Тест создания и получения информации о ключе")]
         [PlatformSpecific(TestPlatforms.Windows)] // No support for CspParameters on Unix
-        public static void CreateKey()
+        public void CreateKey()
         {
             CspParameters cspParameters = new CspParameters(Gost2001ProvType);
 
@@ -59,9 +59,9 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
             }
         }
 
-        [Fact(DisplayName = "Импорт - экспорт блоба")]
+        //[Fact(DisplayName = "Импорт - экспорт блоба")]
         [PlatformSpecific(TestPlatforms.Windows)] // No support for CspParameters on Unix
-        public static void CreateKeyRoundtripBlob()
+        public void CreateKeyRoundtripBlob()
         {
             const int KeySize = 512;
 
@@ -89,8 +89,8 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
             }
         }
 
-        [Fact(DisplayName = "Тест ошибки при проверке при неверном алгоритме хэширования")]
-        public static void VerifyHashInvalidHashAlgorithmThrows()
+        //[Fact(DisplayName = "Тест ошибки при проверке при неверном алгоритме хэширования")]
+        public void VerifyHashInvalidHashAlgorithmThrows()
         {
             byte[] hashVal;
             using (SHA1 sha1 = SHA1.Create())
@@ -106,7 +106,7 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
         }
 
         //[Fact]
-        //public static void SignHashDefaultAlgorithmSuccess()
+        //public void SignHashDefaultAlgorithmSuccess()
         //{
         //    byte[] hashVal;
         //    using (Gost3411 gostHash = Gost3411.Create())
@@ -122,7 +122,7 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
         //}
 
         //[Fact]
-        //public static void VerifyHashDefaultAlgorithmSuccess()
+        //public void VerifyHashDefaultAlgorithmSuccess()
         //{
         //    byte[] hashVal;
         //    using (Gost3411 gostHash = Gost3411.Create())
@@ -137,8 +137,8 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
         //    }
         //}
 
-        [Fact(DisplayName = "Тест ошибки при подписи при неверном алгоритме хэширования")]
-        public static void SignHashInvalidHashAlgorithmThrows()
+        //[Fact(DisplayName = "Тест ошибки при подписи при неверном алгоритме хэширования")]
+        public void SignHashInvalidHashAlgorithmThrows()
         {
             byte[] hashVal;
             using (Gost3411 gostHash = Gost3411.Create())
@@ -158,15 +158,21 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
         //    var gost = Gost3410.Create() as Gost3410CryptoServiceProvider;
         //    gost.SignData(bytesToHash, HashAlgorithmName.Gost3411);
         //}
+		
+		[Fact]
+        public void Gost3410Constructor()
+        {
+            var gost = new Gost3410CryptoServiceProvider();
+        }
 
-        [Fact(DisplayName = "Тест пустого конструктора и подписи массива данных")]
+        //[Fact(DisplayName = "Тест пустого конструктора и подписи массива данных")]
         public void Gost3410ConstructorAndComputeSignatureOnData()
         {
             var gost = new Gost3410CryptoServiceProvider();
             gost.SignData(bytesToHash, HashAlgorithmName.Gost3411);
         }
 
-        [Fact(DisplayName = "Тест пустого конструктора и подписи хэш значения")]
+        //[Fact(DisplayName = "Тест пустого конструктора и подписи хэш значения")]
         public void Gost3410ConstructorAndComputeSignatureOnHash()
         {
             var gost = new Gost3410CryptoServiceProvider();
