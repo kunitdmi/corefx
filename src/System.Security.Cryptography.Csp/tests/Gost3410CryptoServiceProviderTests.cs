@@ -11,13 +11,17 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
     using Xunit;
 
     using System.Security.Cryptography;
+	
+	using System.Security.Cryptography.X509Certificates;
 
     /// <summary>
     /// Since SHAxCryptoServiceProvider types wraps IncrementalHash from Algorithms assembly, we only test minimally here.
     /// </summary>
     public class Gost3410CryptoServiceProviderTests
     {
-        const int Gost2001ProvType = 75;
+        private const string TestCertificateThumbprint = "acdc0b06b3c034c000b1a52b322f5cf1b208b719";
+
+        private const int Gost2001ProvType = 75;
 
         private static readonly byte[] bytesToHash =
             new byte[]
@@ -34,32 +38,56 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
                 0xC1, 0x5A, 0x79, 0x44, 0xB7, 0xE7, 0x10, 0xED,
                 0x8A, 0x4C, 0xF8, 0xCE, 0xA9, 0x09, 0x9E, 0x0F
             };
+			
+		private static readonly byte[] ComputedSignature =
+            new byte[]
+                {
+                    0x62, 0x6B, 0x5B, 0x74, 0xCF, 0x3D, 0xFA, 0x7C, 0x22, 0xFD, 0x95, 0x0E, 0xC9, 0x7D, 0xBA,
+                    0xE2, 0x0C, 0x24, 0xE8, 0xB1, 0xEB, 0xD2, 0xFC, 0x53, 0x01, 0x7E, 0x4D, 0xDD, 0xF1, 0x52,
+                    0xA8, 0xB6, 0xCF, 0x22, 0x12, 0x88, 0x6E, 0x70, 0x8D, 0x12, 0x35, 0xFC, 0x87, 0x5D, 0x62,
+                    0x0A, 0xDF, 0x20, 0x4D, 0xD7, 0xEE, 0x42, 0x23, 0x16, 0xCD, 0x18, 0x5C, 0xA0, 0x0A, 0x02,
+                    0x77, 0x27, 0xBC, 0x19,
+                };
 
-        //[Fact(DisplayName = "Тест PublicOnly проперти при пустом конструкторе")]
-        public void PublicOnlyDefaultKey()
+        private X509Certificate2 gostCertificate;
+
+        private X509Certificate2 GostCertificate
         {
-            using (var gost = new Gost3410CryptoServiceProvider())
+            get
             {
-                // This will call the key into being, which should create a public/private pair,
-                // therefore it should not be public-only.
+                if (gostCertificate == null)
+                {
+                    gostCertificate = FindGostCertificate();
+                }
+
+                return gostCertificate;
+            }
+        }
+
+        [Fact]
+        public void PublicOnlyCertificateKey()
+        {
+            using (var gost = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider)
+            {
+                // Test cert contains private key, so it is not PublicOnly
                 Assert.False(gost.PublicOnly);
             }
         }
 
-        //[Fact(DisplayName = "Тест создания и получения информации о ключе")]
+        [Fact]
         [PlatformSpecific(TestPlatforms.Windows)] // No support for CspParameters on Unix
-        public void CreateKey()
+        public void KeyContainerInfoProvType()
         {
             CspParameters cspParameters = new CspParameters(Gost2001ProvType);
 
-            using (var gost = new Gost3410CryptoServiceProvider(cspParameters))
+            using (var gost = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider)
             {
                 CspKeyContainerInfo containerInfo = gost.CspKeyContainerInfo;
                 Assert.Equal(Gost2001ProvType, containerInfo.ProviderType);
             }
         }
 
-        //[Fact(DisplayName = "Импорт - экспорт блоба")]
+        [Fact]
         [PlatformSpecific(TestPlatforms.Windows)] // No support for CspParameters on Unix
         public void CreateKeyRoundtripBlob()
         {
@@ -68,7 +96,7 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
             CspParameters cspParameters = new CspParameters(Gost2001ProvType);
             byte[] blob;
 
-            using (var gost = new Gost3410CryptoServiceProvider(cspParameters))
+            using (var gost = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider)
             {
                 CspKeyContainerInfo containerInfo = gost.CspKeyContainerInfo;
                 Assert.Equal(Gost2001ProvType, containerInfo.ProviderType);
@@ -89,7 +117,7 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
             }
         }
 
-        //[Fact(DisplayName = "Тест ошибки при проверке при неверном алгоритме хэширования")]
+		[Fact]
         public void VerifyHashInvalidHashAlgorithmThrows()
         {
             byte[] hashVal;
@@ -98,46 +126,46 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
                 hashVal = sha1.ComputeHash(bytesToHash);
             }
 
-            using (var gost = new Gost3410CryptoServiceProvider())
+            using (var gost = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider)
             {
                 byte[] signVal = gost.SignData(bytesToHash, HashAlgorithmName.Gost3411);
                 Assert.ThrowsAny<CryptographicException>(() => gost.VerifyHash(hashVal, signVal));
             }
         }
 
-        //[Fact]
-        //public void SignHashDefaultAlgorithmSuccess()
-        //{
-        //    byte[] hashVal;
-        //    using (Gost3411 gostHash = Gost3411.Create())
-        //    {
-        //        hashVal = gostHash.ComputeHash(bytesToHash);
-        //    }
+        [Fact]
+        public void SignHashDefaultAlgorithmSuccess()
+        {
+            byte[] hashVal;
+            using (Gost3411 gostHash = Gost3411.Create())
+            {
+                hashVal = gostHash.ComputeHash(bytesToHash);
+            }
 
-        //    using (var gost = new Gost3410CryptoServiceProvider())
-        //    {
-        //        byte[] signVal = gost.SignHash(hashVal);
-        //        Assert.True(gost.VerifyHash(hashVal, signVal));
-        //    }
-        //}
+            using (var gost = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider)
+            {
+                byte[] signVal = gost.SignHash(hashVal);
+                Assert.True(gost.VerifyHash(hashVal, signVal));
+            }
+        }
 
-        //[Fact]
-        //public void VerifyHashDefaultAlgorithmSuccess()
-        //{
-        //    byte[] hashVal;
-        //    using (Gost3411 gostHash = Gost3411.Create())
-        //    {
-        //        hashVal = gostHash.ComputeHash(bytesToHash);
-        //    }
+        // [Fact]
+        // public void VerifyHashDefaultAlgorithmSuccess()
+        // {
+            // byte[] hashVal;
+            // using (Gost3411 gostHash = Gost3411.Create())
+            // {
+                // hashVal = gostHash.ComputeHash(bytesToHash);
+            // }
 
-        //    using (var gost = new Gost3410CryptoServiceProvider())
-        //    {
-        //        byte[] signVal = gost.SignData(hashVal);
-        //        Assert.True(gost.VerifyHash(hashVal, signVal));
-        //    }
-        //}
+            // using (var gost = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider)
+            // {
+                // byte[] signVal = gost.SignData(hashVal);
+                // Assert.True(gost.VerifyHash(hashVal, signVal));
+            // }
+        // }
 
-        //[Fact(DisplayName = "Тест ошибки при подписи при неверном алгоритме хэширования")]
+        [Fact]
         public void SignHashInvalidHashAlgorithmThrows()
         {
             byte[] hashVal;
@@ -146,7 +174,7 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
                 hashVal = gostHash.ComputeHash(bytesToHash);
             }
 
-            using (var gost = new Gost3410CryptoServiceProvider())
+            using (var gost = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider)
             {
                 Assert.ThrowsAny<CryptographicException>(() => gost.SignHash(hashVal, HashAlgorithmName.SHA256));
             }
@@ -165,18 +193,55 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
             var gost = new Gost3410CryptoServiceProvider();
         }
 
-        //[Fact(DisplayName = "Тест пустого конструктора и подписи массива данных")]
-        public void Gost3410ConstructorAndComputeSignatureOnData()
+		[Fact]
+        public void Gost3410ComputeSignatureOnData()
         {
-            var gost = new Gost3410CryptoServiceProvider();
+            var gost = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider;
             gost.SignData(bytesToHash, HashAlgorithmName.Gost3411);
         }
-
-        //[Fact(DisplayName = "Тест пустого конструктора и подписи хэш значения")]
-        public void Gost3410ConstructorAndComputeSignatureOnHash()
+		
+		[Fact]
+        public void Gost3410ComputeAndValidateSignatureOnData()
         {
-            var gost = new Gost3410CryptoServiceProvider();
+            var gost = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider;
+            var signed = gost.SignData(bytesToHash, HashAlgorithmName.Gost3411);
+			var validationResult = gost.VerifyData(bytesToHash, signed, HashAlgorithmName.Gost3411);
+			Assert.True(validationResult);
+        }
+
+		[Fact]
+        public void Gost3410ComputeSignatureOnHash()
+        {
+            var gost = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider;
             gost.SignHash(computedHash, HashAlgorithmName.Gost3411);
+        }
+		
+		[Fact]
+        public void Gost3410ValidateSignatureOnData()
+        {
+            var key = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider;
+            Assert.True(key.VerifyData(bytesToHash, ComputedSignature, HashAlgorithmName.Gost3411));
+        }
+
+		[Fact]
+        public void Gost3410ValidateSignatureOnHash()
+        {
+            var key = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider;
+            Assert.True(key.VerifyHash(computedHash, ComputedSignature, HashAlgorithmName.Gost3411));
+        }
+
+        private static X509Certificate2 FindGostCertificate()
+        {
+            var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
+            store.Open(OpenFlags.ReadOnly);
+            try
+            {
+                return store.Certificates.Find(X509FindType.FindByThumbprint, TestCertificateThumbprint, false)[0];
+            }
+            finally
+            {
+                store.Close();
+            }
         }
     }
 }
