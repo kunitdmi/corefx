@@ -12,9 +12,12 @@ image: Visual Studio 2017
 
 # install csp
 install:
-  - CSPSetup.exe -silent -kc kc1 -lang eng -noreboot -nodlg -args "/quiet"
+  - cmd: cspTools\CSPSetup.exe -silent -kc kc1 -lang eng -noreboot -nodlg -args "/quiet"
   - ps: Restart-Computer -Force
   - ps: Start-Sleep -s 10
+  - ps: New-Item -ItemType Directory -Force -Path "$env:LOCALAPPDATA\Crypto Pro"
+  - ps: Copy-Item -Force -Recurse ".\cspTools\6d24e911.000" -Destination "$env:LOCALAPPDATA\Crypto Pro\"
+  - cmd: '"C:\Program Files\Crypto Pro\CSP\csptest" -absorb -certs -pattern "6d24e911.000"'
 
 # build script logic
 build_script: 
