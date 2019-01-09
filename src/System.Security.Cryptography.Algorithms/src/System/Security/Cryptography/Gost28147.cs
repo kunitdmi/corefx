@@ -22,19 +22,19 @@ namespace System.Security.Cryptography
         /// <summary>
         /// Размер ключа 256 бит.
         /// </summary>
-        internal const int DefaultBlockSize = 64;
+        public const int DefaultBlockSize = 64;
         /// <summary>
         /// Размер блока 64 бита.
         /// </summary>
-        internal const int DefaultKeySize = 256;
+        public const int DefaultKeySize = 256;
         /// <summary>
         /// Размер зацепления 64 бита.
         /// </summary>
-        internal const int DefaultFeedbackSize = 64;
+        public const int DefaultFeedbackSize = 64;
         /// <summary>
         /// Размер синхропосылки 64 бита.
         /// </summary>
-        internal const int DefaultIvSize = 64;
+        public const int DefaultIvSize = 64;
 
         public static readonly KeySizes[] DefaultLegalKeySizes = { new KeySizes(DefaultKeySize, DefaultKeySize, 0) };
         public static readonly KeySizes[] DefaultLegalBlockSizes = { new KeySizes(DefaultBlockSize, DefaultBlockSize, 0) };

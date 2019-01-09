@@ -8,9 +8,14 @@ parameters:
   HelixPostCommands: ''
   WorkItemDirectory: ''
   WorkItemCommand: ''
-  IncludeDotNetSdk: false
+  CorrelationPayloadDirectory: ''
+  IncludeDotNetCli: false
+  DotNetCliPackageType: ''
+  DotNetCliVersion: ''
   EnableXUnitReporter: false
   WaitForWorkItemCompletion: true
+  condition: succeeded()
+  continueOnError: false
 
 steps:
   - task: DotNetCoreCLI@2
@@ -18,7 +23,7 @@ steps:
       command: custom
       projects: eng/common/helixpublish.proj
       custom: msbuild
-      arguments: '/t:test /p:Language=msbuild'
+      arguments: '/t:test /p:Language=msbuild /bl:$(Build.SourcesDirectory)\artifacts\log\$(_BuildConfig)\SendToHelix.binlog'
     displayName: Send job to Helix
     env:
       HelixSource: ${{ parameters.HelixSource }}
@@ -28,8 +33,12 @@ steps:
       HelixAccessToken: ${{ parameters.HelixAccessToken }}
       HelixPreCommands: ${{ parameters.HelixPreCommands }}
       HelixPostCommands: ${{ parameters.HelixPostCommands }}
-      IncludeDotNetSdk: ${{ parameters.IncludeDotNetSdk }}
-      EnableXUnitReporter: ${{ parameters.EnableXUnitReporter }}
-      WaitForWorkItemCompletion: ${{ parameters.WaitForWorkItemCompletion }}
       WorkItemDirectory: ${{ parameters.WorkItemDirectory }}
       WorkItemCommand: ${{ parameters.WorkItemCommand }}
+      IncludeDotNetCli: ${{ parameters.IncludeDotNetCli }}
+      DotNetCliPackageType: ${{ parameters.DotNetCliPackageType }}
+      DotNetCliVersion: ${{ parameters.DotNetCliVersion }}
+      EnableXUnitReporter: ${{ parameters.EnableXUnitReporter }}
+      WaitForWorkItemCompletion: ${{ parameters.WaitForWorkItemCompletion }}
+    condition: ${{ parameters.condition }}
+    continueOnError: ${{ parameters.continueOnError }}
