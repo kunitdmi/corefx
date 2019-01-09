@@ -41,9 +41,9 @@ test_script:
  
 # artifacts on succesfull build 
 artifacts:
-  - path: bin\packages\**\*.nupkg
+  - path: artifacts\packages\**\*.nupkg
     name: packages
-  - path: bin\runtime\netcoreapp-Windows_NT-Debug-x64
+  - path: artifacts\bin\runtime\netcoreapp-Windows_NT-Debug-x64
     name: runtime
     type: zip
  
@@ -66,5 +66,5 @@ deploy:
     
 #on_finish:
   # pushing all *.nupkg files in build directory recursively
-#- ps: Get-ChildItem "bin\packages\**\*.nupkg" | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
-#- ps: Get-ChildItem "bin\packages\**\symbols\*.nupkg" | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+#- ps: Get-ChildItem "artifacts\packages\**\*.nupkg" | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+#- ps: Get-ChildItem "artifacts\packages\**\symbols\*.nupkg" | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
