@@ -322,7 +322,7 @@ namespace System.Security.Cryptography
         protected override bool TryHashFinal(Span<byte> destination, out int bytesWritten) { throw null; }
     }
 
-    public sealed partial class Gost3411_256_2012CryptoServiceProvider : Gost3411
+    public sealed partial class Gost3411_2012_256CryptoServiceProvider : Gost3411_2012_256
     {
         protected override void Dispose(bool disposing) { throw null; }
         public override void Initialize() { throw null; }
@@ -332,7 +332,7 @@ namespace System.Security.Cryptography
         protected override bool TryHashFinal(Span<byte> destination, out int bytesWritten) { throw null; }
     }
 
-    public sealed partial class Gost3411_512_2012CryptoServiceProvider : Gost3411
+    public sealed partial class Gost3411_2012_512CryptoServiceProvider : Gost3411_2012_512
     {
         protected override void Dispose(bool disposing) { throw null; }
         public override void Initialize() { throw null; }
