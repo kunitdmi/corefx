@@ -7,17 +7,17 @@ using System.ComponentModel;
 namespace System.Security.Cryptography
 {
     //
-    // If you change this file, make the corresponding changes to all of the SHA*CryptoServiceProvider.cs files.
+    // If you change this file, make the corresponding changes to all of the Gost3411**CryptoServiceProvider.cs files.
     //
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public sealed class Gost3411_256_2012CryptoServiceProvider : Gost3411
+    public sealed class Gost3411_2012_512CryptoServiceProvider : Gost3411_2012_512
     {
-        private const int HashSizeBits = GostConstants.GOST3411_2012_256_SIZE;
+        private const int HashSizeBits = GostConstants.GOST3411_2012_512_SIZE;
         private readonly IncrementalHash _incrementalHash;
 
-        public Gost3411_256_2012CryptoServiceProvider()
+        public Gost3411_2012_512CryptoServiceProvider()
         {
-            _incrementalHash = IncrementalHash.CreateHash(HashAlgorithmName.Gost3411_2012_256);
+            _incrementalHash = IncrementalHash.CreateHash(HashAlgorithmName.Gost3411_2012_512);
             HashSizeValue = HashSizeBits;
         }
 

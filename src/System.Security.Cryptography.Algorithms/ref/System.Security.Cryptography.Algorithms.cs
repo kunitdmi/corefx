@@ -727,6 +727,20 @@ namespace System.Security.Cryptography
         public static new System.Security.Cryptography.Gost3411 Create(string hashName) { throw null; }
     }
 
+    public abstract partial class Gost3411_2012_256 : System.Security.Cryptography.HashAlgorithm
+    {
+        protected Gost3411_2012_256() { }
+        public static new System.Security.Cryptography.Gost3411_2012_256 Create() { throw null; }
+        public static new System.Security.Cryptography.Gost3411_2012_256 Create(string hashName) { throw null; }
+    }
+
+    public abstract partial class Gost3411_2012_512 : System.Security.Cryptography.HashAlgorithm
+    {
+        protected Gost3411_2012_512() { }
+        public static new System.Security.Cryptography.Gost3411_2012_512 Create() { throw null; }
+        public static new System.Security.Cryptography.Gost3411_2012_512 Create(string hashName) { throw null; }
+    }
+
     public enum GostKeyExchangeExportMethod
     {
         GostKeyExport,

@@ -89,6 +89,16 @@
     <Compile Include="System\Security\Cryptography\Gost3410CSPObject.cs" />
     <Compile Include="System\Security\Cryptography\Gost3410Parameters.cs" />
     <Compile Include="System\Security\Cryptography\Gost3411.cs" />
+    <Compile Include="System\Security\Cryptography\Gost3411_2012_256.cs" />
+    <Compile Include="System\Security\Cryptography\Gost3411_2012_512.cs" />
+<!--     <Compile Include="Internal\Cryptography\HashProviderDispenser.CryptoApi.cs" />
+    <Compile Include="Internal\Cryptography\CryptoApiHashProvider.cs" />
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\GostConstants.cs" >
+      <Link>Common\System\Security\Cryptography\GostConstants.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\Microsoft\Win32\SafeHandles\Capi.SafeCryptoHandles.cs">
+      <Link>Common\Microsoft\Win32\SafeHandles\Capi.SafeCryptoHandles.cs</Link>
+    </Compile> -->
     <Compile Include="$(CommonPath)\Internal\Cryptography\BasicSymmetricCipher.cs">
       <Link>Internal\Cryptography\BasicSymmetricCipher.cs</Link>
     </Compile>
@@ -689,6 +699,9 @@
     <Compile Include="System\Security\Cryptography\ECDiffieHellman.Create.SecurityTransforms.cs" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetsUnix)' == 'true'">
+<!--     <Compile Include="$(CommonPath)\Interop\Unix\System.Security.Cryptography.Native\Interop.Capilite.cs">
+      <Link>Common\Interop\Unix\System.Security.Cryptography.Native\Interop.Capilite.cs</Link>
+    </Compile> -->    
     <Compile Include="$(CommonPath)\Interop\Unix\System.Security.Cryptography.Native\Interop.EVP.Cipher.cs">
       <Link>Common\Interop\Unix\System.Security.Cryptography.Native\Interop.EVP.Cipher.cs</Link>
     </Compile>
