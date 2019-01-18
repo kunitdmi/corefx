@@ -275,8 +275,9 @@ namespace Internal.Cryptography.Pal
 
                 encodedKeyValue.DecodeObject(
                     CryptDecodeObjectStructType.X509_DSS_PUBLICKEY,
-                    delegate (void* pvDecoded)
+                    delegate (void* pvDecoded, int cbDecoded)
                     {
+                        Debug.Assert(cbDecoded >= sizeof(CRYPTOAPI_BLOB));
                         CRYPTOAPI_BLOB* pBlob = (CRYPTOAPI_BLOB*)pvDecoded;
                         decodedKeyValue = pBlob->ToByteArray();
                     }
@@ -296,8 +297,9 @@ namespace Internal.Cryptography.Pal
             {
                 encodedParameters.DecodeObject(
                     CryptDecodeObjectStructType.X509_DSS_PARAMETERS,
-                    delegate (void* pvDecoded)
+                    delegate (void* pvDecoded, int cbDecoded)
                     {
+                        Debug.Assert(cbDecoded >= sizeof(CERT_DSS_PARAMETERS));
                         CERT_DSS_PARAMETERS* pCertDssParameters = (CERT_DSS_PARAMETERS*)pvDecoded;
                         pLocal = pCertDssParameters->p.ToByteArray();
                         qLocal = pCertDssParameters->q.ToByteArray();
