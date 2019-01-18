@@ -17,6 +17,8 @@ namespace Internal.Cryptography
         public const string SHA384 = "SHA384";
         public const string SHA512 = "SHA512";
         public const string GOST3411 = "GOST R 34.11-94";
+        public const string GOST3411_2012_256 = "GR 34.11-2012 256";
+        public const string GOST3411_2012_512 = "GR 34.11-2012 512";
 
         private static readonly HashSet<string> s_allNames = CreateAllNames();
 
@@ -37,6 +39,10 @@ namespace Internal.Cryptography
                 return HashAlgorithmNames.MD5;
             if (hashAlgorithm is Gost3411)
                 return HashAlgorithmNames.GOST3411;
+            if (hashAlgorithm is Gost3411_2012_256)
+                return HashAlgorithmNames.GOST3411_2012_256;
+            if (hashAlgorithm is Gost3411_2012_512)
+                return HashAlgorithmNames.GOST3411_2012_512;
 
             // Fallback to ToString() which can be extended by derived classes
             return hashAlgorithm.ToString();
@@ -65,6 +71,8 @@ namespace Internal.Cryptography
             allNames.Add(HashAlgorithmNames.SHA512);
             allNames.Add(HashAlgorithmNames.MD5);
             allNames.Add(HashAlgorithmNames.GOST3411);
+            allNames.Add(HashAlgorithmNames.GOST3411_2012_256);
+            allNames.Add(HashAlgorithmNames.GOST3411_2012_512);
 
             return allNames;
         }
