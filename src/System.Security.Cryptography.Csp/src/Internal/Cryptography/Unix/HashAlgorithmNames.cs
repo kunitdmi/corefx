@@ -14,12 +14,18 @@ namespace Internal.Cryptography
         public const string SHA256 = "SHA256";
         public const string SHA384 = "SHA384";
         public const string SHA512 = "SHA512";
+        public const string GOST3411 = "GOST R 34.11-94";
+        public const string GOST3411_2012_256 = "GR 34.11-2012 256";
+        public const string GOST3411_2012_512 = "GR 34.11-2012 512";
 
         private const string OID_MD5 = "1.2.840.113549.2.5";
         private const string OID_SHA1 = "1.3.14.3.2.26";
         private const string OID_SHA256 = "2.16.840.1.101.3.4.2.1";
         private const string OID_SHA384 = "2.16.840.1.101.3.4.2.2";
         private const string OID_SHA512 = "2.16.840.1.101.3.4.2.3";
+        private const string OID_GOST3411 = "1.2.643.2.2.9";
+        private const string OID_GOST3411_2012_256 = "1.2.643.7.1.1.2.2";
+        private const string OID_GOST3411_2012_512 = "1.2.643.7.1.1.2.3";
 
         // For backwards compat with CapiHelper.ObjToHashAlgorithm, use "hashAlg" as name
         public static HashAlgorithmName ObjToHashAlgorithmName(object hashAlg)
@@ -91,6 +97,12 @@ namespace Internal.Cryptography
                 return HashAlgorithmName.SHA512;
             if (hashAlgorithm is MD5)
                 return HashAlgorithmName.MD5;
+            if (hashAlgorithm is Gost3411)
+                return HashAlgorithmName.Gost3411;
+            if (hashAlgorithm is Gost3411_2012_256)
+                return HashAlgorithmName.Gost3411_2012_256;
+            if (hashAlgorithm is Gost3411_2012_512)
+                return HashAlgorithmName.Gost3411_2012_512;
 
             return null;
         }
@@ -109,6 +121,12 @@ namespace Internal.Cryptography
                     return HashAlgorithmName.SHA512;
                 case OID_MD5:
                     return HashAlgorithmName.MD5;
+                case OID_GOST3411:
+                    return HashAlgorithmName.Gost3411;
+                case OID_GOST3411_2012_256:
+                    return HashAlgorithmName.Gost3411_2012_256;
+                case OID_GOST3411_2012_512:
+                    return HashAlgorithmName.Gost3411_2012_512;
                 default:
                     return null;
             }
@@ -126,6 +144,13 @@ namespace Internal.Cryptography
                 return HashAlgorithmName.SHA512;
             if (typeof(MD5).IsAssignableFrom(hashAlgType))
                 return HashAlgorithmName.MD5;
+            if (typeof(Gost3411).IsAssignableFrom(hashAlgType))
+                return HashAlgorithmName.Gost3411;
+            //TODO: need type for GOST2012
+            if (typeof(Gost3411).IsAssignableFrom(hashAlgType))
+                return HashAlgorithmName.Gost3411_2012_256;
+            if (typeof(Gost3411).IsAssignableFrom(hashAlgType))
+                return HashAlgorithmName.Gost3411_2012_512;
 
             return null;
         }
