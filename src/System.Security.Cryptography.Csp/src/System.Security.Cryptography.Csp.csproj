@@ -279,7 +279,6 @@
     <Compile Include="Internal\Cryptography\Unix\Gost.CapiLite.SafeCryptoHandles.cs" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetsWindows)' == 'true'">
-    <Compile Include="System\Security\Cryptography\SafeCryptoHandles.cs" />
     <Compile Include="System\Security\Cryptography\CspKeyContainerInfo.Windows.cs" />
     <Compile Include="System\Security\Cryptography\DESCryptoServiceProvider.Windows.cs" />
     <Compile Include="System\Security\Cryptography\DSACryptoServiceProvider.Windows.cs" />

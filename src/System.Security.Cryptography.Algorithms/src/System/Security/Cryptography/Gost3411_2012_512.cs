@@ -14,14 +14,14 @@ namespace System.Security.Cryptography
     /// ГОСТ Р 34.11-2012 512 в иерархии криптографических алгоритмов.</para>
     /// </remarks>
     /// 
-    /// <doc-sample path="Simple\DocBlock" name="HashBuffer" region="HashBuffer">
-    /// Пример, вычисляющий хэш по алгоритму ГОСТ Р 34.11-2012 512 при помощи класса
-    /// <see cref="Gost3411_2012_512CryptoServiceProvider"/>, унаследованного от 
-    /// Gost3411_2012_512. В примере предполагается, что ранее определена константа 
-    /// DATA_SIZE.
-    /// </doc-sample>
-    /// 
-    /// <basedon cref="System.Security.Cryptography.SHA1"/>
+    ///// <doc-sample path="Simple\DocBlock" name="HashBuffer" region="HashBuffer">
+    ///// Пример, вычисляющий хэш по алгоритму ГОСТ Р 34.11-2012 512 при помощи класса
+    ///// <see cref="Gost3411_2012_512CryptoServiceProvider"/>, унаследованного от 
+    ///// Gost3411_2012_512. В примере предполагается, что ранее определена константа 
+    ///// DATA_SIZE.
+    ///// </doc-sample>
+    ///// 
+    ///// <basedon cref="System.Security.Cryptography.SHA1"/>
     public abstract class Gost3411_2012_512 : HashAlgorithm
     {
         internal const int GOST3411_2012_512_SIZE = 512;

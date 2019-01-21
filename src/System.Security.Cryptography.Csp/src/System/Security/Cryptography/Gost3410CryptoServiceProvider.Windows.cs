@@ -250,7 +250,7 @@ namespace System.Security.Cryptography
         /// </para></intdoc>
         /// 
         /// <remarks><para>Функция тождественна 
-        /// <see cref="CreateSignature"/>.</para></remarks>
+        /// CreateSignature.</para></remarks>
         /// 
         /// <argnull name="hash" />
         /// <exception cref="CryptographicException">Объект не содержит 
@@ -893,19 +893,19 @@ namespace System.Security.Cryptography
             }
         }
 
-        /// <summary>
-        /// Создание ключа согласования (agree ключа).
-        /// </summary>
-        /// 
-        /// <param name="alg">Открытый ключ получателя.</param>
-        /// 
-        /// <returns>Ключ согласования <see cref="GostSharedSecretAlgorithm"/> 
-        /// для шифрования ключевой информации.</returns>
-        /// 
-        /// <containerperm flag="Open">Для открытия существующего 
-        /// контейнера.</containerperm>
-        /// <containerperm flag="Create">Для создания контейнера с заданным
-        /// (не случаыным именем).</containerperm>
+        ///// <summary>
+        ///// Создание ключа согласования (agree ключа).
+        ///// </summary>
+        ///// 
+        ///// <param name="alg">Открытый ключ получателя.</param>
+        ///// 
+        ///// <returns>Ключ согласования <see cref="GostSharedSecretAlgorithm"/> 
+        ///// для шифрования ключевой информации.</returns>
+        ///// 
+        ///// <containerperm flag="Open">Для открытия существующего 
+        ///// контейнера.</containerperm>
+        ///// <containerperm flag="Create">Для создания контейнера с заданным
+        ///// (не случаыным именем).</containerperm>
         //[SecuritySafeCritical]
         //public override GostSharedSecretAlgorithm CreateAgree(
         //    Gost3410Parameters alg)
@@ -922,15 +922,15 @@ namespace System.Security.Cryptography
         //        _safeProvHandle, obj1, CspAlgorithmType.Gost2001);
         //}
 
-        /// <summary>
-        /// Получение/установка сертификата в конейнер.
-        /// </summary>
-        /// 
-        /// <argnullset />
-        /// 
-        /// <unmanagedperm action="Demand" />
-        /// <value>Возвращается хранимый сертификат или <see langword="null"/>,
-        /// если сертификат в контейнере отсутствует.</value>
+        ///// <summary>
+        ///// Получение/установка сертификата в конейнер.
+        ///// </summary>
+        ///// 
+        ///// <argnullset />
+        ///// 
+        ///// <unmanagedperm action="Demand" />
+        ///// <value>Возвращается хранимый сертификат или <see langword="null"/>,
+        ///// если сертификат в контейнере отсутствует.</value>
         //public X509Certificate2 ContainerCertificate
         //{
         //    [SecuritySafeCritical]
@@ -974,21 +974,21 @@ namespace System.Security.Cryptography
         //    }
         //}
 
-        /// <summary>
-        /// Установка пароля доступа к контейнеру.
-        /// </summary>
-        /// 
-        /// <param name="password">Пароль доступа к контейнеру.</param>
-        /// 
-        /// <remarks><para>Если ключ уже загружен в память, то поведение 
-        /// данной функции зависит от провайдера, обычно проверяется 
-        /// соответствие передаваемого пароля и пароля
-        /// доступа на контейнер.</para> 
-        /// <para>Если ключ не был загружен в память, данная функция
-        /// не проверяет корректность вводимого пароля, а только 
-        /// запоминает его. Проверка правильности введенного пароля
-        /// будет происходить при доступе к ключу, например при
-        /// операции подписи. </para></remarks>
+        ///// <summary>
+        ///// Установка пароля доступа к контейнеру.
+        ///// </summary>
+        ///// 
+        ///// <param name="password">Пароль доступа к контейнеру.</param>
+        ///// 
+        ///// <remarks><para>Если ключ уже загружен в память, то поведение 
+        ///// данной функции зависит от провайдера, обычно проверяется 
+        ///// соответствие передаваемого пароля и пароля
+        ///// доступа на контейнер.</para> 
+        ///// <para>Если ключ не был загружен в память, данная функция
+        ///// не проверяет корректность вводимого пароля, а только 
+        ///// запоминает его. Проверка правильности введенного пароля
+        ///// будет происходить при доступе к ключу, например при
+        ///// операции подписи. </para></remarks>
         //[SecuritySafeCritical]
         //public void SetContainerPassword(SecureString password)
         //{
@@ -1005,11 +1005,11 @@ namespace System.Security.Cryptography
         //    CPUtils.SetPin(_safeProvHandle, password, this._keySpec);
         //}
 
-        /// <summary>
-        /// Предварительная загрузка контейнера в память.
-        /// </summary>
-        /// 
-        /// <cspversions><exclude version="20"/></cspversions>
+        ///// <summary>
+        ///// Предварительная загрузка контейнера в память.
+        ///// </summary>
+        ///// 
+        ///// <cspversions><exclude version="20"/></cspversions>
         //[SecuritySafeCritical]
         //public void PreloadContainer()
         //{
@@ -1024,20 +1024,20 @@ namespace System.Security.Cryptography
         //    CPUtils.GetHCryptProv(_safeProvHandle);
         //}
 
-        /// <summary>
-        /// Вывод диалогового окна выбора контейнера и получение 
-        /// имени выбранного контейнера
-        /// </summary>
-        /// 
-        /// <param name="fullyQualifiedContainerName">Вернуть полностью
-        /// кваллифицированное имя контейнера.</param>
-        /// <param name="machine">Использовать локальное хранилище
-        /// компьютера (<see langword="true"/>) или пользователя
-        /// (<see langword="true"/>).</param>
-        /// <param name="parent">HWND родительского окна или IntPtr.Zero,
-        /// для выдачи окна без родителя.</param>
-        /// 
-        /// <returns>Строку имени контейнера.</returns>
+        ///// <summary>
+        ///// Вывод диалогового окна выбора контейнера и получение 
+        ///// имени выбранного контейнера
+        ///// </summary>
+        ///// 
+        ///// <param name="fullyQualifiedContainerName">Вернуть полностью
+        ///// кваллифицированное имя контейнера.</param>
+        ///// <param name="machine">Использовать локальное хранилище
+        ///// компьютера (<see langword="true"/>) или пользователя
+        ///// (<see langword="true"/>).</param>
+        ///// <param name="parent">HWND родительского окна или IntPtr.Zero,
+        ///// для выдачи окна без родителя.</param>
+        ///// 
+        ///// <returns>Строку имени контейнера.</returns>
         //[SecuritySafeCritical]
         //public static string SelectContainer(bool fullyQualifiedContainerName,
         //    bool machine, IntPtr parent)

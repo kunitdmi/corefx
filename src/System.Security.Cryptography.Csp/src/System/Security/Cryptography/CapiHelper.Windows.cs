@@ -1472,7 +1472,7 @@ namespace Internal.NativeCrypto
         {
             unsafe
             {
-                bool ret = Interop.CryptHashData(hHash, pbData,
+                bool ret = Interop.Advapi32.CryptHashData(hHash, pbData,
                     dwDataLen, 0);
                 if (!ret)
                     throw new CryptographicException(
@@ -1480,21 +1480,21 @@ namespace Internal.NativeCrypto
             }
         }
 
-        /// <summary>
-        /// Завершение хешифрования и получение значения хеша.
-        /// </summary>
-        /// 
-        /// <param name="hHash">HNALDE хеша.</param>
-        /// 
-        /// <returns>Значение хеша.</returns>
-        /// 
-        /// <exception cref="CryptographicException">При ошибках на native
-        /// уровне.</exception>
-        /// 
-        /// <intdoc><para>Есть аналог у MS с тем же прототипом и похожей
-        /// (CRYPT_HASH_CTX другой) реализацией.</para></intdoc>
-        /// 
-        /// <unmanagedperm action="LinkDemand" />
+        // /// <summary>
+        // /// Завершение хешифрования и получение значения хеша.
+        // /// </summary>
+        // /// 
+        // /// <param name="hHash">HNALDE хеша.</param>
+        // /// 
+        // /// <returns>Значение хеша.</returns>
+        // /// 
+        // /// <exception cref="CryptographicException">При ошибках на native
+        // /// уровне.</exception>
+        // /// 
+        // /// <intdoc><para>Есть аналог у MS с тем же прототипом и похожей
+        // /// (CRYPT_HASH_CTX другой) реализацией.</para></intdoc>
+        // /// 
+        // /// <unmanagedperm action="LinkDemand" />
         //internal static byte[] EndHash(SafeHashHandle hHash)
         //{
         //    int dwDataLen = 0;
@@ -1510,7 +1510,8 @@ namespace Internal.NativeCrypto
         //        throw new CryptographicException(Marshal.GetLastWin32Error());
         //    return data;
         //}
-        //end:sk
+        
+		//end:sk
 
         // Helper method used by DeriveKey (above) to return the key contents.
         // WARNING: This function side-effects its first argument (hProv)

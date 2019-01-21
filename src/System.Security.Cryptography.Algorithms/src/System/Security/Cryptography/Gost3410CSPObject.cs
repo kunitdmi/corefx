@@ -4,8 +4,8 @@
     /// Переходник от структуры <see cref="Gost3410Parameters"/> к объекту.
     /// </summary>
     /// 
-    /// <basedon cref="System.Security.Cryptography.RSACspObject"/> 
-    /// <basedon cref="System.Security.Cryptography.DSACspObject"/>
+    ///// <basedon cref="System.Security.Cryptography.RSACspObject"/> 
+    ///// <basedon cref="System.Security.Cryptography.DSACspObject"/>
     internal class Gost3410CspObject
     {
         /// <summary>

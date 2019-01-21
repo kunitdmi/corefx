@@ -51,11 +51,11 @@ namespace System.Security.Cryptography
         /// Объект может использоваться
         /// для симметричного зашифрования и расшифрования.</para></remarks>
         /// 
-        /// <doc-sample path="Simple\Encrypt" name="EncryptDecryptRandomFile"
-        /// region="EncryptDecryptRandomFile">Пример зашифрования и
-        /// расшифрования файла при помощи 
-        ///  порожденного класса <see cref="Gost28147CryptoServiceProvider"/>.
-        ///  </doc-sample>
+        ///// <doc-sample path="Simple\Encrypt" name="EncryptDecryptRandomFile"
+        ///// region="EncryptDecryptRandomFile">Пример зашифрования и
+        ///// расшифрования файла при помощи 
+        /////  порожденного класса <see cref="Gost28147CryptoServiceProvider"/>.
+        /////  </doc-sample>
         public static new Gost28147 Create()
         {
             // Создание объекта идет по конфигурации для алгоритма заданного 
@@ -73,11 +73,11 @@ namespace System.Security.Cryptography
         /// <returns>Криптографический объект, реализующий алгоритм 
         /// ГОСТ 28147.</returns>
         /// 
-        /// <doc-sample path="Simple\Encrypt" name="EncryptDecryptRandomFile"
-        /// region="EncryptDecryptRandomFile">Пример зашифрования и
-        /// расшифрования файла при помощи 
-        ///  порожденного класса <see cref="Gost28147CryptoServiceProvider"/>.
-        ///  </doc-sample>
+        ///// <doc-sample path="Simple\Encrypt" name="EncryptDecryptRandomFile"
+        ///// region="EncryptDecryptRandomFile">Пример зашифрования и
+        ///// расшифрования файла при помощи 
+        /////  порожденного класса <see cref="Gost28147CryptoServiceProvider"/>.
+        /////  </doc-sample>
         public static new Gost28147 Create(string algName)
         {
             // Создание объекта идет по конфигурации для алгоритма заданного 

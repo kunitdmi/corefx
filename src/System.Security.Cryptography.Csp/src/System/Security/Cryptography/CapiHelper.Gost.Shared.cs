@@ -11,10 +11,7 @@ namespace Internal.NativeCrypto
 {
     internal static partial class CapiHelper
     {
-
         /// <summary>
-        /// Helper for all GostCryptoServiceProvider.ImportParameters()
-        /// </summary>
         /// Кодирование Public ключа ГОСТ 34.10 в BLOB для импорта.
         /// </summary>
         /// 
@@ -30,7 +27,7 @@ namespace Internal.NativeCrypto
         /// <intdoc><para>Аналог в MS отсутствует, часть реализации
         /// присутствует в ImportKey. У нас функция используется еще 
         /// и при разборе открытого клуча в обходе
-        /// <see cref="CryptoPro.Sharpei.NetDetours.CPPublicKey"/>.</para></intdoc>
+        /// CryptoPro.Sharpei.NetDetours.CPPublicKey.</para></intdoc>
         /// 
         /// <unmanagedperm action="LinkDemand" />
         internal static byte[] EncodePublicBlob(Gost3410CspObject cspObject, CspAlgorithmType alg)
@@ -84,8 +81,6 @@ namespace Internal.NativeCrypto
         }
 
         /// <summary>
-        /// Helper for all GostCryptoServiceProvider.ImportParameters()
-        /// </summary>
         /// Кодирование Public ключа ГОСТ 34.10 в BLOB для импорта.
         /// </summary>
         /// 
@@ -102,7 +97,7 @@ namespace Internal.NativeCrypto
         /// <intdoc><para>Аналог в MS отсутствует, часть реализации
         /// присутствует в ImportKey. У нас функция используется еще 
         /// и при разборе открытого клуча в обходе
-        /// <see cref="CryptoPro.Sharpei.NetDetours.CPPublicKey"/>.</para></intdoc>
+        /// CryptoPro.Sharpei.NetDetours.CPPublicKey.</para></intdoc>
         /// 
         /// <unmanagedperm action="LinkDemand" />
         internal static byte[] EncodePublicBlob(byte[] keyBlob, byte[] paramBlob, CspAlgorithmType alg)
@@ -220,23 +215,23 @@ namespace Internal.NativeCrypto
             cspObject._digestParamSet = publicKeyParameters.DigestParamSet;
         }
 
-        /// <summary>
-        /// Кодирование сессионного ключа в SIMPLE BLOB.
-        /// </summary>
-        /// 
-        /// <param name="cspObject">Зашифрованный сессионный ключ.</param>
-        /// <param name="algid">Алгоритм зашифрованного ключа.</param>
-        /// 
-        /// <returns>BLOB</returns>
-        /// 
-        /// <exception cref="CryptographicException">При ошибках
-        /// кодирования структуры.</exception>
-        /// <argnull name="cspObject" />
-        /// 
-        /// <intdoc><para>Аналог в MS отсутствует, часть реализации
-        /// присутствует в ImportKey. </para></intdoc>
-        /// 
-        /// <unmanagedperm action="LinkDemand" />
+        ///// <summary>
+        ///// Кодирование сессионного ключа в SIMPLE BLOB.
+        ///// </summary>
+        ///// 
+        ///// <param name="cspObject">Зашифрованный сессионный ключ.</param>
+        ///// <param name="algid">Алгоритм зашифрованного ключа.</param>
+        ///// 
+        ///// <returns>BLOB</returns>
+        ///// 
+        ///// <exception cref="CryptographicException">При ошибках
+        ///// кодирования структуры.</exception>
+        ///// <argnull name="cspObject" />
+        ///// 
+        ///// <intdoc><para>Аналог в MS отсутствует, часть реализации
+        ///// присутствует в ImportKey. </para></intdoc>
+        ///// 
+        ///// <unmanagedperm action="LinkDemand" />
         //internal static byte[] EncodeSimpleBlob(GostWrappedKeyObject cspObject, int algid)
         //{
         //    if (cspObject == null)
@@ -289,23 +284,23 @@ namespace Internal.NativeCrypto
         //    return ret;
         //}
 
-        /// <summary>
-        /// Декодирование зашифрованного сессионного ключа из BLOB
-        /// в структуру.
-        /// </summary>
-        /// 
-        /// <param name="cspObject"><see cref="GostWrappedKeyObject"/></param>
-        /// <param name="data">BLOB</param>
-        /// 
-        /// <argnull name="data" />
-        /// <argnull name="cspObject" />
-        /// <exception cref="CryptographicException">При ошибках
-        /// декодирования структуры.</exception>
-        /// 
-        /// <intdoc><para>Аналог в MS отсутствует, часть реализации
-        /// присутствует в ImportKey. </para></intdoc>
-        /// 
-        /// <unmanagedperm action="LinkDemand" />
+        ///// <summary>
+        ///// Декодирование зашифрованного сессионного ключа из BLOB
+        ///// в структуру.
+        ///// </summary>
+        ///// 
+        ///// <param name="cspObject"><see cref="GostWrappedKeyObject"/></param>
+        ///// <param name="data">BLOB</param>
+        ///// 
+        ///// <argnull name="data" />
+        ///// <argnull name="cspObject" />
+        ///// <exception cref="CryptographicException">При ошибках
+        ///// декодирования структуры.</exception>
+        ///// 
+        ///// <intdoc><para>Аналог в MS отсутствует, часть реализации
+        ///// присутствует в ImportKey. </para></intdoc>
+        ///// 
+        ///// <unmanagedperm action="LinkDemand" />
         //internal static void DecodeSimpleBlob(GostWrappedKeyObject cspObject, byte[] data)
         //{
         //    if (data == null)
