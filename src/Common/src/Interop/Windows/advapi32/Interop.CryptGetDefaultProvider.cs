@@ -16,7 +16,7 @@ internal partial class Interop
             CRYPT_USER_DEFAULT = 0x00000002
         }
 
-        [DllImport(Libraries.Advapi32, SetLastError = true, CharSet = CharSet.Unicode, EntryPoint = "CryptGetDefaultProviderW")]
+        [DllImport(Libraries.Advapi32, SetLastError = true, CharSet = CharSet.Ansi, EntryPoint = "CryptGetDefaultProviderA")]
         public static extern bool CryptGetDefaultProvider(
             int dwProvType,
             IntPtr pdwReserved,

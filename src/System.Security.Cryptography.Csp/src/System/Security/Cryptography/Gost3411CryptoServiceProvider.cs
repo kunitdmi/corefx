@@ -7,7 +7,7 @@ using System.ComponentModel;
 namespace System.Security.Cryptography
 {
     //
-    // If you change this file, make the corresponding changes to all of the SHA*CryptoServiceProvider.cs files.
+    // If you change this file, make the corresponding changes to all of the Gost3411*CryptoServiceProvider.cs files.
     //
     [EditorBrowsable(EditorBrowsableState.Never)]
     public sealed class Gost3411CryptoServiceProvider : Gost3411

@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
@@ -26,6 +27,40 @@ internal partial class Interop
             out int pbData,
             [In, Out] ref int pdwDataLen,
             int dwFlags);
+
+        [DllImport(Libraries.Advapi32, CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern bool CryptGetHashParam(
+            SafeHashHandle hHash,
+            CryptHashProperty dwParam,
+            IntPtr pbData,
+            [In, Out] ref int pdwDataLen,
+            int dwFlags);
+
+        public static bool CryptGetHashParam(
+            SafeHashHandle safeHashHandle,
+            CryptHashProperty dwParam,
+            Span<byte> pbData,
+            [In, Out] ref int pdwDataLen,
+            int dwFlags)
+        {
+            if (pbData.IsEmpty)
+            {
+                return CryptGetHashParam(safeHashHandle, dwParam, IntPtr.Zero, ref pdwDataLen, 0);
+            }
+
+            if (pdwDataLen > pbData.Length)
+            {
+                throw new IndexOutOfRangeException();
+            }
+
+            unsafe
+            {
+                fixed (byte* bytePtr = &MemoryMarshal.GetReference(pbData))
+                {
+                    return CryptGetHashParam(safeHashHandle, dwParam, (IntPtr)bytePtr, ref pdwDataLen, 0);
+                }
+            }
+        }
 
         [DllImport(Libraries.Advapi32, CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern bool CryptSetHashParam(SafeHashHandle hHash, CryptHashProperty dwParam, byte[] buffer, int dwFlags);
