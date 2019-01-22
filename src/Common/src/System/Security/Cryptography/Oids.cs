@@ -155,6 +155,7 @@ namespace System.Security.Cryptography
         public const string Gost3411_2012_256 = "1.2.643.7.1.1.2.2";
         public const string Gost3411_2012_512 = "1.2.643.7.1.1.2.3";
         public const string Gost28147 = "1.2.643.2.2.21";
+        public const string GostVerbaO = "1.2.643.2.2.31.1";
         //end: sk
     }
 }

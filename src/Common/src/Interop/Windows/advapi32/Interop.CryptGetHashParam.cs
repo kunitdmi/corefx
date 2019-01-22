@@ -18,6 +18,7 @@ internal partial class Interop
             HP_HMAC_INFO = 0x0005,  // information for creating an HMAC
             HP_TLS1PRF_LABEL = 0x0006,  // label for TLS1 PRF
             HP_TLS1PRF_SEED = 0x0007,  // seed for TLS1 PRF
+            HP_HASHSTARTVECT = 0x0008,  // GOST imit
         }
 
         [DllImport(Libraries.Advapi32, CharSet = CharSet.Unicode, SetLastError = true)]

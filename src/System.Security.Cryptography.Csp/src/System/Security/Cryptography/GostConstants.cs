@@ -7,49 +7,49 @@
     /// </summary>
     internal static class GostConstants
     {
-        // dwFlags definitions for CryptAcquireContext
-        internal const uint CRYPT_NEWKEYSET = 0x00000008;
-        internal const uint CRYPT_VERIFYCONTEXT = 0xF0000000;
-        internal const uint CRYPT_MACHINEKEYSET = 0x00000020;
-        internal const uint CRYPT_SILENT = 0x00000040;
+        //// dwFlags definitions for CryptAcquireContext
+        //internal const uint CRYPT_NEWKEYSET = 0x00000008;
+        //internal const uint CRYPT_VERIFYCONTEXT = 0xF0000000;
+        //internal const uint CRYPT_MACHINEKEYSET = 0x00000020;
+        //internal const uint CRYPT_SILENT = 0x00000040;
 
-        internal const int HP_HASHVAL = 0x0002;
-        internal const int HP_HASHSTARTVECT = 0x0008;
+        //internal const int HP_HASHVAL = 0x0002;
+        //internal const int HP_HASHSTARTVECT = 0x0008;
 
-        // dwFlag definitions for CryptGenKey
-        internal const int CRYPT_EXPORTABLE = 0x00000001;
-        internal const int CRYPT_ARCHIVABLE = 0x00004000;
-        internal const int CRYPT_USER_PROTECTED = 0x00000002;
-        internal const int CRYPT_PREGEN = 0x00000040;
+        //// dwFlag definitions for CryptGenKey
+        //internal const int CRYPT_EXPORTABLE = 0x00000001;
+        //internal const int CRYPT_ARCHIVABLE = 0x00004000;
+        //internal const int CRYPT_USER_PROTECTED = 0x00000002;
+        //internal const int CRYPT_PREGEN = 0x00000040;
 
-        /// <summary>
-        /// OID алгоритма хэширования ГОСТ Р 34.11-2001
-        /// </summary>
-        internal const string OID_CP_GOST_R3411 = "1.2.643.2.2.9";
-        /// <summary>
-        /// OID алгоритма хэширования ГОСТ Р 34.11-2012 256
-        /// </summary>
-        internal const string OID_CP_GOST_R3411_12_256 = "1.2.643.7.1.1.2.2";
-        /// <summary>
-        /// OID алгоритма хэширования ГОСТ Р 34.11-2012 512
-        /// </summary>
-        internal const string OID_CP_GOST_R3411_12_512 = "1.2.643.7.1.1.2.3";
-        /// <summary>
-        /// OID алгоритма цифровой подписи ГОСТ Р 34.10-2001
-        /// </summary>
-        internal const string OID_CP_GOST_R3410EL = "1.2.643.2.2.19";
-        /// <summary>
-        /// OID алгоритма цифровой подписи ГОСТ Р 34.10-2012 256
-        /// </summary>
-        internal const string OID_CP_GOST_R3410_12_256 = "1.2.643.7.1.1.1.1";
-        /// <summary>
-        /// OID алгоритма цифровой подписи ГОСТ Р 34.10-2012 512
-        /// </summary>
-        internal const string OID_CP_GOST_R3410_12_512 = "1.2.643.7.1.1.1.2";
-        /// <summary>
-        /// OID параметров шифрования по умолчанию.
-        /// </summary>
-        internal const string OID_CipherVerbaO = "1.2.643.2.2.31.1";
+        ///// <summary>
+        ///// OID алгоритма хэширования ГОСТ Р 34.11-2001
+        ///// </summary>
+        //internal const string OID_CP_GOST_R3411 = "1.2.643.2.2.9";
+        ///// <summary>
+        ///// OID алгоритма хэширования ГОСТ Р 34.11-2012 256
+        ///// </summary>
+        //internal const string OID_CP_GOST_R3411_12_256 = "1.2.643.7.1.1.2.2";
+        ///// <summary>
+        ///// OID алгоритма хэширования ГОСТ Р 34.11-2012 512
+        ///// </summary>
+        //internal const string OID_CP_GOST_R3411_12_512 = "1.2.643.7.1.1.2.3";
+        ///// <summary>
+        ///// OID алгоритма цифровой подписи ГОСТ Р 34.10-2001
+        ///// </summary>
+        //internal const string OID_CP_GOST_R3410EL = "1.2.643.2.2.19";
+        ///// <summary>
+        ///// OID алгоритма цифровой подписи ГОСТ Р 34.10-2012 256
+        ///// </summary>
+        //internal const string OID_CP_GOST_R3410_12_256 = "1.2.643.7.1.1.1.1";
+        ///// <summary>
+        ///// OID алгоритма цифровой подписи ГОСТ Р 34.10-2012 512
+        ///// </summary>
+        //internal const string OID_CP_GOST_R3410_12_512 = "1.2.643.7.1.1.1.2";
+        ///// <summary>
+        ///// OID параметров шифрования по умолчанию.
+        ///// </summary>
+        //internal const string OID_CipherVerbaO = "1.2.643.2.2.31.1";
 
         /// <summary>
         /// Алгоритм подписи ГОСТ Р 34.10-2001 + хеширования.
