@@ -112,8 +112,9 @@ namespace Internal.Cryptography
 
         private sealed class CryptoApiHashProvider : HashProvider
         {
-            private readonly SafeHashHandle _hHash;
+            private SafeHashHandle _hHash;
             private readonly SafeProvHandle _hProv;
+            private readonly int _calgHash;
 
             public override int HashSizeInBytes { get; }
 
@@ -128,7 +129,6 @@ namespace Internal.Cryptography
 	            SafeHashHandle hHash;
 	            if (!Interop.Advapi32.CryptCreateHash(hProv, calgHash, SafeKeyHandle.InvalidHandle, (int)Interop.Advapi32.CryptCreateHashFlags.None, out hHash))
 	            {
-                    hProv.Dispose();
                     int hr = Marshal.GetHRForLastWin32Error();
                     throw new CryptographicException(hr);
 	            }
@@ -137,20 +137,17 @@ namespace Internal.Cryptography
                 int cbHashSize = sizeof(int);
                 if (!Interop.Advapi32.CryptGetHashParam(hHash, Interop.Advapi32.CryptHashProperty.HP_HASHSIZE, out dwHashSize, ref cbHashSize, 0))
                 {
-                    hHash.Dispose();
-                    hProv.Dispose();
                     int hr = Marshal.GetHRForLastWin32Error();
                     throw new CryptographicException(hr);
                 }
                 if (dwHashSize < 0)
                 {
-                    hHash.Dispose();
-                    hProv.Dispose();
                     throw new PlatformNotSupportedException(
                         SR.Format(
                             SR.Cryptography_UnknownHashAlgorithm, providerType, calgHash));
                 }
                 HashSizeInBytes = dwHashSize;
+                _calgHash = calgHash;
                 _hHash = hHash;
                 _hProv = hProv;
             }
@@ -179,7 +176,13 @@ namespace Internal.Cryptography
                     int hr = Marshal.GetHRForLastWin32Error();
                     throw new CryptographicException(hr);
 		        }
-
+                //reinitialize
+                _hHash.Dispose();
+                if (!Interop.Advapi32.CryptCreateHash(_hProv, _calgHash, SafeKeyHandle.InvalidHandle, (int)Interop.Advapi32.CryptCreateHashFlags.None, out _hHash))
+                {
+                    int hr = Marshal.GetHRForLastWin32Error();
+                    throw new CryptographicException(hr);
+                }
                 bytesWritten = hashSize;
                 return true;
             }
