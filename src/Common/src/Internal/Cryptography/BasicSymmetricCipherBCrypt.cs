@@ -12,7 +12,7 @@ namespace Internal.Cryptography
     internal sealed class BasicSymmetricCipherBCrypt : BasicSymmetricCipher
     {
         private readonly bool _encrypting;
-        private SafeKeyHandle _hKey;
+        private SafeKeyHandleBCrypt _hKey;
         private byte[] _currentIv;  // CNG mutates this with the updated IV for the next stage on each Encrypt/Decrypt call.
                                     // The base IV holds a copy of the original IV for Reset(), until it is cleared by Dispose().
 
@@ -42,7 +42,7 @@ namespace Internal.Cryptography
         {
             if (disposing)
             {
-                SafeKeyHandle hKey = _hKey;
+                SafeKeyHandleBCrypt hKey = _hKey;
                 _hKey = null;
                 if (hKey != null)
                 {

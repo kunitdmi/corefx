@@ -16,7 +16,7 @@ namespace System.Security.Cryptography
     public sealed partial class AesCcm
     {
         private static readonly SafeAlgorithmHandle s_aesCcm = AesBCryptModes.OpenAesAlgorithm(Cng.BCRYPT_CHAIN_MODE_CCM);
-        private SafeKeyHandle _keyHandle;
+        private SafeKeyHandleBCrypt _keyHandle;
 
         private void ImportKey(ReadOnlySpan<byte> key)
         {

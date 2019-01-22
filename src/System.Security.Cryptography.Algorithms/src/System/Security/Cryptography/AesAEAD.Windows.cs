@@ -13,7 +13,7 @@ namespace System.Security.Cryptography
     {
         public static unsafe void Encrypt(
             SafeAlgorithmHandle algorithm,
-            SafeKeyHandle keyHandle,
+            SafeKeyHandleBCrypt keyHandle,
             ReadOnlySpan<byte> nonce,
             ReadOnlySpan<byte> associatedData,
             ReadOnlySpan<byte> plaintext,
@@ -57,7 +57,7 @@ namespace System.Security.Cryptography
 
         public static unsafe void Decrypt(
             SafeAlgorithmHandle algorithm,
-            SafeKeyHandle keyHandle,
+            SafeKeyHandleBCrypt keyHandle,
             ReadOnlySpan<byte> nonce,
             ReadOnlySpan<byte> associatedData,
             ReadOnlySpan<byte> ciphertext,
