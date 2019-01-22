@@ -12,13 +12,14 @@ image: Visual Studio 2017
 
 # install csp
 install:
-#  - cmd: cspTools\CSPSetup.exe -silent -lang eng -noreboot -nodlg -args "/quiet"
-#  - ps: Restart-Computer -Force
-#  - ps: Start-Sleep -s 10
-#  - ps: New-Item -ItemType Directory -Force -Path "$env:LOCALAPPDATA\Crypto Pro"
-#  - ps: Copy-Item -Force -Recurse ".\cspTools\6d24e911.000" -Destination "$env:LOCALAPPDATA\Crypto Pro\"
-#  - cmd: '"C:\Program Files\Crypto Pro\CSP\csptest" -absorb -certs -pattern "6d24e911.000"'
-#  - cmd: '"C:\Program Files\Crypto Pro\CSP\csptest" -enum -info -type PP_ENUMALGS'
+  - cmd: cspTools\CSPSetup.exe -silent -lang eng -noreboot -nodlg -args "/quiet"
+  - ps: Start-Sleep -s 60
+  - ps: Restart-Computer -Force
+  - ps: Start-Sleep -s 10
+  - ps: New-Item -ItemType Directory -Force -Path "$env:LOCALAPPDATA\Crypto Pro"
+  - ps: Copy-Item -Force -Recurse ".\cspTools\6d24e911.000" -Destination "$env:LOCALAPPDATA\Crypto Pro\"
+  - cmd: '"C:\Program Files\Crypto Pro\CSP\csptest" -absorb -certs -provtype 75 -provider "Crypto-Pro GOST R 34.10-2001 Cryptographic Service Provider" -pattern "6d24e911.000"'
+  - cmd: '"C:\Program Files\Crypto Pro\CSP\csptest" -enum -info -type PP_ENUMALGS'
 
 # build script logic
 build_script: 
@@ -30,7 +31,9 @@ test: off
   
 # runnng specified tests  
 test_script:
-#  - .dotnet\dotnet --info
+  - .dotnet\dotnet --info
+  - .dotnet\dotnet msbuild src\System.Security.Cryptography.Csp\tests\ /t:BuildAndTest "/p:XunitOptions=-class System.Security.Cryptography.Encryption.Gost3411.Tests.Gost3411CryptoServiceProviderTests" /p:ForceRunTests=true
+  - .dotnet\dotnet msbuild src\System.Security.Cryptography.Csp\tests\ /t:BuildAndTest "/p:XunitOptions=-class System.Security.Cryptography.Encryption.Gost3410.Tests.Gost3410CryptoServiceProviderTests" /p:ForceRunTests=true
 #  - .dotnet\dotnet msbuild /t:BuildAndTest src\Common\tests\
 #  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Algorithms\tests\
 #  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Primitives\tests\
