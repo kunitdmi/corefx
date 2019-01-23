@@ -1801,9 +1801,9 @@ namespace Internal.NativeCrypto
         {
             Rsa = 0,
             Dss = 1,
-            PROV_GOST_2001_DH = 75,
-            PROV_GOST_2012_256 = 80,
-            PROV_GOST_2012_512 = 81
+            PROV_GOST_2001_DH = GostConstants.PROV_GOST_2001_DH,
+            PROV_GOST_2012_256 = GostConstants.PROV_GOST_2012_256,
+            PROV_GOST_2012_512 = GostConstants.PROV_GOST_2012_512
         }
 
         [Flags]

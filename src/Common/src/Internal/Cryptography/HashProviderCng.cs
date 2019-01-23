@@ -4,6 +4,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Security.Cryptography;
 using Microsoft.Win32.SafeHandles;
 using NTSTATUS = Interop.BCrypt.NTSTATUS;
 using BCryptOpenAlgorithmProviderFlags = Interop.BCrypt.BCryptOpenAlgorithmProviderFlags;
@@ -51,7 +52,7 @@ namespace Internal.Cryptography
                 {
                     _hHash = hHash;
                     // add:sk
-                    if (hashAlgId != "GOST R 34.11-94")
+                    if (hashAlgId != GostConstants.GOST3411_STRING)
                     {
                     // end: sk
                         _reusable = true;

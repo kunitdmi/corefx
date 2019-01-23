@@ -159,6 +159,9 @@
     <Compile Include="$(CommonPath)\System\Security\Cryptography\EccKeyFormatHelper.cs">
       <Link>Common\System\Security\Cryptography\EccKeyFormatHelper.cs</Link>
     </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\GostConstants.cs">
+      <Link>Common\System\Security\Cryptography\GostConstants.cs</Link>
+    </Compile>
     <Compile Include="$(CommonPath)\System\Security\Cryptography\KeyBlobHelpers.cs">
       <Link>Common\System\Security\Cryptography\KeyBlobHelpers.cs</Link>
     </Compile>
