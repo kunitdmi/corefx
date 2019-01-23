@@ -4,7 +4,7 @@
     <AssemblyName>System.Security.Cryptography.Csp</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <NoWarn Condition="'$(TargetsUnix)' == 'true'">$(NoWarn);CS0809</NoWarn>
-    <Configurations>netcoreapp-Unix-Debug;netcoreapp-Unix-Release;netcoreapp-Windows_NT-Debug;netcoreapp-Windows_NT-Release;uap-Windows_NT-Debug;uap-Windows_NT-Release</Configurations>
+    <Configurations>netcoreapp-OSX-Debug;netcoreapp-OSX-Release;netcoreapp-Unix-Debug;netcoreapp-Unix-Release;netcoreapp-Windows_NT-Debug;netcoreapp-Windows_NT-Release;uap-Windows_NT-Debug;uap-Windows_NT-Release</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(CommonPath)\System\Security\Cryptography\Ber\Asn18BitCharString.cs">
@@ -330,16 +330,10 @@
     <Compile Include="$(CommonPath)\Internal\Cryptography\AsymmetricAlgorithmHelpers.Hash.cs">
       <Link>Common\Internal\Cryptography\AsymmetricAlgorithmHelpers.Hash.cs</Link>
     </Compile>
-    <Compile Include="$(CommonPath)\Interop\Linux\Interop.Libraries.cs">
-      <Link>Common\Interop\Linux\Interop.Libraries.cs</Link>
-    </Compile>
     <Compile Include="$(CommonPath)\Interop\Unix\Interop.Libraries.cs">
       <Link>Common\Interop\Unix\Interop.Libraries.cs</Link>
     </Compile>
-    <Compile Include="$(CommonPath)\Interop\Linux\CapiLite\Interop.CryptGetProvParam.cs">
-      <Link>Common\Interop\Linux\CapiLite\Interop.CryptGetProvParam.cs</Link>
-    </Compile>
-        <Compile Include="$(CommonPath)\Internal\Cryptography\Unix\CryptoThrowHelper.Capi.cs">
+    <Compile Include="$(CommonPath)\Internal\Cryptography\Unix\CryptoThrowHelper.Capi.cs">
       <Link>Internal\Cryptography\Unix\CryptoThrowHelper.Capi.cs</Link>
     </Compile>
   </ItemGroup>
@@ -372,6 +366,19 @@
     </Compile>
     <Compile Include="$(CommonPath)\Interop\Windows\Interop.Libraries.cs">
       <Link>Common\Interop\Windows\Interop.Libraries.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetsUnix)' == 'true' AND '$(TargetsOSX)' != 'true' ">
+    <Compile Include="$(CommonPath)\Interop\Unix\Interop.Libraries.Capi.cs">
+      <Link>Common\Interop\Unix\Interop.Libraries.Capi.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\Interop\Linux\Interop.Libraries.cs">
+      <Link>Common\Interop\Linux\Interop.Libraries.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetsOSX)' == 'true' ">
+    <Compile Include="$(CommonPath)\Interop\OSX\Interop.Libraries.cs">
+      <Link>Common\Interop\OSX\Interop.Libraries.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>

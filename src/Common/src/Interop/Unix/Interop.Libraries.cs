@@ -14,7 +14,5 @@ internal static partial class Interop
         internal const string CompressionNative = "System.IO.Compression.Native";
         internal const string IOPortsNative = "System.IO.Ports.Native";
         internal const string Libdl = "libdl";
-        internal const string Advapi32 = "libcapi10";
-        internal const string Crypt32 = "libcapi20";
     }
 }
