@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyName>System.Security.Cryptography.Cng</AssemblyName>
     <ProjectGuid>{4C1BD451-6A99-45E7-9339-79C77C42EE9E}</ProjectGuid>
@@ -274,6 +274,9 @@
     </Compile>
     <Compile Include="$(CommonPath)\System\Security\Cryptography\ECDsaCng.SignVerify.cs">
       <Link>Common\System\Security\Cryptography\ECDsaCng.SignVerify.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\GostConstants.cs">
+      <Link>Common\System\Security\Cryptography\GostConstants.cs</Link>
     </Compile>
     <Compile Include="$(CommonPath)\System\Security\Cryptography\KeyFormatHelper.cs">
       <Link>Common\System\Security\Cryptography\KeyFormatHelper.cs</Link>

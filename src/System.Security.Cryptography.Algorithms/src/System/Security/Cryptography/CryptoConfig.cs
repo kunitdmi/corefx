@@ -31,13 +31,13 @@ namespace System.Security.Cryptography
         private const string OID_OIWSEC_RIPEMD160 = "1.3.36.3.2.1";
 
         //add: sk
-        private const string OID_GOST3410 = "1.2.643.2.2.19";
-        private const string OID_GOST3410_2012_256 = "1.2.643.7.1.1.1.1";
-        private const string OID_GOST3410_2012_512 = "1.2.643.7.1.1.1.2";
-        private const string OID_GOST3411 = "1.2.643.2.2.9";
-        private const string OID_GOST3411_2012_256 = "1.2.643.7.1.1.2.2";
-        private const string OID_GOST3411_2012_512 = "1.2.643.7.1.1.2.3";
-        private const string OID_GOST28147 = "1.2.643.2.2.21";
+        private const string OID_GOST3410 = Oids.Gost3410;
+        private const string OID_GOST3410_2012_256 = Oids.Gost3410_2012_256;
+        private const string OID_GOST3410_2012_512 = Oids.Gost3410_2012_512;
+        private const string OID_GOST3411 = Oids.Gost3411;
+        private const string OID_GOST3411_2012_256 = Oids.Gost3410_2012_256;
+        private const string OID_GOST3411_2012_512 = Oids.Gost3410_2012_512;
+        private const string OID_GOST28147 = Oids.Gost28147;
         //end: sk
 
         private const string ECDsaIdentifier = "ECDsa";

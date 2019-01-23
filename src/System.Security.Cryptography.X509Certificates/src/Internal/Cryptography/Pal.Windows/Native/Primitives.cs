@@ -4,6 +4,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Security.Cryptography;
 using System.Runtime.InteropServices;
 
 namespace Internal.Cryptography.Pal.Native
@@ -455,7 +456,7 @@ namespace Internal.Cryptography.Pal.Native
         public const int CALG_DSS_SIGN = 0x2200;
         public const int CALG_SHA1     = 0x8004;
         //add: sk
-        public const int CALG_GOST3410 = 0x2e23;
+        public const int CALG_GOST3410 = GostConstants.CALG_GR3410EL;
         //end: sk
     }
 

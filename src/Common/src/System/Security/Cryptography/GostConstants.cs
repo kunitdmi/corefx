@@ -100,6 +100,15 @@
         internal const int CRYPT_E_NOT_FOUND = -2146885628; //0x80092004
 
         // algorithm identifier definitions
+        internal const int CALG_MD5 = 0x8003;
+        internal const int CALG_SHA1 = 0x8004;
+        internal const int CALG_SHA256 = 0x800C;
+        internal const int CALG_SHA384 = 0x800D;
+        internal const int CALG_SHA512 = 0x800E;
+        internal const int CALG_RSA_KEYX = 0xa400;
+        internal const int CALG_RSA_SIGN = 0x2400;
+        internal const int CALG_DSS_SIGN = 0x2200;
+
         internal const int CALG_DH_EL_EPHEM = (int)0xaa25;
         internal const int CALG_DH_EL_SF = (int)0xaa24;
         internal const int ALG_SID_DH_GR3410_12_256_EPHEM = (int)0xaa47;
@@ -194,5 +203,10 @@
         internal const string TagEncryptionParamSet = "encryptionParamSet";
         internal const string TagPublicKey = "PublicKey";
         internal const string TagPrivateKey = "PrivateKey";
+
+        // string algorithm names
+        internal const string GOST3411_STRING = "GOST R 34.11-94";
+        internal const string GOST3411_2012_256STRING = "GR 34.11-2012 256";
+        internal const string GOST3411_2012_512STRING = "GR 34.11-2012 512";
     }
 }

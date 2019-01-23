@@ -14,18 +14,18 @@ namespace Internal.Cryptography
         public const string SHA256 = "SHA256";
         public const string SHA384 = "SHA384";
         public const string SHA512 = "SHA512";
-        public const string GOST3411 = "GOST R 34.11-94";
-        public const string GOST3411_2012_256 = "GR 34.11-2012 256";
-        public const string GOST3411_2012_512 = "GR 34.11-2012 512";
+        public const string GOST3411 = GostConstants.GOST3411_STRING;
+        public const string GOST3411_2012_256 = GostConstants.GOST3411_2012_256STRING;
+        public const string GOST3411_2012_512 = GostConstants.GOST3411_2012_512STRING;
 
         private const string OID_MD5 = "1.2.840.113549.2.5";
         private const string OID_SHA1 = "1.3.14.3.2.26";
         private const string OID_SHA256 = "2.16.840.1.101.3.4.2.1";
         private const string OID_SHA384 = "2.16.840.1.101.3.4.2.2";
         private const string OID_SHA512 = "2.16.840.1.101.3.4.2.3";
-        private const string OID_GOST3411 = "1.2.643.2.2.9";
-        private const string OID_GOST3411_2012_256 = "1.2.643.7.1.1.2.2";
-        private const string OID_GOST3411_2012_512 = "1.2.643.7.1.1.2.3";
+        private const string OID_GOST3411 = Oids.Gost3411;
+        private const string OID_GOST3411_2012_256 = Oids.Gost3411_2012_256;
+        private const string OID_GOST3411_2012_512 = Oids.Gost3411_2012_512;
 
         // For backwards compat with CapiHelper.ObjToHashAlgorithm, use "hashAlg" as name
         public static HashAlgorithmName ObjToHashAlgorithmName(object hashAlg)
