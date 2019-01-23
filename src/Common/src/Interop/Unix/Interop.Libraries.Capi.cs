@@ -7,7 +7,7 @@ internal static partial class Interop
     internal static partial class Libraries
     {
         // Shims
-        // internal const string Advapi32 = "libcapi10";
-        // internal const string Crypt32 = "libcapi20";
+        internal const string Advapi32 = "libcapi10";
+        internal const string Crypt32 = "libcapi20";
     }
 }
