@@ -116,6 +116,14 @@ namespace System.Security.Cryptography
                 ht.Add("System.Security.Cryptography.Gost3410", OID_GOST3410);
                 ht.Add("System.Security.Cryptography.Gost3410CryptoServiceProvider", OID_GOST3410);
 
+                ht.Add("Gost3410_2012_256", OID_GOST3410_2012_256);
+                ht.Add("System.Security.Cryptography.Gost3410_2012_256", OID_GOST3410_2012_256);
+                ht.Add("System.Security.Cryptography.Gost3410_2012_256CryptoServiceProvider", OID_GOST3410_2012_256);
+
+                ht.Add("Gost3410_2012_512", OID_GOST3410_2012_512);
+                ht.Add("System.Security.Cryptography.Gost3410_2012_512", OID_GOST3410_2012_512);
+                ht.Add("System.Security.Cryptography.Gost3410_2012_512CryptoServiceProvider", OID_GOST3410_2012_512);
+
                 ht.Add("Gost3411", OID_GOST3411);
                 ht.Add("System.Security.Cryptography.Gost3411", OID_GOST3410);
                 ht.Add("System.Security.Cryptography.Gost3411CryptoServiceProvider", OID_GOST3411);
@@ -172,10 +180,10 @@ namespace System.Security.Cryptography
                 string Gost3410Type = "System.Security.Cryptography.Gost3410CryptoServiceProvider, " + AssemblyName_Csp;
                 string Gost3411Type = "System.Security.Cryptography.Gost3411CryptoServiceProvider, " + AssemblyName_Csp;
 
-                // string Gost3410_2012_256Type = "System.Security.Cryptography.Gost3410_2012_256CryptoServiceProvider, " + AssemblyName_Csp;
+                string Gost3410_2012_256Type = "System.Security.Cryptography.Gost3410_2012_256CryptoServiceProvider, " + AssemblyName_Csp;
                 string Gost3411_2012_256Type = "System.Security.Cryptography.Gost3411_2012_256CryptoServiceProvider, " + AssemblyName_Csp;
 
-                // string Gost3410_2012_512Type = "System.Security.Cryptography.Gost3410_2012_512CryptoServiceProvider, " + AssemblyName_Csp;
+                string Gost3410_2012_512Type = "System.Security.Cryptography.Gost3410_2012_512CryptoServiceProvider, " + AssemblyName_Csp;
                 string Gost3411_2012_512Type = "System.Security.Cryptography.Gost3411_2012_512CryptoServiceProvider, " + AssemblyName_Csp;
                 //end: sk
 
@@ -249,6 +257,12 @@ namespace System.Security.Cryptography
                 //add: sk
                 ht.Add("Gost3410", Gost3410Type);
                 ht.Add("System.Security.Cryptography.Gost3410", Gost3410Type);
+
+                ht.Add("Gost3410_2012_256", Gost3410_2012_256Type);
+                ht.Add("System.Security.Cryptography.Gost3410_2012_256", Gost3410_2012_256Type);
+
+                ht.Add("Gost3410_2012_512", Gost3410_2012_512Type);
+                ht.Add("System.Security.Cryptography.Gost3410_2012_512", Gost3410_2012_512Type);
                 //end: sk
 
                 // Symmetric algorithms

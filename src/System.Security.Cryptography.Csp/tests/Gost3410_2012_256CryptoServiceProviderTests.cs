@@ -17,12 +17,9 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
     /// <summary>
     /// Since SHAxCryptoServiceProvider types wraps IncrementalHash from Algorithms assembly, we only test minimally here.
     /// </summary>
-    public class Gost3410CryptoServiceProviderTests
+    public class Gost3410_2012_256CryptoServiceProviderTests
     {
-        private const string TestCertificateThumbprint = "acdc0b06b3c034c000b1a52b322f5cf1b208b719";
-
-        private const int Gost2001ProvType = 75;
-
+        private const int Gost2012_256ProvType = 80;
         private static readonly byte[] bytesToHash =
             new byte[]
             {
@@ -33,20 +30,20 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
         private static readonly byte[] computedHash =
             new byte[]
             {
-                0x67, 0x3F, 0x02, 0xB6, 0x97, 0xE0, 0xEC, 0xA2,
-                0xC3, 0xEA, 0xA6, 0x48, 0xB5, 0x62, 0x9A, 0x27,
-                0xC1, 0x5A, 0x79, 0x44, 0xB7, 0xE7, 0x10, 0xED,
-                0x8A, 0x4C, 0xF8, 0xCE, 0xA9, 0x09, 0x9E, 0x0F
+                0xF9, 0xA9, 0x62, 0xCA, 0xFF, 0x60, 0x9E, 0x10,
+                0x12, 0x5C, 0x2B, 0xD6, 0xA8, 0x14, 0x09, 0xB6,
+                0x57, 0x03, 0x1A, 0xDA, 0xCF, 0xDE, 0xD9, 0x4D,
+                0x24, 0x32, 0xC1, 0xA8, 0xD7, 0xD0, 0x8F, 0xA8
             };
             
         private static readonly byte[] ComputedSignature =
             new byte[]
                 {
-                    0x62, 0x6B, 0x5B, 0x74, 0xCF, 0x3D, 0xFA, 0x7C, 0x22, 0xFD, 0x95, 0x0E, 0xC9, 0x7D, 0xBA,
-                    0xE2, 0x0C, 0x24, 0xE8, 0xB1, 0xEB, 0xD2, 0xFC, 0x53, 0x01, 0x7E, 0x4D, 0xDD, 0xF1, 0x52,
-                    0xA8, 0xB6, 0xCF, 0x22, 0x12, 0x88, 0x6E, 0x70, 0x8D, 0x12, 0x35, 0xFC, 0x87, 0x5D, 0x62,
-                    0x0A, 0xDF, 0x20, 0x4D, 0xD7, 0xEE, 0x42, 0x23, 0x16, 0xCD, 0x18, 0x5C, 0xA0, 0x0A, 0x02,
-                    0x77, 0x27, 0xBC, 0x19,
+                    0x11, 0x95, 0x7C, 0x66, 0x71, 0x00, 0x3E, 0xFD, 0x48, 0xC0, 0xD4, 0x5B, 0x1F, 0x03, 0x50,
+                    0xF9, 0x5A, 0x6C, 0xA5, 0x1C, 0xF9, 0x8D, 0x6C, 0x43, 0x2C, 0xFA, 0x98, 0x86, 0x32, 0xE5,
+                    0x8C, 0x15, 0x12, 0x17, 0xE4, 0xEE, 0xE3, 0x83, 0x97, 0x3B, 0x48, 0x3A, 0x7F, 0xC4, 0x09,
+                    0x1C, 0x74, 0x55, 0x10, 0x15, 0x4D, 0x02, 0x63, 0x7D, 0xF3, 0x12, 0xC8, 0x19, 0x4A, 0xA3,
+                    0xFF, 0x8B, 0x71, 0xDC,
                 };
 
         [Fact]
@@ -66,7 +63,7 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
             using (var gost = GetGostProvider())
             {
                 CspKeyContainerInfo containerInfo = gost.CspKeyContainerInfo;
-                Assert.Equal(Gost2001ProvType, containerInfo.ProviderType);
+                Assert.Equal(Gost2012_256ProvType, containerInfo.ProviderType);
             }
         }
 
@@ -80,20 +77,20 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
             using (var gost = GetGostProvider())
             {
                 CspKeyContainerInfo containerInfo = gost.CspKeyContainerInfo;
-                Assert.Equal(Gost2001ProvType, containerInfo.ProviderType);
+                Assert.Equal(Gost2012_256ProvType, containerInfo.ProviderType);
                 Assert.Equal(KeySize, gost.KeySize);
 
                 blob = gost.ExportCspBlob(false);
             }
 
-            using (var gost = new Gost3410CryptoServiceProvider())
+            using (var gost = new Gost3410_2012_256CryptoServiceProvider())
             {
                 gost.ImportCspBlob(blob);
 
                 CspKeyContainerInfo containerInfo = gost.CspKeyContainerInfo;
 
                 // The provider information is not persisted in the blob
-                Assert.Equal(Gost2001ProvType, containerInfo.ProviderType);
+                Assert.Equal(Gost2012_256ProvType, containerInfo.ProviderType);
                 Assert.Equal(KeySize, gost.KeySize);
             }
         }
@@ -109,7 +106,7 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
 
             using (var gost = GetGostProvider())
             {
-                byte[] signVal = gost.SignData(bytesToHash, HashAlgorithmName.Gost3411);
+                byte[] signVal = gost.SignData(bytesToHash, HashAlgorithmName.Gost3411_2012_256);
                 Assert.ThrowsAny<CryptographicException>(() => gost.VerifyHash(hashVal, signVal));
             }
         }
@@ -118,7 +115,7 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
         public void SignHashDefaultAlgorithmSuccess()
         {
             byte[] hashVal;
-            using (Gost3411 gostHash = Gost3411.Create())
+            using (Gost3411_2012_256 gostHash = Gost3411_2012_256.Create())
             {
                 hashVal = gostHash.ComputeHash(bytesToHash);
             }
@@ -134,12 +131,12 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
         // public void VerifyHashDefaultAlgorithmSuccess()
         // {
             // byte[] hashVal;
-            // using (Gost3411 gostHash = Gost3411.Create())
+            // using (Gost3411_2012_256 gostHash = Gost3411_2012_256.Create())
             // {
                 // hashVal = gostHash.ComputeHash(bytesToHash);
             // }
 
-            // using (var gost = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider)
+            // using (var gost = GostCertificate.GetGost3410PrivateKey() as Gost3410_2012_256CryptoServiceProvider)
             // {
                 // byte[] signVal = gost.SignData(hashVal);
                 // Assert.True(gost.VerifyHash(hashVal, signVal));
@@ -150,7 +147,7 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
         public void SignHashInvalidHashAlgorithmThrows()
         {
             byte[] hashVal;
-            using (Gost3411 gostHash = Gost3411.Create())
+            using (Gost3411_2012_256 gostHash = Gost3411_2012_256.Create())
             {
                 hashVal = gostHash.ComputeHash(bytesToHash);
             }
@@ -164,14 +161,15 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
         //[Fact(DisplayName = "Тест метода Create и подписи массива данных")]
         //public void Gost3410CreateAndComputeSignatureOnData()
         //{
-        //    var gost = Gost3410.Create() as Gost3410CryptoServiceProvider;
-        //    gost.SignData(bytesToHash, HashAlgorithmName.Gost3411);
+        //    var gost = Gost3410.Create() as Gost3410_2012_256CryptoServiceProvider;
+        //    gost.SignData(bytesToHash, HashAlgorithmName.Gost3411_2012_256);
         //}
         
         [Fact]
         public void Constructor()
         {
-            var gost = new Gost3410CryptoServiceProvider();
+            var gost = new Gost3410_2012_256CryptoServiceProvider();
+            Assert.NotNull(gost);
         }
 
         [Fact]
@@ -179,7 +177,8 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
         {
             using (var gost = GetGostProvider())
             {
-                gost.SignData(bytesToHash, HashAlgorithmName.Gost3411);
+                var signature = gost.SignData(bytesToHash, HashAlgorithmName.Gost3411_2012_256);
+                Assert.NotNull(signature);
             }
         }
         
@@ -188,8 +187,9 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
         {
             using (var gost = GetGostProvider())
             {
-                var signed = gost.SignData(bytesToHash, HashAlgorithmName.Gost3411);
-                var validationResult = gost.VerifyData(bytesToHash, signed, HashAlgorithmName.Gost3411);
+                var signed = gost.SignData(bytesToHash, HashAlgorithmName.Gost3411_2012_256);
+                Assert.NotNull(signed);
+                var validationResult = gost.VerifyData(bytesToHash, signed, HashAlgorithmName.Gost3411_2012_256);
                 Assert.True(validationResult);
             }
         }
@@ -199,7 +199,8 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
         {
             using (var gost = GetGostProvider())
             {
-                gost.SignHash(computedHash, HashAlgorithmName.Gost3411);
+                var signature = gost.SignHash(computedHash, HashAlgorithmName.Gost3411_2012_256);
+                Assert.NotNull(signature);
             }
         }
         
@@ -208,7 +209,7 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
         {
             using (var gost = GetGostProvider())
             {
-                Assert.True(gost.VerifyData(bytesToHash, ComputedSignature, HashAlgorithmName.Gost3411));
+                Assert.True(gost.VerifyData(bytesToHash, ComputedSignature, HashAlgorithmName.Gost3411_2012_256));
             }
         }
 
@@ -217,17 +218,17 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
         {
             using (var gost = GetGostProvider())
             {
-                Assert.True(gost.VerifyHash(computedHash, ComputedSignature, HashAlgorithmName.Gost3411));
+                Assert.True(gost.VerifyHash(computedHash, ComputedSignature, HashAlgorithmName.Gost3411_2012_256));
             }
         }
 
-        private static Gost3410CryptoServiceProvider GetGostProvider()
+        private static Gost3410_2012_256CryptoServiceProvider GetGostProvider()
         {
             CspParameters cpsParams = new CspParameters(
                 75,
-                "Crypto-Pro GOST R 34.10-2001 Cryptographic Service Provider",
-                "HDIMAGE\\\\G2001256.000\\2B94");
-            return new Gost3410CryptoServiceProvider(cpsParams);
+                "",
+                "HDIMAGE\\\\G2012256.001\\1610");
+            return new Gost3410_2012_256CryptoServiceProvider(cpsParams);
         }
     }
 }

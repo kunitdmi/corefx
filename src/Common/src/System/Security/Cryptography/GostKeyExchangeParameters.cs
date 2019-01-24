@@ -117,7 +117,7 @@ namespace System.Security.Cryptography
             importedKeyBytes[1] = 32;
             Array.Copy(BitConverter.GetBytes(GostConstants.CALG_GR3410EL), 0, importedKeyBytes, 4, 4);
             Array.Copy(BitConverter.GetBytes(GostConstants.GR3410_1_MAGIC), 0, importedKeyBytes, 8, 4);
-            Array.Copy(BitConverter.GetBytes(GostConstants.EL_SIZE), 0, importedKeyBytes, 12, 4);
+            Array.Copy(BitConverter.GetBytes(GostConstants.GOST_3410EL_SIZE), 0, importedKeyBytes, 12, 4);
             Array.Copy(encodeKeyParameters, 0, importedKeyBytes, 16, encodeKeyParameters.Length);
             Array.Copy(publicKeyParameters.PublicKey, 0, importedKeyBytes, encodeKeyParameters.Length + 16, publicKeyParameters.PublicKey.Length);
 

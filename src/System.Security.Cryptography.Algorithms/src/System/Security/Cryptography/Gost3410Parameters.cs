@@ -7,12 +7,12 @@ using System.Runtime.InteropServices;
 namespace System.Security.Cryptography
 {
     /// <summary>
-    /// Структура, содержащая параметры алгоритма подписи ГОСТ Р 34.10
-    /// и алгоритма формирования общего секретного ключа, включая
-    /// открытый ключ.
+    /// РЎС‚СЂСѓРєС‚СѓСЂР°, СЃРѕРґРµСЂР¶Р°С‰Р°СЏ РїР°СЂР°РјРµС‚СЂС‹ Р°Р»РіРѕСЂРёС‚РјР° РїРѕРґРїРёСЃРё Р“РћРЎРў Р  34.10
+    /// Рё Р°Р»РіРѕСЂРёС‚РјР° С„РѕСЂРјРёСЂРѕРІР°РЅРёСЏ РѕР±С‰РµРіРѕ СЃРµРєСЂРµС‚РЅРѕРіРѕ РєР»СЋС‡Р°, РІРєР»СЋС‡Р°СЏ
+    /// РѕС‚РєСЂС‹С‚С‹Р№ РєР»СЋС‡.
     /// </summary>
     /// <remarks>
-    /// <para>Подробное описание набора параметров см. 
+    /// <para>РџРѕРґСЂРѕР±РЅРѕРµ РѕРїРёСЃР°РЅРёРµ РЅР°Р±РѕСЂР° РїР°СЂР°РјРµС‚СЂРѕРІ СЃРј. 
     /// <a href="http://www.ietf.org/rfc/rfc4491.txt">RFC 4491</a>.</para>
     /// </remarks>
     /// 
@@ -21,15 +21,15 @@ namespace System.Security.Cryptography
     [StructLayout(LayoutKind.Sequential)]
     public struct Gost3410Parameters
     {
-        /// <summary>OID параметров подписи и DH.</summary>
+        /// <summary>OID РїР°СЂР°РјРµС‚СЂРѕРІ РїРѕРґРїРёСЃРё Рё DH.</summary>
         public string PublicKeyParamSet;
-        /// <summary>OID параметров хеширования.</summary>
+        /// <summary>OID РїР°СЂР°РјРµС‚СЂРѕРІ С…РµС€РёСЂРѕРІР°РЅРёСЏ.</summary>
         public string DigestParamSet;
-        /// <summary>Необязательный OID параметров шифрования.</summary>
+        /// <summary>РќРµРѕР±СЏР·Р°С‚РµР»СЊРЅС‹Р№ OID РїР°СЂР°РјРµС‚СЂРѕРІ С€РёС„СЂРѕРІР°РЅРёСЏ.</summary>
         public string EncryptionParamSet;
-        /// <summary>Открытый ключ.</summary>
+        /// <summary>РћС‚РєСЂС‹С‚С‹Р№ РєР»СЋС‡.</summary>
         public byte[] PublicKey;
-        /// <summary>Секретный ключ.</summary>
+        /// <summary>РЎРµРєСЂРµС‚РЅС‹Р№ РєР»СЋС‡.</summary>
         [NonSerialized]
         public byte[] PrivateKey;
     }

@@ -7,21 +7,21 @@ using System.IO;
 
 namespace System.Security.Cryptography
 {
-    public abstract partial class Gost3410 : AsymmetricAlgorithm
+    public abstract partial class Gost3410_2012_512 : AsymmetricAlgorithm
     {
-        public new static Gost3410 Create()
+        public new static Gost3410_2012_512 Create()
         {
-            return (Gost3410)CryptoConfig.CreateFromName(typeof(Gost3410).Name);
+            return (Gost3410_2012_512)CryptoConfig.CreateFromName(typeof(Gost3410_2012_512).Name);
         }
 
-        public new static Gost3410 Create(string algName)
+        public new static Gost3410_2012_512 Create(string algName)
         {
-            return (Gost3410)CryptoConfig.CreateFromName(algName);
+            return (Gost3410_2012_512)CryptoConfig.CreateFromName(algName);
         }
 
-        public static Gost3410 Create(int keySizeInBits)
+        public static Gost3410_2012_512 Create(int keySizeInBits)
         {
-            Gost3410 gost = Create();
+            Gost3410_2012_512 gost = Create();
 
             try
             {
@@ -35,9 +35,9 @@ namespace System.Security.Cryptography
             }
         }
 
-        public static Gost3410 Create(Gost3410Parameters parameters)
+        public static Gost3410_2012_512 Create(Gost3410Parameters parameters)
         {
-            Gost3410 gost = Create();
+            Gost3410_2012_512 gost = Create();
 
             try
             {
@@ -51,7 +51,7 @@ namespace System.Security.Cryptography
             }
         }
 
-        public const int DefaultKeySize = GostConstants.GOST_3410EL_SIZE;
+        public const int DefaultKeySize = GostConstants.GOST3410_2012_512KEY_SIZE;
         public abstract Gost3410Parameters ExportParameters(bool includePrivateParameters);
         public abstract void ImportParameters(Gost3410Parameters parameters);
         public virtual byte[] Encrypt(byte[] data) => throw DerivedClassMustOverride();
@@ -249,7 +249,7 @@ namespace System.Security.Cryptography
                 throw HashAlgorithmNameNullOrEmpty();
             }
 
-            for (int i = 256; ; i = checked(i * 2))
+            for (int i = 512; ; i = checked(i * 2))
             {
                 int hashLength = 0;
                 byte[] hash = ArrayPool<byte>.Shared.Rent(i);
@@ -268,8 +268,8 @@ namespace System.Security.Cryptography
             }
         }
         // #Q_
-        public override string KeyExchangeAlgorithm => "Gost3410"; //???
-        public override string SignatureAlgorithm => "Gost3410"; //???
+        public override string KeyExchangeAlgorithm => GostConstants.GOST3410_2012_512STRING;
+        public override string SignatureAlgorithm => GostConstants.GOST3410_2012_512STRING;
 
         private static Exception HashAlgorithmNameNullOrEmpty() =>
             new ArgumentException(SR.Cryptography_HashAlgorithmNameNullOrEmpty, "hashAlgorithm");

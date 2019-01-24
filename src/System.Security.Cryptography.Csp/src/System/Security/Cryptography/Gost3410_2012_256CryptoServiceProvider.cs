@@ -1,4 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
@@ -10,12 +10,12 @@ using static Internal.NativeCrypto.CapiHelper;
 namespace System.Security.Cryptography
 {
     /// <summary>
-    /// Реализация алгоритма подписи по ГОСТ Р 34.10 через 
+    /// Реализация алгоритма подписи по ГОСТ Р 34.10-2012 256 через 
     /// Cryptographic Service Provider (CSP). 
     /// Этот класс не наследуется.
     /// </summary>
     /// 
-    /// <remarks><para> Класс <c>Gost3410CryptoServiceProvider</c> 
+    /// <remarks><para> Класс <c>Gost3410_2012_256CryptoServiceProvider</c> 
     /// используется для создания цифровой подписи, формирования общего 
     /// секрета  (Shared Secret). Алгоритм использует секретный ключ длиной 
     /// 256, и открытый ключ длиной 512 бит.</para>
@@ -24,15 +24,15 @@ namespace System.Security.Cryptography
     /// <basedon cref="System.Security.Cryptography.RSACryptoServiceProvider"/>
     /// <basedon cref="System.Security.Cryptography.DSACryptoServiceProvider"/>
     /// 
-    /// <doc-sample path="Simple\Sign" name="Gost3410CSPSample">Пример работы с 
-    /// Gost3410CryptoServiceProvider.
+    /// <doc-sample path="Simple\Sign" name="Gost3410_2012_256CSPSample">Пример работы с 
+    /// Gost3410_2012_256CryptoServiceProvider.
     ///  </doc-sample>
     ///  
     /// <intdoc><para>При реализации убрана длина ключа, она всегда const</para>
     /// </intdoc>
     /// 
     /// <cspversions />
-    public sealed class Gost3410CryptoServiceProvider : Gost3410, ICspAsymmetricAlgorithm
+    public sealed class Gost3410_2012_256CryptoServiceProvider : Gost3410_2012_256, ICspAsymmetricAlgorithm
     {
         /// <summary>
         /// Признак наличия только открытого ключа, без секретного.
@@ -86,39 +86,39 @@ namespace System.Security.Cryptography
 
         private SafeProvHandle _safeProvHandle;
 
-        private Gost3411 _gost3411;
+        private Gost3411_2012_256 _hashImpl;
 
         /// <summary>
         /// Конструктор, создающий объект класса 
-        /// <see cref="Gost3410CryptoServiceProvider"/>.
+        /// <see cref="Gost3410_2012_256CryptoServiceProvider"/>.
         /// </summary>
         /// 
         /// <remarks><para>Создается контейнер с типом 75 на провайдере
         /// по умолчанию, со случайным именем контейнера. Ключи 
         /// будут храниться в store пользователя или машины в 
         /// зависимости от установленного свойства 
-        /// <see cref="Gost3410CryptoServiceProvider.UseMachineKeyStore"/>
+        /// <see cref="Gost3410_2012_256CryptoServiceProvider.UseMachineKeyStore"/>
         /// в момент создания объекта.</para>
         /// <para>Создание ключей будет отложено до момента, когда
         /// этот ключ реально потребуется.</para>
         /// </remarks>
         /// 
-        /// <doc-sample path="Simple\Sign" name="Gost3410CSPSample">Пример создания 
-        /// и работы с Gost3410CryptoServiceProvider.
+        /// <doc-sample path="Simple\Sign" name="Gost3410_2012_256CSPSample">Пример создания 
+        /// и работы с Gost3410_2012_256CryptoServiceProvider.
         ///  </doc-sample>
         [SecuritySafeCritical]
-        public Gost3410CryptoServiceProvider()
+        public Gost3410_2012_256CryptoServiceProvider()
             : this(
                 new CspParameters(
-                    GostConstants.PROV_GOST_2001_DH,
+                    GostConstants.PROV_GOST_2012_256,
                     null,
                     null,
-                    Gost3410CryptoServiceProvider.s_useMachineKeyStore))
+                    Gost3410_2012_256CryptoServiceProvider.s_useMachineKeyStore))
         {
         }
 
         /// <summary>
-        /// Конструктор алгоритма подписи по ГОСТ Р 34.10.
+        /// Конструктор алгоритма подписи по ГОСТ Р 34.10-2012 256.
         /// </summary>
         /// 
         /// <param name="parameters">Параметры алгоритма.</param>
@@ -133,7 +133,7 @@ namespace System.Security.Cryptography
         /// будут использованы именно эти параметры, в независимости от
         /// флага <see cref="UseMachineKeyStore"/>. По умолчанию значение
         /// флага из 
-        /// <see cref="Gost3410CryptoServiceProvider(CspParameters)"/>
+        /// <see cref="Gost3410_2012_256CryptoServiceProvider(CspParameters)"/>
         /// устанавливется в использование ключей из хранилищи пользователя.
         /// Для использования ключей из хранилища компьютера 
         /// необходимо установить флаг <see cref="CspParameters.Flags"/>:
@@ -146,17 +146,17 @@ namespace System.Security.Cryptography
         /// <containerperm flag="Create">Для создания контейнера с заданным
         /// (не случайным именем).</containerperm>
         [SecuritySafeCritical]
-        public Gost3410CryptoServiceProvider(CspParameters parameters)
+        public Gost3410_2012_256CryptoServiceProvider(CspParameters parameters)
         {
             _parameters = CapiHelper.SaveCspParameters(
-                CapiHelper.CspAlgorithmType.PROV_GOST_2001_DH,
+                CapiHelper.CspAlgorithmType.PROV_GOST_2012_256,
                 parameters,
                 s_useMachineKeyStore,
                 out _randomKeyContainer);
             _keySpec = _parameters.KeyNumber;
-            LegalKeySizesValue = new KeySizes[] { new KeySizes(GostConstants.GOST_3410EL_SIZE, GostConstants.GOST_3410EL_SIZE, 0) };
+            LegalKeySizesValue = new KeySizes[] { new KeySizes(GostConstants.GOST3410_2012_256KEY_SIZE, GostConstants.GOST3410_2012_256KEY_SIZE, 0) };
 
-            _gost3411 = Gost3411.Create();
+            _hashImpl = Gost3411_2012_256.Create();
             if (!_randomKeyContainer) GetKeyPair();
         }
 
@@ -166,7 +166,7 @@ namespace System.Security.Cryptography
             Debug.Assert(data != null);
             Debug.Assert(!string.IsNullOrEmpty(hashAlgorithm.Name));
 
-            using (HashAlgorithm hash = Gost3411.Create())
+            using (HashAlgorithm hash = Gost3411_2012_256.Create())
             {
                 return hash.ComputeHash(data);
             }
@@ -180,7 +180,7 @@ namespace System.Security.Cryptography
             Debug.Assert(offset >= 0 && offset <= data.Length - count);
             Debug.Assert(!string.IsNullOrEmpty(hashAlgorithm.Name));
 
-            using (HashAlgorithm hash = Gost3411.Create())
+            using (HashAlgorithm hash = Gost3411_2012_256.Create())
             {
                 return hash.ComputeHash(data, offset, count);
             }
@@ -188,13 +188,13 @@ namespace System.Security.Cryptography
 
         public override byte[] SignData(byte[] data, int offset, int count, HashAlgorithmName hashAlgorithm)
         {
-            byte[] hashVal = _gost3411.ComputeHash(data, offset, count);
+            byte[] hashVal = _hashImpl.ComputeHash(data, offset, count);
             return SignHash(hashVal, hashAlgorithm);
         }
 
         public override byte[] SignData(Stream data, HashAlgorithmName hashAlgorithm)
         {
-            byte[] hashVal = _gost3411.ComputeHash(data);
+            byte[] hashVal = _hashImpl.ComputeHash(data);
             return SignHash(hashVal, hashAlgorithm);
         }
 
@@ -205,7 +205,7 @@ namespace System.Security.Cryptography
         ///// <returns>The DSA signature for the specified data.</returns>
         //public byte[] SignData(Stream inputStream)
         //{
-        //    byte[] hashVal = _gost3411.ComputeHash(inputStream);
+        //    byte[] hashVal = _hashImpl.ComputeHash(inputStream);
         //    return SignHash(hashVal);
         //}
 
@@ -216,7 +216,7 @@ namespace System.Security.Cryptography
         ///// <returns>The DSA signature for the specified data.</returns>
         //public byte[] SignData(byte[] buffer)
         //{
-        //    byte[] hashVal = _gost3411.ComputeHash(buffer);
+        //    byte[] hashVal = _hashImpl.ComputeHash(buffer);
         //    return SignHash(hashVal);
         //}
 
@@ -229,7 +229,7 @@ namespace System.Security.Cryptography
         ///// <returns>The DSA signature for the specified data.</returns>
         //public byte[] SignData(byte[] buffer, int offset, int count)
         //{
-        //    byte[] hashVal = _gost3411.ComputeHash(buffer, offset, count);
+        //    byte[] hashVal = _hashImpl.ComputeHash(buffer, offset, count);
         //    return SignHash(hashVal);
         //}
 
@@ -264,7 +264,7 @@ namespace System.Security.Cryptography
         /// </containerperm>
         public override byte[] SignHash(byte[] rgbHash, HashAlgorithmName hashAlgName)
         {
-            if (hashAlgName != HashAlgorithmName.Gost3411)
+            if (hashAlgName != HashAlgorithmName.Gost3411_2012_256)
             {
                 throw new CryptographicException(string.Format(SR.Cryptography_UnknownHashAlgorithm, hashAlgName.Name));
             }
@@ -276,12 +276,12 @@ namespace System.Security.Cryptography
             if (rgbHash == null) throw new ArgumentNullException(nameof(rgbHash));
             if (PublicOnly) throw new CryptographicException(SR.Cryptography_CSP_NoPrivateKey);
 
-            if (rgbHash.Length != (GostConstants.GOST3411_SIZE / 8))
+            if (rgbHash.Length != (GostConstants.GOST3411_2012_256_SIZE / 8))
             {
                 throw new CryptographicException(
                     string.Format(
                         SR.Cryptography_InvalidHashSize,
-                        "GOST3411", GostConstants.GOST3411_SIZE / 8));
+                        "GOST3411_2012_256", GostConstants.GOST3411_2012_256_SIZE / 8));
             }
             GetKeyPair();
             return CapiHelper.SignValue(
@@ -289,7 +289,7 @@ namespace System.Security.Cryptography
                 SafeKeyHandle,
                 _keySpec, //2
                 CapiHelper.CALG_RSA_SIGN, //переворачиваем подпись, раньше (Sharpei) переворачивали только в форматтерах
-                GostConstants.CALG_GR3411,
+                GostConstants.CALG_GR3411_2012_256,
                 rgbHash);
         }
 
@@ -301,12 +301,12 @@ namespace System.Security.Cryptography
         /// подпись.</param>
         /// <param name="signature">Подпись, подлинность которой 
         /// необходимо проверить.</param>
-        /// <param name="hashAlgName">Алгоритм ГОСТ 34.11-94</param>
+        /// <param name="hashAlgName">Алгоритм ГОСТ 34.11-2012 256</param>
         /// <returns><see langword="true"/>, если подпись подлинна, 
         /// <see langword="false"/> - иначе.</returns>
         /// 
-        /// <remarks>Алгоритм вычисления хэш для ГОСТ Р 34.10 
-        /// всегда ГОСТ Р 34.11.</remarks>
+        /// <remarks>Алгоритм вычисления хэш для ГОСТ Р 34.10-2012 256
+        /// всегда ГОСТ Р 34.11-2012 256.</remarks>
         /// 
         /// <doc-sample path="Simple\Sign" name="SignHash">Пример подписи и 
         ///  проверки подписи хэш.</doc-sample>
@@ -317,7 +317,7 @@ namespace System.Security.Cryptography
         /// (не случаыным именем).</containerperm>
         public override bool VerifyHash(byte[] hash, byte[] signature, HashAlgorithmName hashAlgName)
         {
-            if (hashAlgName != HashAlgorithmName.Gost3411)
+            if (hashAlgName != HashAlgorithmName.Gost3411_2012_256)
             {
                 throw new CryptographicException(string.Format(SR.Cryptography_UnknownHashAlgorithm, hashAlgName.Name));
             }
@@ -337,8 +337,8 @@ namespace System.Security.Cryptography
         /// <returns><see langword="true"/>, если продпись подлинна, 
         /// <see langword="false"/> - иначе.</returns>
         /// 
-        /// <remarks>Алгоритм вычисления хэш для ГОСТ Р 34.10 
-        /// всегда ГОСТ Р 34.11.</remarks>
+        /// <remarks>Алгоритм вычисления хэш для ГОСТ Р 34.10-2012 256 
+        /// всегда ГОСТ Р 34.11-2012 256.</remarks>
         /// 
         /// <doc-sample path="Simple\Sign" name="SignHash">Пример подписи и 
         ///  проверки подписи хэш.</doc-sample>
@@ -351,12 +351,12 @@ namespace System.Security.Cryptography
         {
             if (rgbHash == null) throw new ArgumentNullException(nameof(rgbHash));
             if (rgbSignature == null) throw new ArgumentNullException(nameof(rgbSignature));
-            if (rgbHash.Length != (GostConstants.GOST3411_SIZE / 8))
+            if (rgbHash.Length != (GostConstants.GOST3411_2012_256_SIZE / 8))
             {
                 throw new CryptographicException(
                     string.Format(
                         SR.Cryptography_InvalidHashSize,
-                        "GOST3411", GostConstants.GOST3411_SIZE / 8));
+                        "GOST3411_2012_256", GostConstants.GOST3411_2012_256_SIZE / 8));
             }
 
             GetKeyPair();
@@ -364,7 +364,7 @@ namespace System.Security.Cryptography
                 _safeProvHandle,
                 _safeKeyHandle,
                 CapiHelper.CALG_RSA_SIGN, //переворачиваем подпись, раньше (Sharpei) переворачивали только в форматтерах
-                GostConstants.CALG_GR3411,
+                GostConstants.CALG_GR3411_2012_256,
                 rgbHash,
                 rgbSignature);
             return ret;
@@ -411,16 +411,16 @@ namespace System.Security.Cryptography
             byte[] rgbSignature,
             HashAlgorithmName hashAlgorithm)
         {
-            byte[] hashVal = _gost3411.ComputeHash(data, offset, count);
+            byte[] hashVal = _hashImpl.ComputeHash(data, offset, count);
             return VerifyHash(hashVal, rgbSignature);
         }
 
         /// <summary>
-        /// Импорт параметров алгоритма ГОСТ Р 34.10.
+        /// Импорт параметров алгоритма ГОСТ Р 34.10-2012 256.
         /// </summary>
         /// 
         /// <param name="rawData">Байтовый массив, содержащий ключ и параметры
-        /// алгоритма ГОСТ Р 34.10.</param>.
+        /// алгоритма ГОСТ Р 34.10-2012 256.</param>.
         /// 
         /// <remarks><para>Импорт секретного ключа не поддерживается.
         /// </para></remarks>
@@ -472,14 +472,14 @@ namespace System.Security.Cryptography
         }
 
         /// <summary>
-        /// Импорт параметров алгоритма ГОСТ Р 34.10.
+        /// Импорт параметров алгоритма ГОСТ Р 34.10-2012 256.
         /// </summary>
         /// 
         /// <param name="keyBlob">Байтовый массив, содержащий ключ
-        /// алгоритма ГОСТ Р 34.10 без параметров. </param>.
+        /// алгоритма ГОСТ Р 34.10-2012 256 без параметров. </param>.
         /// 
         /// <param name="paramBlob">Байтовый массив, параметры ключа
-        /// алгоритма ГОСТ Р 34.10 без параметров. </param>.
+        /// алгоритма ГОСТ Р 34.10-2012 256 без параметров. </param>.
         /// 
         /// <remarks><para>Импорт секретного ключа не поддерживается.
         /// </para></remarks>
@@ -489,7 +489,7 @@ namespace System.Security.Cryptography
         public void ImportCspBlob(byte[] keyBlob, byte[] paramBlob)
         {
             //SafeKeyHandle safeKeyHandle;
-            //var rawData = CapiHelper.EncodePublicBlob(keyBlob, paramBlob, CspAlgorithmType.PROV_GOST_2001_DH);
+            //var rawData = CapiHelper.EncodePublicBlob(keyBlob, paramBlob, CspAlgorithmType.PROV_GOST_2012_256);
 
             //// Права на экспорт / импорт проверять бесполезно
             //// CSP все равно не поддерживает. Бесполезно да же эмулировать:
@@ -532,7 +532,7 @@ namespace System.Security.Cryptography
 
         /// <summary>
         /// Экспорт параметров <see cref="Gost3410Parameters"/> 
-        /// алгоритма ГОСТ Р 34.10 в CSP.
+        /// алгоритма ГОСТ Р 34.10-2012 256 в CSP.
         /// </summary>
         /// 
         /// <param name="includePrivateParameters"><see langword="true"/>, 
@@ -568,7 +568,7 @@ namespace System.Security.Cryptography
             }
 
             byte[] data = ExportCspBlob(false);
-            DecodePublicBlob(obj1, data, CspAlgorithmType.PROV_GOST_2001_DH);
+            DecodePublicBlob(obj1, data, CspAlgorithmType.PROV_GOST_2012_256);
 
             return obj1.Parameters;
 
@@ -578,11 +578,11 @@ namespace System.Security.Cryptography
 
         /// <summary>
         /// Импорт параметров <see cref="Gost3410Parameters"/> 
-        /// алгоритма ГОСТ Р 34.10.
+        /// алгоритма ГОСТ Р 34.10-2012 256.
         /// </summary>
         /// 
         /// <param name="parameters">Параметры алгоритма 
-        /// ГОСТ Р 10.34.</param>
+        /// ГОСТ Р 34.10-2012 256</param>
         /// 
         /// <doc-sample path="Simple\DocBlock" name="ImportParameters" 
         /// region="ImportParameters" />
@@ -611,7 +611,7 @@ namespace System.Security.Cryptography
             }
 
             _safeKeyHandle = SafeKeyHandle.InvalidHandle;
-            if (Gost3410CryptoServiceProvider.IsPublic(parameters))
+            if (Gost3410_2012_256CryptoServiceProvider.IsPublic(parameters))
             {
                 SafeKeyHandle safeKeyHandle;
                 // Это открытый ключ, поэтому можно его export
@@ -621,7 +621,7 @@ namespace System.Security.Cryptography
                 var safeProvHandleTemp = AcquireSafeProviderHandle();
                 if (pubKey == null) throw new ArgumentNullException(nameof(pubKey));
 
-                byte[] keyBlob = EncodePublicBlob(pubKey, CspAlgorithmType.PROV_GOST_2001_DH);
+                byte[] keyBlob = EncodePublicBlob(pubKey, CspAlgorithmType.PROV_GOST_2012_256);
                 CapiHelper.ImportKeyBlob(
                     safeProvHandleTemp,
                     CspProviderFlags.NoFlags,
@@ -641,7 +641,7 @@ namespace System.Security.Cryptography
 
         /// <summary>
         /// Освобождает неуправляемые объектом класса 
-        /// <see cref="Gost3410CryptoServiceProvider"/> ресурсы и, по выбору, 
+        /// <see cref="Gost3410_2012_256CryptoServiceProvider"/> ресурсы и, по выбору, 
         /// управляемые. 
         /// </summary>
         /// <param name="disposing"><see langword="true"/>, чтобы освободить 
@@ -703,7 +703,7 @@ namespace System.Security.Cryptography
                 // Проверяем наличие ключа.
                 GetKeyPair();
                 // В подлиннике обращение к CSP, нам не требуется
-                return GostConstants.GOST_3410EL_SIZE;
+                return GostConstants.GOST3410_2012_256KEY_SIZE;
             }
         }
 
@@ -723,12 +723,12 @@ namespace System.Security.Cryptography
         /// <para>При заданном имени контейнера в <see cref="CspParameters"/>
         /// cвойство <c>PersistKeyInCsp</c> устанавливается в <see langword="true"/>
         /// автоматически и имя испольузуется при инициализации 
-        /// <see cref="Gost3410CryptoServiceProvider"/>.
+        /// <see cref="Gost3410_2012_256CryptoServiceProvider"/>.
         /// Задать имя CSP можно используя свойство 
         /// <see cref="System.Security.Cryptography.CspKeyContainerInfo.KeyContainerName"/></para>
         /// <para>Если свойство <c>PersistKeyInCsp</c> установлено в 
         /// <see langword="true"/> без инициализации 
-        /// <see cref="Gost3410CryptoServiceProvider"/> экземпляром класса
+        /// <see cref="Gost3410_2012_256CryptoServiceProvider"/> экземпляром класса
         /// <see cref="CspParameters"/> будет создано случайный
         /// контейнера, с приставкой "CLR" в имени.</para>
         /// </remarks>
@@ -797,9 +797,9 @@ namespace System.Security.Cryptography
                         if (_safeKeyHandle == null)
                         {
                             SafeKeyHandle hKey = CapiHelper.GetKeyPairHelper(
-                                CapiHelper.CspAlgorithmType.PROV_GOST_2001_DH,
+                                CapiHelper.CspAlgorithmType.PROV_GOST_2012_256,
                                 _parameters,
-                                GostConstants.GOST_3410EL_SIZE,
+                                GostConstants.GOST3410_2012_256KEY_SIZE,
                                 SafeProvHandle);
 
                             Debug.Assert(hKey != null);
@@ -817,13 +817,13 @@ namespace System.Security.Cryptography
 
         /// <summary>
         /// Получает значение, указывающее, не содержит ли объект 
-        /// <see cref="Gost3410CryptoServiceProvider"/>
+        /// <see cref="Gost3410_2012_256CryptoServiceProvider"/>
         /// только открытый ключ.
         /// </summary>
         /// 
         /// <value>
         /// <see langword="true"/>, если 
-        /// <see cref="Gost3410CryptoServiceProvider"/> содержит только 
+        /// <see cref="Gost3410_2012_256CryptoServiceProvider"/> содержит только 
         /// открытый ключ, <see langword="false"/> - иначе.
         /// </value>
         /// 
@@ -868,15 +868,15 @@ namespace System.Security.Cryptography
         /// </para>
         /// 
         /// <para>При инициализации объекта через конструктор 
-        /// <see cref="Gost3410CryptoServiceProvider(CspParameters)"/>
+        /// <see cref="Gost3410_2012_256CryptoServiceProvider(CspParameters)"/>
         /// будут использованы именно эти параметры, в независимости от
         /// флага <see cref="UseMachineKeyStore"/>. По умолчанию значение
         /// флага из 
-        /// <see cref="Gost3410CryptoServiceProvider(CspParameters)"/>
+        /// <see cref="Gost3410_2012_256CryptoServiceProvider(CspParameters)"/>
         /// устанавливется в использование ключей из хранилищи пользователя.
         /// Для использования ключей из хранилища компьютера при использовании
         /// конструктора 
-        /// <see cref="Gost3410CryptoServiceProvider(CspParameters)"/>
+        /// <see cref="Gost3410_2012_256CryptoServiceProvider(CspParameters)"/>
         /// необходимо установить флаг <see cref="CspParameters.Flags"/>:
         /// <see cref="CspProviderFlags.UseMachineKeyStore"/>.
         /// </para>
@@ -908,7 +908,7 @@ namespace System.Security.Cryptography
         ///// (не случаыным именем).</containerperm>
         //[SecuritySafeCritical]
         //public override GostSharedSecretAlgorithm CreateAgree(
-        //    Gost3410Parameters alg)
+        //    Gost3410_2012_256Parameters alg)
         //{
         //TODO: Еще одно дополнительное право доступа!
 
@@ -916,7 +916,7 @@ namespace System.Security.Cryptography
         //    GetKeyPair();
 
         ////Превращаем его в объект для экспорта.
-        //    Gost3410CspObject obj1 = new Gost3410CspObject(alg);
+        //    Gost3410_2012_256CspObject obj1 = new Gost3410_2012_256CspObject(alg);
 
         //    return new GostSharedSecretCryptoServiceProvider(_safeKeyHandle,
         //        _safeProvHandle, obj1, CspAlgorithmType.Gost2001);
@@ -1047,7 +1047,7 @@ namespace System.Security.Cryptography
         //SecurityPermission perm = new SecurityPermission(SecurityPermissionFlag.UnmanagedCode);
         //perm.Assert();
         //    return COMCryptography.SelectContainer(fullyQualifiedContainerName,
-        //        machine, parent, GostConstants.PROV_GOST_2001_DH);
+        //        machine, parent, GostConstants.PROV_GOST_2012_256);
         //}
 
         /// <summary>
@@ -1084,10 +1084,10 @@ namespace System.Security.Cryptography
 
         /// <summary>
         /// Проверка, что байтовый массив представляет собой
-        /// BLOB открытого ключа алгоритма ГОСТ Р 34.10
+        /// BLOB открытого ключа алгоритма ГОСТ Р 34.10-2012 256
         /// </summary>
         /// <param name="keyBlob">Проверяемый BLOB.</param>
-        /// <returns><see langword="true"/>, если похоже на BLOB ГОСТ Р 34.10 
+        /// <returns><see langword="true"/>, если похоже на BLOB ГОСТ Р 34.10-2012 256
         /// открытого ключа, <see langword="false"/> во всех остальных 
         /// случаях.</returns>
         /// <argnull name="keyBlob" />
@@ -1131,7 +1131,7 @@ namespace System.Security.Cryptography
         private SafeProvHandle AcquireSafeProviderHandle()
         {
             SafeProvHandle safeProvHandleTemp;
-            CapiHelper.AcquireCsp(new CspParameters(GostConstants.PROV_GOST_2001_DH), out safeProvHandleTemp);
+            CapiHelper.AcquireCsp(new CspParameters(GostConstants.PROV_GOST_2012_256), out safeProvHandleTemp);
             return safeProvHandleTemp;
         }
     }

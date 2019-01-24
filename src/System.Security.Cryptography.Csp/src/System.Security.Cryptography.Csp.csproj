@@ -224,6 +224,8 @@
     <Compile Include="System\Security\Cryptography\CspParameters.cs" />
     <Compile Include="System\Security\Cryptography\CspProviderFlags.cs" />
     <Compile Include="System\Security\Cryptography\Gost3410CryptoServiceProvider.cs" />
+    <Compile Include="System\Security\Cryptography\Gost3410_2012_256CryptoServiceProvider.cs" />
+    <Compile Include="System\Security\Cryptography\Gost3410_2012_512CryptoServiceProvider.cs" />
     <Compile Include="System\Security\Cryptography\Gost3410CSPObject.cs" />
     <Compile Include="System\Security\Cryptography\Gost3411_2012_512CryptoServiceProvider.cs" />
     <Compile Include="System\Security\Cryptography\Gost3411_2012_256CryptoServiceProvider.cs" />

@@ -178,7 +178,7 @@
         internal const byte CSP_CUR_BLOB_VERSION = 0x20;
 
         // cryptographic sizes
-        internal const int EL_SIZE = 512;
+        internal const int GOST_3410EL_SIZE = 512;
         internal const int GOST3410_2012_256KEY_SIZE = 512;
         internal const int GOST3410_2012_512KEY_SIZE = 1024;
         internal const int SEANCE_VECTOR_LEN = 8;
@@ -208,5 +208,9 @@
         internal const string GOST3411_STRING = "GOST R 34.11-94";
         internal const string GOST3411_2012_256STRING = "GR 34.11-2012 256";
         internal const string GOST3411_2012_512STRING = "GR 34.11-2012 512";
+
+        internal const string GOST3410_STRING = "Gost3410";
+        internal const string GOST3410_2012_256STRING = "Gost3410_2012_256";
+        internal const string GOST3410_2012_512STRING = "Gost3410_2012_512";
     }
 }

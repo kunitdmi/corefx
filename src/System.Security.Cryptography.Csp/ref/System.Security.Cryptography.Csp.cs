@@ -312,6 +312,56 @@ namespace System.Security.Cryptography
         protected override void Dispose(bool disposing) { throw null; }
     }
 
+    public sealed partial class Gost3410_2012_256CryptoServiceProvider : Gost3410_2012_256, ICspAsymmetricAlgorithm
+    {
+        public CspKeyContainerInfo CspKeyContainerInfo { get { throw null; } }
+        public override int KeySize { get { throw null; } }
+        public bool PersistKeyInCsp { get { throw null; } set { } }
+        public bool PublicOnly { get { throw null; } }
+        public static bool UseMachineKeyStore { get { throw null; } set { } }
+        public Gost3410_2012_256CryptoServiceProvider() { throw null; }
+        public Gost3410_2012_256CryptoServiceProvider(CspParameters parameters) { throw null; }
+        public bool VerifyHash(byte[] hash, byte[] signature) { throw null; }
+        public override bool VerifyHash(byte[] hash, byte[] signature, HashAlgorithmName hashAlgName) { throw null; }
+
+        protected override byte[] HashData(byte[] data, int offset, int count, HashAlgorithmName hashAlgorithm) { throw null; }
+        protected override byte[] HashData(Stream data, HashAlgorithmName hashAlgorithm) { throw null; }
+
+        public override byte[] SignHash(byte[] hash) { throw null; }
+        public override byte[] SignHash(byte[] hash, HashAlgorithmName hashAlgorithm) { throw null; }
+        public byte[] ExportCspBlob(bool includePrivateParameters) { throw null; }
+        public void ImportCspBlob(byte[] rawData) { throw null; }
+        public void ImportCspBlob(byte[] keyBlob, byte[] paramBlob) { throw null; }
+        public override Gost3410Parameters ExportParameters(bool includePrivateParameters) { throw null; }
+        public override void ImportParameters(Gost3410Parameters parameters) { throw null; }
+        protected override void Dispose(bool disposing) { throw null; }
+    }
+
+    public sealed partial class Gost3410_2012_512CryptoServiceProvider : Gost3410_2012_512, ICspAsymmetricAlgorithm
+    {
+        public CspKeyContainerInfo CspKeyContainerInfo { get { throw null; } }
+        public override int KeySize { get { throw null; } }
+        public bool PersistKeyInCsp { get { throw null; } set { } }
+        public bool PublicOnly { get { throw null; } }
+        public static bool UseMachineKeyStore { get { throw null; } set { } }
+        public Gost3410_2012_512CryptoServiceProvider() { throw null; }
+        public Gost3410_2012_512CryptoServiceProvider(CspParameters parameters) { throw null; }
+        public bool VerifyHash(byte[] hash, byte[] signature) { throw null; }
+        public override bool VerifyHash(byte[] hash, byte[] signature, HashAlgorithmName hashAlgName) { throw null; }
+
+        protected override byte[] HashData(byte[] data, int offset, int count, HashAlgorithmName hashAlgorithm) { throw null; }
+        protected override byte[] HashData(Stream data, HashAlgorithmName hashAlgorithm) { throw null; }
+
+        public override byte[] SignHash(byte[] hash) { throw null; }
+        public override byte[] SignHash(byte[] hash, HashAlgorithmName hashAlgorithm) { throw null; }
+        public byte[] ExportCspBlob(bool includePrivateParameters) { throw null; }
+        public void ImportCspBlob(byte[] rawData) { throw null; }
+        public void ImportCspBlob(byte[] keyBlob, byte[] paramBlob) { throw null; }
+        public override Gost3410Parameters ExportParameters(bool includePrivateParameters) { throw null; }
+        public override void ImportParameters(Gost3410Parameters parameters) { throw null; }
+        protected override void Dispose(bool disposing) { throw null; }
+    }
+
     public sealed partial class Gost3411CryptoServiceProvider : Gost3411
     {
         protected override void Dispose(bool disposing) { throw null; }

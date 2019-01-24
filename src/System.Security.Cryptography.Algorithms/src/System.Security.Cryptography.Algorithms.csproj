@@ -85,6 +85,8 @@
     <Compile Include="System\Security\Cryptography\SignatureDescription.cs" />
     <Compile Include="System\Security\Cryptography\TripleDES.cs" />
     <Compile Include="System\Security\Cryptography\Gost3410.cs" />
+    <Compile Include="System\Security\Cryptography\Gost3410_2012_256.cs" />
+    <Compile Include="System\Security\Cryptography\Gost3410_2012_512.cs" />
     <Compile Include="System\Security\Cryptography\Gost3410.Xml.cs" />
     <Compile Include="System\Security\Cryptography\Gost3410CSPObject.cs" />
     <Compile Include="System\Security\Cryptography\Gost3410Parameters.cs" />

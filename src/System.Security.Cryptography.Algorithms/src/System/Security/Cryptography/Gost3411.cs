@@ -1,4 +1,4 @@
-﻿using Internal.Cryptography;
+using Internal.Cryptography;
 
 namespace System.Security.Cryptography
 {

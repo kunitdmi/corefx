@@ -38,7 +38,7 @@ namespace Internal.NativeCrypto
             switch (alg)
             {
                 case CspAlgorithmType.PROV_GOST_2001_DH:
-                    keySize = GostConstants.EL_SIZE;
+                    keySize = GostConstants.GOST_3410EL_SIZE;
                     algId = GostConstants.CALG_GR3410EL;
                     break;
                 case CspAlgorithmType.PROV_GOST_2012_256:
@@ -108,7 +108,7 @@ namespace Internal.NativeCrypto
             switch (alg)
             {
                 case CspAlgorithmType.PROV_GOST_2001_DH:
-                    keySize = GostConstants.EL_SIZE;
+                    keySize = GostConstants.GOST_3410EL_SIZE;
                     algId = GostConstants.CALG_GR3410EL;
                     break;
                 case CspAlgorithmType.PROV_GOST_2012_256:
@@ -169,7 +169,7 @@ namespace Internal.NativeCrypto
             switch (alg)
             {
                 case CspAlgorithmType.PROV_GOST_2001_DH:
-                    keySize = GostConstants.EL_SIZE;
+                    keySize = GostConstants.GOST_3410EL_SIZE;
                     break;
                 case CspAlgorithmType.PROV_GOST_2012_256:
                     keySize = GostConstants.GOST3410_2012_256KEY_SIZE;

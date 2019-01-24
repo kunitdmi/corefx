@@ -11,9 +11,13 @@ before_script:
   - sudo /opt/cprocsp/sbin/amd64/cpconfig -license -set "5050E-H3010-06DCZ-EGXF5-FFUXC"
   #install container
   - mkdir /var/opt/cprocsp/keys/travis/
-  - cp -a ./6d24e911.000 /var/opt/cprocsp/keys/travis/
-  - /opt/cprocsp/bin/amd64/csptest  -absorb -certs -provtype 75 -provider "Crypto-Pro GOST R 34.10-2001 Cryptographic Service Provider" -pattern "6d24e911.000"
-  # disable warnings
+  - cp -a ./G2001256.000/. /var/opt/cprocsp/keys/travis/
+  - cp -a ./G2012256.001/. /var/opt/cprocsp/keys/travis/
+  - cp -a ./G2012512.000/. /var/opt/cprocsp/keys/travis/
+  - /opt/cprocsp/bin/amd64/csptest  -absorb -certs -provtype 75 -provider "Crypto-Pro GOST R 34.10-2001 Cryptographic Service Provider" -pattern "G2001256.000"
+  - /opt/cprocsp/bin/amd64/csptest  -absorb -certs -provtype 80 -pattern "G2012256"
+  - /opt/cprocsp/bin/amd64/csptest  -absorb -certs -provtype 81 -pattern "G2012512"
+ # disable warnings
   - sudo sed -i '/[Parameters]/a warning_time_gen_2001=ll:9223372036854775807' /etc/opt/cprocsp/config64.ini
   - sudo sed -i '/[Parameters]/a warning_time_sign_2001=ll:9223372036854775807' /etc/opt/cprocsp/config64.ini
   - cd ..
