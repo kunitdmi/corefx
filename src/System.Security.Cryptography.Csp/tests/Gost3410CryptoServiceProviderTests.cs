@@ -226,7 +226,7 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
             CspParameters cpsParams = new CspParameters(
                 75,
                 "Crypto-Pro GOST R 34.10-2001 Cryptographic Service Provider",
-                "HDIMAGE\\\\G2001256.000\\2B94");
+                "\\\\.\\HDIMAGE\\G2001256");
             return new Gost3410CryptoServiceProvider(cpsParams);
         }
     }

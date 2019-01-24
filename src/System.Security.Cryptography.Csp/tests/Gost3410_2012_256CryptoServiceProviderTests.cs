@@ -227,7 +227,7 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
             CspParameters cpsParams = new CspParameters(
                 75,
                 "",
-                "HDIMAGE\\\\G2012256.001\\1610");
+                "\\\\.\\HDIMAGE\\G2012256");
             return new Gost3410_2012_256CryptoServiceProvider(cpsParams);
         }
     }
