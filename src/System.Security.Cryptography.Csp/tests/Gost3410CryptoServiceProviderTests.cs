@@ -49,25 +49,10 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
                     0x77, 0x27, 0xBC, 0x19,
                 };
 
-        private X509Certificate2 gostCertificate;
-
-        private X509Certificate2 GostCertificate
-        {
-            get
-            {
-                if (gostCertificate == null)
-                {
-                    gostCertificate = FindGostCertificate();
-                }
-
-                return gostCertificate;
-            }
-        }
-
         [Fact]
         public void PublicOnlyCertificateKey()
         {
-            using (var gost = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider)
+            using (var gost = GetGostProvider())
             {
                 // Test cert contains private key, so it is not PublicOnly
                 Assert.False(gost.PublicOnly);
@@ -78,9 +63,7 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
         [PlatformSpecific(TestPlatforms.Windows)] // No support for CspParameters on Unix
         public void KeyContainerInfoProvType()
         {
-            CspParameters cspParameters = new CspParameters(Gost2001ProvType);
-
-            using (var gost = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider)
+            using (var gost = GetGostProvider())
             {
                 CspKeyContainerInfo containerInfo = gost.CspKeyContainerInfo;
                 Assert.Equal(Gost2001ProvType, containerInfo.ProviderType);
@@ -92,11 +75,9 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
         public void CreateKeyRoundtripBlob()
         {
             const int KeySize = 512;
-
-            CspParameters cspParameters = new CspParameters(Gost2001ProvType);
             byte[] blob;
 
-            using (var gost = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider)
+            using (var gost = GetGostProvider())
             {
                 CspKeyContainerInfo containerInfo = gost.CspKeyContainerInfo;
                 Assert.Equal(Gost2001ProvType, containerInfo.ProviderType);
@@ -126,7 +107,7 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
                 hashVal = sha1.ComputeHash(bytesToHash);
             }
 
-            using (var gost = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider)
+            using (var gost = GetGostProvider())
             {
                 byte[] signVal = gost.SignData(bytesToHash, HashAlgorithmName.Gost3411);
                 Assert.ThrowsAny<CryptographicException>(() => gost.VerifyHash(hashVal, signVal));
@@ -142,7 +123,7 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
                 hashVal = gostHash.ComputeHash(bytesToHash);
             }
 
-            using (var gost = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider)
+            using (var gost = GetGostProvider())
             {
                 byte[] signVal = gost.SignHash(hashVal);
                 Assert.True(gost.VerifyHash(hashVal, signVal));
@@ -174,7 +155,7 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
                 hashVal = gostHash.ComputeHash(bytesToHash);
             }
 
-            using (var gost = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider)
+            using (var gost = GetGostProvider())
             {
                 Assert.ThrowsAny<CryptographicException>(() => gost.SignHash(hashVal, HashAlgorithmName.SHA256));
             }
@@ -196,52 +177,57 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
 		[Fact]
         public void Gost3410ComputeSignatureOnData()
         {
-            var gost = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider;
-            gost.SignData(bytesToHash, HashAlgorithmName.Gost3411);
+            using (var gost = GetGostProvider())
+            {
+                gost.SignData(bytesToHash, HashAlgorithmName.Gost3411);
+            }
         }
 		
 		[Fact]
         public void Gost3410ComputeAndValidateSignatureOnData()
         {
-            var gost = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider;
-            var signed = gost.SignData(bytesToHash, HashAlgorithmName.Gost3411);
-			var validationResult = gost.VerifyData(bytesToHash, signed, HashAlgorithmName.Gost3411);
-			Assert.True(validationResult);
+            using (var gost = GetGostProvider())
+            {
+                var signed = gost.SignData(bytesToHash, HashAlgorithmName.Gost3411);
+                var validationResult = gost.VerifyData(bytesToHash, signed, HashAlgorithmName.Gost3411);
+                Assert.True(validationResult);
+            }
         }
 
 		[Fact]
         public void Gost3410ComputeSignatureOnHash()
         {
-            var gost = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider;
-            gost.SignHash(computedHash, HashAlgorithmName.Gost3411);
+            using (var gost = GetGostProvider())
+            {
+                gost.SignHash(computedHash, HashAlgorithmName.Gost3411);
+            }
         }
 		
 		[Fact]
         public void Gost3410ValidateSignatureOnData()
         {
-            var key = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider;
-            Assert.True(key.VerifyData(bytesToHash, ComputedSignature, HashAlgorithmName.Gost3411));
+            using (var gost = GetGostProvider())
+            {
+                Assert.True(gost.VerifyData(bytesToHash, ComputedSignature, HashAlgorithmName.Gost3411));
+            }
         }
 
 		[Fact]
         public void Gost3410ValidateSignatureOnHash()
         {
-            var key = GostCertificate.GetGost3410PrivateKey() as Gost3410CryptoServiceProvider;
-            Assert.True(key.VerifyHash(computedHash, ComputedSignature, HashAlgorithmName.Gost3411));
+            using (var gost = GetGostProvider())
+            {
+                Assert.True(gost.VerifyHash(computedHash, ComputedSignature, HashAlgorithmName.Gost3411));
+            }
         }
 
-        private static X509Certificate2 FindGostCertificate()
+        private static Gost3410CryptoServiceProvider GetGostProvider()
         {
-            var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
-            store.Open(OpenFlags.ReadOnly);
-            try
-            {
-                return store.Certificates.Find(X509FindType.FindByThumbprint, TestCertificateThumbprint, false)[0];
-            }
-            finally
-            {
-                store.Close();
-            }
+            CspParameters cpsParams = new CspParameters(
+                75,
+                "Crypto-Pro GOST R 34.10-2001 Cryptographic Service Provider",
+                "HDIMAGE\\\\6d24e911.000\\C410");
+            return new Gost3410CryptoServiceProvider(cpsParams);
         }
     }
 }
