@@ -4,11 +4,20 @@ dist: trusty
 mono: none
 dotnet: 2.0.3
 before_script:
+  - sudo apt install lsb lsb-core alien
+  - cd ./cspTools
+  - tar -xf linux-amd64_deb.tgz
+  - sudo ./linux-amd64_deb/install.sh
+  - sudo /opt/cprocsp/sbin/amd64/cpconfig -license -set "5050E-H3010-06DCZ-EGXF5-FFUXC"
+  - cd ..
   - ./clean.sh -all
 script:    
   - ./build.sh
-#  - .dotnet\dotnet msbuild src\System.Security.Cryptography.Csp\tests\ /t:BuildAndTest "/p:XunitOptions=-class System.Security.Cryptography.Encryption.Gost3411.Tests.Gost3411CryptoServiceProviderTests" /p:ForceRunTests=true
+  - .dotnet/dotnet msbuild src/System.Security.Cryptography.Csp/tests/ /t:BuildAndTest "/p:XunitOptions=-class System.Security.Cryptography.Encryption.Gost3411.Tests.Gost3411CryptoServiceProviderTests" /p:ForceRunTests=true
+  - .dotnet/dotnet msbuild src/System.Security.Cryptography.Algorithms/tests\ /t:BuildAndTest  "/p:XunitOptions=-class System.Security.Cryptography.Hashing.Algorithms.Tests.Gost3411Tests"  /p:ForceRunTests=true
+  - .dotnet/dotnet msbuild src/System.Security.Cryptography.Algorithms/tests\ /t:BuildAndTest  "/p:XunitOptions=-class System.Security.Cryptography.Hashing.Algorithms.Tests.Gost3411_2012_256Tests"  /p:ForceRunTests=true
+  - .dotnet/dotnet msbuild src/System.Security.Cryptography.Algorithms/tests\ /t:BuildAndTest  "/p:XunitOptions=-class System.Security.Cryptography.Hashing.Algorithms.Tests.Gost3411_2012_512Tests"  /p:ForceRunTests=true
 notifications:
   email:
     on_success: never # default: change
-on_failure: change # default: always
+on_failure: never # default: always
