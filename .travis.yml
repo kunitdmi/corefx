@@ -14,9 +14,9 @@ before_script:
 script:    
   - ./build.sh
   - .dotnet/dotnet msbuild src/System.Security.Cryptography.Csp/tests/ /t:BuildAndTest "/p:XunitOptions=-class System.Security.Cryptography.Encryption.Gost3411.Tests.Gost3411CryptoServiceProviderTests" /p:ForceRunTests=true
-  - .dotnet/dotnet msbuild src/System.Security.Cryptography.Algorithms/tests\ /t:BuildAndTest  "/p:XunitOptions=-class System.Security.Cryptography.Hashing.Algorithms.Tests.Gost3411Tests"  /p:ForceRunTests=true
-  - .dotnet/dotnet msbuild src/System.Security.Cryptography.Algorithms/tests\ /t:BuildAndTest  "/p:XunitOptions=-class System.Security.Cryptography.Hashing.Algorithms.Tests.Gost3411_2012_256Tests"  /p:ForceRunTests=true
-  - .dotnet/dotnet msbuild src/System.Security.Cryptography.Algorithms/tests\ /t:BuildAndTest  "/p:XunitOptions=-class System.Security.Cryptography.Hashing.Algorithms.Tests.Gost3411_2012_512Tests"  /p:ForceRunTests=true
+  - .dotnet/dotnet msbuild src/System.Security.Cryptography.Algorithms/tests/ /t:BuildAndTest  "/p:XunitOptions=-class System.Security.Cryptography.Hashing.Algorithms.Tests.Gost3411Tests"  /p:ForceRunTests=true
+  - .dotnet/dotnet msbuild src/System.Security.Cryptography.Algorithms/tests/ /t:BuildAndTest  "/p:XunitOptions=-class System.Security.Cryptography.Hashing.Algorithms.Tests.Gost3411_2012_256Tests"  /p:ForceRunTests=true
+  - .dotnet/dotnet msbuild src/System.Security.Cryptography.Algorithms/tests/ /t:BuildAndTest  "/p:XunitOptions=-class System.Security.Cryptography.Hashing.Algorithms.Tests.Gost3411_2012_512Tests"  /p:ForceRunTests=true
 notifications:
   email:
     on_success: never # default: change
