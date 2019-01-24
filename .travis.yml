@@ -17,6 +17,7 @@ before_script:
   - /opt/cprocsp/bin/amd64/csptest  -absorb -certs -provtype 75 -provider "Crypto-Pro GOST R 34.10-2001 Cryptographic Service Provider" -pattern "G2001256.000"
   - /opt/cprocsp/bin/amd64/csptest  -absorb -certs -provtype 80 -pattern "G2012256"
   - /opt/cprocsp/bin/amd64/csptest  -absorb -certs -provtype 81 -pattern "G2012512"
+  - /opt/cprocsp/bin/amd64/csptest  -keyset -enum_c -verifyc -uniq
  # disable warnings
   - sudo sed -i '/[Parameters]/a warning_time_gen_2001=ll:9223372036854775807' /etc/opt/cprocsp/config64.ini
   - sudo sed -i '/[Parameters]/a warning_time_sign_2001=ll:9223372036854775807' /etc/opt/cprocsp/config64.ini
@@ -29,6 +30,8 @@ script:
   - .dotnet/dotnet msbuild src/System.Security.Cryptography.Algorithms/tests/ /t:BuildAndTest  "/p:XunitOptions=-class System.Security.Cryptography.Hashing.Algorithms.Tests.Gost3411_2012_256Tests"  /p:ForceRunTests=true
   - .dotnet/dotnet msbuild src/System.Security.Cryptography.Algorithms/tests/ /t:BuildAndTest  "/p:XunitOptions=-class System.Security.Cryptography.Hashing.Algorithms.Tests.Gost3411_2012_512Tests"  /p:ForceRunTests=true
   - .dotnet/dotnet msbuild src/System.Security.Cryptography.Csp/tests/ /t:BuildAndTest "/p:XunitOptions=-class System.Security.Cryptography.Encryption.Gost3410.Tests.Gost3410CryptoServiceProviderTests" /p:ForceRunTests=true
+  - .dotnet/dotnet msbuild src/System.Security.Cryptography.Csp/tests/ /t:BuildAndTest "/p:XunitOptions=-class System.Security.Cryptography.Encryption.Gost3410.Tests.Gost3410_2012_256CryptoServiceProviderTests" /p:ForceRunTests=true
+  - .dotnet/dotnet msbuild src/System.Security.Cryptography.Csp/tests/ /t:BuildAndTest "/p:XunitOptions=-class System.Security.Cryptography.Encryption.Gost3410.Tests.Gost3410_2012_512CryptoServiceProviderTests" /p:ForceRunTests=true
 notifications:
   email:
     on_success: never # default: change

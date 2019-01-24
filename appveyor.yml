@@ -30,6 +30,7 @@ install:
   - cmd: '"C:\Program Files\Crypto Pro\CSP\csptest" -absorb -certs -provtype 75 -provider "Crypto-Pro GOST R 34.10-2001 Cryptographic Service Provider" -pattern "G2001256.000"'
   - cmd: '"C:\Program Files\Crypto Pro\CSP\csptest" -absorb -certs -provtype 80 -pattern "G2012256.000"'
   - cmd: '"C:\Program Files\Crypto Pro\CSP\csptest" -absorb -certs -provtype 81 -pattern "G2012512.000"'
+  - cmd: '"C:\Program Files\Crypto Pro\CSP\csptest" -keyset -enum_c -verifyc -uniq'
   - cmd: '"C:\Program Files\Crypto Pro\CSP\csptest" -enum -info -type PP_ENUMALGS'
   # enable-rdp
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
@@ -50,6 +51,8 @@ test_script:
   - .dotnet\dotnet msbuild src\System.Security.Cryptography.Algorithms\tests\ /t:BuildAndTest  "/p:XunitOptions=-class System.Security.Cryptography.Hashing.Algorithms.Tests.Gost3411_2012_256Tests"  /p:ForceRunTests=true
   - .dotnet\dotnet msbuild src\System.Security.Cryptography.Algorithms\tests\ /t:BuildAndTest  "/p:XunitOptions=-class System.Security.Cryptography.Hashing.Algorithms.Tests.Gost3411_2012_512Tests"  /p:ForceRunTests=true
   - .dotnet\dotnet msbuild src\System.Security.Cryptography.Csp\tests\ /t:BuildAndTest "/p:XunitOptions=-class System.Security.Cryptography.Encryption.Gost3410.Tests.Gost3410CryptoServiceProviderTests" /p:ForceRunTests=true
+  - .dotnet\dotnet msbuild src\System.Security.Cryptography.Csp\tests\ /t:BuildAndTest "/p:XunitOptions=-class System.Security.Cryptography.Encryption.Gost3410.Tests.Gost3410_2012_256CryptoServiceProviderTests" /p:ForceRunTests=true
+  - .dotnet\dotnet msbuild src\System.Security.Cryptography.Csp\tests\ /t:BuildAndTest "/p:XunitOptions=-class System.Security.Cryptography.Encryption.Gost3410.Tests.Gost3410_2012_512CryptoServiceProviderTests" /p:ForceRunTests=true
 #  - .dotnet\dotnet msbuild /t:BuildAndTest src\Common\tests\
 #  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Algorithms\tests\
 #  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Primitives\tests\
