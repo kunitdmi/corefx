@@ -10,16 +10,25 @@ branches:
 # Build worker image (VM template)
 image: Visual Studio 2017
 
+# RDP user is DAIAD\appveyor
+# password in project settings
+# more rdp info https://www.appveyor.com/docs/how-to/rdp-to-build-worker/
+#environment:
+#  APPVEYOR_RDP_PASSWORD: <password_here>
+
 # install csp
 install:
   - cmd: cspTools\CSPSetup.exe -silent -lang eng -noreboot -nodlg -args "PIDKEY=5050E-H3010-06DCZ-EGXF5-FFUXC /quiet"
   - ps: Start-Sleep -s 60
+  - cmd: regedit.exe /S cspTools\disableWarnings.reg
   - ps: Restart-Computer -Force
   - ps: Start-Sleep -s 10
   - ps: New-Item -ItemType Directory -Force -Path "$env:LOCALAPPDATA\Crypto Pro"
   - ps: Copy-Item -Force -Recurse ".\cspTools\6d24e911.000" -Destination "$env:LOCALAPPDATA\Crypto Pro\"
   - cmd: '"C:\Program Files\Crypto Pro\CSP\csptest" -absorb -certs -provtype 75 -provider "Crypto-Pro GOST R 34.10-2001 Cryptographic Service Provider" -pattern "6d24e911.000"'
   - cmd: '"C:\Program Files\Crypto Pro\CSP\csptest" -enum -info -type PP_ENUMALGS'
+  # enable-rdp
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 # build script logic
 build_script: 
@@ -36,7 +45,7 @@ test_script:
   - .dotnet\dotnet msbuild src\System.Security.Cryptography.Algorithms\tests\ /t:BuildAndTest  "/p:XunitOptions=-class System.Security.Cryptography.Hashing.Algorithms.Tests.Gost3411Tests"  /p:ForceRunTests=true
   - .dotnet\dotnet msbuild src\System.Security.Cryptography.Algorithms\tests\ /t:BuildAndTest  "/p:XunitOptions=-class System.Security.Cryptography.Hashing.Algorithms.Tests.Gost3411_2012_256Tests"  /p:ForceRunTests=true
   - .dotnet\dotnet msbuild src\System.Security.Cryptography.Algorithms\tests\ /t:BuildAndTest  "/p:XunitOptions=-class System.Security.Cryptography.Hashing.Algorithms.Tests.Gost3411_2012_512Tests"  /p:ForceRunTests=true
-#  - .dotnet\dotnet msbuild src\System.Security.Cryptography.Csp\tests\ /t:BuildAndTest "/p:XunitOptions=-class System.Security.Cryptography.Encryption.Gost3410.Tests.Gost3410CryptoServiceProviderTests" /p:ForceRunTests=true
+  - .dotnet\dotnet msbuild src\System.Security.Cryptography.Csp\tests\ /t:BuildAndTest "/p:XunitOptions=-class System.Security.Cryptography.Encryption.Gost3410.Tests.Gost3410CryptoServiceProviderTests" /p:ForceRunTests=true
 #  - .dotnet\dotnet msbuild /t:BuildAndTest src\Common\tests\
 #  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Algorithms\tests\
 #  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Primitives\tests\
@@ -70,7 +79,9 @@ deploy:
     #  - Fasjeit-auto-build
     appveyor_repo_tag: true        # deploy only on tag push
     
-#on_finish:
+on_finish:
+# uncomment line below to make VM wait untill RdpConnection
+# - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   # pushing all *.nupkg files in build directory recursively
 #- ps: Get-ChildItem "artifacts\packages\**\*.nupkg" | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 #- ps: Get-ChildItem "artifacts\packages\**\symbols\*.nupkg" | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
