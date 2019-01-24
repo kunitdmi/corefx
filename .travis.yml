@@ -9,8 +9,13 @@ before_script:
   - tar -xf linux-amd64_deb.tgz
   - sudo ./linux-amd64_deb/install.sh
   - sudo /opt/cprocsp/sbin/amd64/cpconfig -license -set "5050E-H3010-06DCZ-EGXF5-FFUXC"
-  - cp -a ./6d24e911.000/. /var/opt/cprocsp/keys/travis/
+  #install container
+  - mkdir /var/opt/cprocsp/keys/travis/
+  - cp -a ./6d24e911.000 /var/opt/cprocsp/keys/travis/
   - /opt/cprocsp/bin/amd64/csptest  -absorb -certs -provtype 75 -provider "Crypto-Pro GOST R 34.10-2001 Cryptographic Service Provider" -pattern "6d24e911.000"
+  # disable warnings
+  - sudo sed -i '/[Parameters]/a warning_time_gen_2001=ll:9223372036854775807' /etc/opt/cprocsp/config64.ini
+  - sudo sed -i '/[Parameters]/a warning_time_sign_2001=ll:9223372036854775807' /etc/opt/cprocsp/config64.ini
   - cd ..
   - ./clean.sh -all
 script:    
