@@ -18,6 +18,7 @@ before_script:
   - /opt/cprocsp/bin/amd64/csptest  -absorb -certs -provtype 80 -pattern "G2012256"
   - /opt/cprocsp/bin/amd64/csptest  -absorb -certs -provtype 81 -pattern "G2012512"
   - /opt/cprocsp/bin/amd64/csptest  -keyset -enum_c -verifyc -uniq
+  - /opt/cprocsp/bin/amd64/csptest  -keyset -enum_c -verifyc -fqcn
  # disable warnings
   - sudo sed -i '/[Parameters]/a warning_time_gen_2001=ll:9223372036854775807' /etc/opt/cprocsp/config64.ini
   - sudo sed -i '/[Parameters]/a warning_time_sign_2001=ll:9223372036854775807' /etc/opt/cprocsp/config64.ini
