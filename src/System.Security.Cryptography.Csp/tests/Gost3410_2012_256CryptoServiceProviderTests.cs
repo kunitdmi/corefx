@@ -57,7 +57,6 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)] // No support for CspParameters on Unix
         public void KeyContainerInfoProvType()
         {
             using (var gost = GetGostProvider())
@@ -68,7 +67,6 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
         }
 
         [Fact]
-        [PlatformSpecific(TestPlatforms.Windows)] // No support for CspParameters on Unix
         public void CreateKeyRoundtripBlob()
         {
             const int KeySize = 512;

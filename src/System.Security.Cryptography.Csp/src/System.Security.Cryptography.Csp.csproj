@@ -324,10 +324,11 @@
       <Link>Common\Interop\Windows\Crypt32\Interop.FindOidInfo.cs</Link>
     </Compile>
     <Compile Include="System\Security\Cryptography\CapiHelper.DSA.Windows.cs" />
+    <Compile Include="System\Security\Cryptography\CspKeyContainerInfo.Windows.cs" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetsUnix)' == 'true'">
     <!-- <Compile Include="System\Security\Cryptography\CapiHelper.Unix.cs" /> -->
-    <Compile Include="System\Security\Cryptography\CspKeyContainerInfo.Unix.cs" />
+    <!-- <Compile Include="System\Security\Cryptography\CspKeyContainerInfo.Unix.cs" /> -->
     <Compile Include="System\Security\Cryptography\DESCryptoServiceProvider.Unix.cs" />
     <Compile Include="System\Security\Cryptography\DSACryptoServiceProvider.Unix.cs" />
     <Compile Include="System\Security\Cryptography\PasswordDeriveBytes.Unix.cs" />
