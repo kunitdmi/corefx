@@ -220,6 +220,17 @@ namespace System.Security.Cryptography.Encryption.Gost3410.Tests
             }
         }
 
+        [Fact]
+        public void ExportParameters()
+        {
+            using (var gost = GetGostProvider())
+            {
+                var csp_params = gost.ExportParameters(false);
+                Assert.NotNull(csp_params);
+                Assert.NotNull(csp_params.PublicKey);
+            }
+        }
+
         private static Gost3410_2012_256CryptoServiceProvider GetGostProvider()
         {
             CspParameters cpsParams = new CspParameters(
