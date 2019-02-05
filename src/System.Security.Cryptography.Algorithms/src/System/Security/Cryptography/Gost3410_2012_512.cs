@@ -267,7 +267,6 @@ namespace System.Security.Cryptography
                 }
             }
         }
-        // #Q_
         public override string KeyExchangeAlgorithm => GostConstants.XmlKeyExchangeAlgorithmTransport2012_512;
         public override string SignatureAlgorithm => GostConstants.XmlSignatureAlgorithm2012_512;
 
