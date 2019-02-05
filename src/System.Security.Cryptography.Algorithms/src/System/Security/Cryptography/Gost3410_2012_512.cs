@@ -268,8 +268,8 @@ namespace System.Security.Cryptography
             }
         }
         // #Q_
-        public override string KeyExchangeAlgorithm => GostConstants.GOST3410_2012_512STRING;
-        public override string SignatureAlgorithm => GostConstants.GOST3410_2012_512STRING;
+        public override string KeyExchangeAlgorithm => GostConstants.XmlKeyExchangeAlgorithmTransport2012_512;
+        public override string SignatureAlgorithm => GostConstants.XmlSignatureAlgorithm2012_512;
 
         private static Exception HashAlgorithmNameNullOrEmpty() =>
             new ArgumentException(SR.Cryptography_HashAlgorithmNameNullOrEmpty, "hashAlgorithm");
