@@ -115,12 +115,27 @@ namespace System.Security.Cryptography
         public bool VerifyHash(byte[] rgbHash, string str, byte[] rgbSignature) { throw null; }
         public override bool VerifySignature(byte[] rgbHash, byte[] rgbSignature) { throw null; }
     }
+
+    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    public sealed partial class Gost28147CryptoServiceProvider : System.Security.Cryptography.Gost28147
+    {
+        public override byte[] ComputeHash(HashAlgorithm hash){ throw null; }
+        public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV){ throw null; }
+        public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV){ throw null; }
+        public override SymmetricAlgorithm Unwrap(byte[] wrapped, GostKeyWrapMethod method) { throw null; }
+        public override byte[] Wrap(Gost28147 keyExchangeAlgorithm, GostKeyWrapMethod method) { throw null; }
+        public override void GenerateIV(){ throw null; }
+        public override void GenerateKey() {throw null; }
+    }
+
     public partial interface ICspAsymmetricAlgorithm
     {
         System.Security.Cryptography.CspKeyContainerInfo CspKeyContainerInfo { get; }
         byte[] ExportCspBlob(bool includePrivateParameters);
         void ImportCspBlob(byte[] rawData);
     }
+
+
     [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     public sealed partial class MD5CryptoServiceProvider : System.Security.Cryptography.MD5
     {

@@ -125,6 +125,7 @@
         internal const int CALG_G28147_IMIT = 0x801f;
         internal const int CALG_SIMPLE_EXPORT = 0x6620;
         internal const int CALG_PRO_EXPORT = 0x661f;
+        internal const int CALG_PRO12_EXPORT = 0x6621;
         internal const int CALG_GR3411_HMAC = 0x8027;
         internal const int CALG_GR3411_2012_256_HMAC = 0x8034;
         internal const int CALG_GR3411_2012_512_HMAC = 0x8035;

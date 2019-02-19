@@ -7,18 +7,23 @@ using System.Runtime.InteropServices;
 namespace System.Security.Cryptography
 {
     /// <summary>
-    /// Алгоритм экспорта общего секретного ключа.
+    /// Алгоритм зашифрования секретного ключа.
     /// </summary>
-    public enum GostKeyExchangeExportMethod
+    public enum GostKeyWrapMethod
     {
         /// <summary>
         /// Простой экспорт ключа по ГОСТ 28147-89.
         /// </summary>
-        GostKeyExport,
+        GostKeyWrap,
 
         /// <summary>
         /// Защищённый экспорт ключа по алгоритму КриптоПро.
         /// </summary>
-        CryptoProKeyExport
+        CryptoProKeyWrap,
+
+        /// <summary>
+        /// Защищённый экспорт ключа по алгоритму КриптоПро12.
+        /// </summary>
+        CryptoPro12KeyWrap,
     }
 }

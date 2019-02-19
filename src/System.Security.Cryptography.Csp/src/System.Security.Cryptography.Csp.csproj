@@ -217,6 +217,8 @@
     <Compile Include="$(CommonPath)\System\Security\Cryptography\GostKeyExchangeParameters.cs">
       <Link>Common\System\Security\Cryptography\GostKeyExchangeParameters.cs</Link>
     </Compile>
+    <Compile Include="System\Security\Cryptography\GostCryptoAPITransform.cs" />
+    <Compile Include="System\Security\Cryptography\Gost28147CryptoServiceProvider.cs" />
     <Compile Include="System\Security\Cryptography\AesCryptoServiceProvider.cs" />
     <Compile Include="System\Security\Cryptography\CapiHelper.DSA.Shared.cs" />
     <Compile Include="System\Security\Cryptography\CapiHelper.Gost.Shared.cs" />
@@ -230,6 +232,7 @@
     <Compile Include="System\Security\Cryptography\Gost3411_2012_512CryptoServiceProvider.cs" />
     <Compile Include="System\Security\Cryptography\Gost3411_2012_256CryptoServiceProvider.cs" />
     <Compile Include="System\Security\Cryptography\Gost3411CryptoServiceProvider.cs" />
+    <Compile Include="System\Security\Cryptography\GostRngCryptoServiceProvider.cs" />
     <Compile Include="System\Security\Cryptography\ICspAsymmetricAlgorithm.cs" />
     <Compile Include="System\Security\Cryptography\KeyNumber.cs" />
     <Compile Include="System\Security\Cryptography\MD5CryptoServiceProvider.cs" />
@@ -272,11 +275,17 @@
     <Compile Include="$(CommonPath)\Interop\Windows\advapi32\Interop.CryptDestroyKey.cs">
       <Link>Common\Interop\Windows\advapi32\Interop.CryptDestroyKey.cs</Link>
     </Compile>
+    <Compile Include="$(CommonPath)\Interop\Windows\advapi32\Interop.CryptDuplicateKey.cs">
+      <Link>Common\Interop\Windows\advapi32\Interop.CryptDuplicateKey.cs</Link>
+    </Compile>
     <Compile Include="$(CommonPath)\Interop\Windows\advapi32\Interop.CryptEncrypt.cs">
       <Link>Common\Interop\Windows\advapi32\Interop.CryptEncrypt.cs</Link>
     </Compile>
     <Compile Include="$(CommonPath)\Interop\Windows\advapi32\Interop.CryptExportKey.cs">
       <Link>Common\Interop\Windows\advapi32\Interop.CryptExportKey.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\Interop\Windows\advapi32\Interop.CryptGenRandom.cs">
+      <Link>Common\Interop\Windows\advapi32\Interop.CryptGenRandom.cs</Link>
     </Compile>
     <Compile Include="$(CommonPath)\Interop\Windows\advapi32\Interop.CryptGenKey.cs">
       <Link>Common\Interop\Windows\advapi32\Interop.CryptGenKey.cs</Link>

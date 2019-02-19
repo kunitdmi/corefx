@@ -135,6 +135,10 @@ namespace System.Security.Cryptography
                 ht.Add("Gost3411_2012_512", OID_GOST3411_2012_512);
                 ht.Add("System.Security.Cryptography.Gost3411_2012_512", OID_GOST3410_2012_512);
                 ht.Add("System.Security.Cryptography.Gost3411_2012_512CryptoServiceProvider", OID_GOST3411_2012_512);
+
+                ht.Add("Gost28147", OID_GOST28147);
+                ht.Add("System.Security.Cryptography.Gost28147", OID_GOST28147);
+                ht.Add("System.Security.Cryptography.Gost28147CryptoServiceProvider", OID_GOST28147);
                 //end: sk
 
                 s_defaultOidHT = ht;
@@ -185,6 +189,8 @@ namespace System.Security.Cryptography
 
                 string Gost3410_2012_512Type = "System.Security.Cryptography.Gost3410_2012_512CryptoServiceProvider, " + AssemblyName_Csp;
                 string Gost3411_2012_512Type = "System.Security.Cryptography.Gost3411_2012_512CryptoServiceProvider, " + AssemblyName_Csp;
+
+                string Gost28147Type = "System.Security.Cryptography.Gost28147CryptoServiceProvider, " + AssemblyName_Csp;
                 //end: sk
 
                 // Random number generator
@@ -206,6 +212,9 @@ namespace System.Security.Cryptography
 
                 ht.Add("Gost3411_2012_512", Gost3411_2012_512Type);
                 ht.Add("System.Security.Cryptography.Gost3411_2012_512", Gost3411_2012_512Type);
+
+                ht.Add("Gost28147", Gost28147Type);
+                ht.Add("System.Security.Cryptography.Gost28147", Gost28147Type);
                 //end: sk
 
                 ht.Add("MD5", MD5CryptoServiceProviderType);

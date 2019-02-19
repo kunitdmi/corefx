@@ -811,10 +811,11 @@ namespace System.Security.Cryptography
         public static new System.Security.Cryptography.Gost3411_2012_512 Create(string hashName) { throw null; }
     }
 
-    public enum GostKeyExchangeExportMethod
+    public enum GostKeyWrapMethod
     {
-        GostKeyExport,
-        CryptoProKeyExport
+        GostKeyWrap,
+        CryptoProKeyWrap,
+        CryptoPro12KeyWrap
     }
 
     public abstract class Gost28147 : SymmetricAlgorithm
@@ -830,8 +831,8 @@ namespace System.Security.Cryptography
         public static new System.Security.Cryptography.Gost28147 Create() { throw null; }
         public static new System.Security.Cryptography.Gost28147 Create(string algName) { throw null; }
         public abstract byte[] ComputeHash(HashAlgorithm hash);
-        public abstract byte[] EncodePrivateKey(System.Security.Cryptography.Gost28147 keyExchangeAlgorithm, System.Security.Cryptography.GostKeyExchangeExportMethod keyExchangeExportMethod);
-        public abstract SymmetricAlgorithm DecodePrivateKey(byte[] encodedKeyExchangeData, System.Security.Cryptography.GostKeyExchangeExportMethod keyExchangeExportMethod);
+        public abstract byte[] Wrap(System.Security.Cryptography.Gost28147 prov, System.Security.Cryptography.GostKeyWrapMethod method);
+        public abstract SymmetricAlgorithm Unwrap(byte[] wrapped, System.Security.Cryptography.GostKeyWrapMethod method);
     }
 
     //end: SK

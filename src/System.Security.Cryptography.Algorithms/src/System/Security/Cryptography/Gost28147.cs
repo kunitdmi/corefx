@@ -2,11 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using Internal.Cryptography;
 using System.ComponentModel;
 
 namespace System.Security.Cryptography
 {
+    using Internal.Cryptography;
+
     [EditorBrowsable(EditorBrowsableState.Never)]
     public abstract class Gost28147 : SymmetricAlgorithm
     {
@@ -56,11 +57,11 @@ namespace System.Security.Cryptography
         ///// расшифрования файла при помощи 
         /////  порожденного класса <see cref="Gost28147CryptoServiceProvider"/>.
         /////  </doc-sample>
-        public static new Gost28147 Create()
+        public new static Gost28147 Create()
         {
             // Создание объекта идет по конфигурации для алгоритма заданного 
             // полным именем класса Gost28147.
-            return Gost28147.Create(typeof(Gost28147).FullName);
+            return (Gost28147)CryptoConfig.CreateFromName(typeof(Gost28147).Name);
         }
 
         /// <summary>
@@ -78,7 +79,7 @@ namespace System.Security.Cryptography
         ///// расшифрования файла при помощи 
         /////  порожденного класса <see cref="Gost28147CryptoServiceProvider"/>.
         /////  </doc-sample>
-        public static new Gost28147 Create(string algName)
+        public new static Gost28147 Create(string algName)
         {
             // Создание объекта идет по конфигурации для алгоритма заданного 
             // параметром.
@@ -97,15 +98,16 @@ namespace System.Security.Cryptography
         /// <summary>
         /// Экспортирует (шифрует) секретный ключ.
         /// </summary>
-        /// <param name="keyExchangeAlgorithm">Общий секретный ключ.</param>
-        /// <param name="keyExchangeExportMethod">Алгоритм экспорта общего секретного ключа.</param>
-        public abstract byte[] EncodePrivateKey(Gost28147 keyExchangeAlgorithm, GostKeyExchangeExportMethod keyExchangeExportMethod);
+        /// <param name="prov">Шифруемый ключ.</param>
+        /// <param name="method">Алгоритм экспорта ключа.</param>
+        /// <returns>Зашифрованный симметричный ключ</returns>
+        public abstract byte[] Wrap(Gost28147 prov, GostKeyWrapMethod method);
 
         /// <summary>
         /// Импортирует (дешифрует) секретный ключ.
         /// </summary>
-        /// <param name="encodedKeyExchangeData">Зашифрованный общий секретный ключ.</param>
-        /// <param name="keyExchangeExportMethod">Алгоритм экспорта общего секретного ключа.</param>
-        public abstract SymmetricAlgorithm DecodePrivateKey(byte[] encodedKeyExchangeData, GostKeyExchangeExportMethod keyExchangeExportMethod);
+        /// <param name="wrapped">Зашифрованный секретный ключ.</param>
+        /// <param name="method">Алгоритм экспорта ключа.</param>
+        public abstract SymmetricAlgorithm Unwrap(byte[] wrapped, GostKeyWrapMethod method);
     }
 }
