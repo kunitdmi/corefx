@@ -669,7 +669,7 @@ namespace System.Security.Cryptography
         public static new System.Security.Cryptography.TripleDES Create(string str) { throw null; }
         public static bool IsWeakKey(byte[] rgbKey) { throw null; }
     }
-    //add: SK
+    //begin: gost
     public abstract partial class Gost3410 : System.Security.Cryptography.AsymmetricAlgorithm
     {
         public override string KeyExchangeAlgorithm { get { throw null; } }
@@ -835,5 +835,5 @@ namespace System.Security.Cryptography
         public abstract SymmetricAlgorithm Unwrap(byte[] wrapped, System.Security.Cryptography.GostKeyWrapMethod method);
     }
 
-    //end: SK
+    //end: gost
 }

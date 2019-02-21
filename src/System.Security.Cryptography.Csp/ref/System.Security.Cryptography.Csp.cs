@@ -301,7 +301,7 @@ namespace System.Security.Cryptography
         public override void GenerateKey() { }
     }
 
-    //add: sk
+    //begin: gost
     public sealed partial class Gost3410CryptoServiceProvider : Gost3410, ICspAsymmetricAlgorithm
     {
         public CspKeyContainerInfo CspKeyContainerInfo { get { throw null; } }
@@ -422,5 +422,5 @@ namespace System.Security.Cryptography
         public static byte[] EncodePublicBlob(GostKeyExchangeParameters publicKeyParameters) { throw null; }
 
     }
-    //end: sk
+    //end: gost
 }

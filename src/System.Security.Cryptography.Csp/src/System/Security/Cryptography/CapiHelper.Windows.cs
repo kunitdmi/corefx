@@ -297,9 +297,9 @@ namespace Internal.NativeCrypto
                                                         ((hr != (uint)CryptKeyError.NTE_KEYSET_NOT_DEF && hr !=
                                                         (uint)CryptKeyError.NTE_BAD_KEYSET && hr !=
                                                         (uint)CryptKeyError.NTE_FILENOTFOUND && hr !=
-                                                        // add: sk
+                                                        // add: gost
                                                         unchecked((uint)GostConstants.SCARD_W_CANCELLED_BY_USER))))
-                // end: sk
+                                                        // end: gost
                 {
                     throw ((int)hr).ToCryptographicException();
                 }
@@ -711,7 +711,7 @@ namespace Internal.NativeCrypto
             out bool randomKeyContainer)
         {
             CspParameters parameters;
-            //add: sk
+            //begin: gost
             if (userParameters != null && userParameters.ProviderType != (int)keyType)
             {
                 switch (keyType)
@@ -730,11 +730,11 @@ namespace Internal.NativeCrypto
                         break;
                 }
             }
-            //end: sk
+            //end: gost
 
             if (userParameters == null)
             {
-                //add: sk
+                //begin: gost
                 switch (keyType)
                 {
                     case CspAlgorithmType.Dss:
@@ -750,7 +750,7 @@ namespace Internal.NativeCrypto
                         parameters = new CspParameters(DefaultRsaProviderType, null, null, defaultFlags);
                         break;
                 }
-                //end: sk
+                //end: gost
             }
             else
             {
@@ -788,7 +788,7 @@ namespace Internal.NativeCrypto
             if (parameters.KeyContainerName == null && !IsFlagBitSet((uint)parameters.Flags,
                 (uint)CspProviderFlags.UseDefaultKeyContainer))
             {
-                // add: sk
+                // add: gost
                 switch (parameters.ProviderType)
                 {
                     case (int)CspAlgorithmType.PROV_GOST_2001_DH:
@@ -804,7 +804,7 @@ namespace Internal.NativeCrypto
                         break;
                     }
                 }
-                // end: sk
+                // end: gost
                 randomKeyContainer = true;
             }
 
@@ -1070,7 +1070,7 @@ namespace Internal.NativeCrypto
             Buffer.BlockCopy(encryptedData, 0, output, outputOffset, outputCount);
 
             return outputCount;
-        }        
+        }
 
         internal static int DecryptData(
             SafeKeyHandle hKey,
@@ -1105,7 +1105,7 @@ namespace Internal.NativeCrypto
             Buffer.BlockCopy(dataTobeDecrypted, 0, output, outputOffset, decryptedDataLength);
 
             return decryptedDataLength;
-        }        
+        }
 
         /// <summary>
         /// Helper for Import CSP
@@ -1246,7 +1246,7 @@ namespace Internal.NativeCrypto
             throw new ArgumentException(SR.Argument_InvalidValue, nameof(hashAlg));
         }
 
-        //add:SK
+        //begin: gost
         /// <summary>
         /// Получение OID алгоритма для переданного объекта хеширования.
         /// </summary>
@@ -1283,7 +1283,7 @@ namespace Internal.NativeCrypto
             if (s == null)
                 throw new ArgumentException(SR.Argument_InvalidValue, nameof(hashAlg));
             return s;
-        }        
+        }
 
         /// <summary>
         /// Дублирование HANDLE ключа.
@@ -1309,7 +1309,7 @@ namespace Internal.NativeCrypto
             return phKeyDest;
         }
 
-        //end: SK
+        //end: gost
 
         /// <summary>
         /// Helper for signing and verifications that accept a string/Type/HashAlgorithm to specify a hashing algorithm.
@@ -1510,7 +1510,7 @@ namespace Internal.NativeCrypto
             }
         }
 
-        //add: sk
+        //begin: gost
         //HelperMethod used by HashData
         public static void CryptHashData(SafeHashHandle hHash, byte[] pbData, int dwDataLen, int dwFlags)
         {
@@ -1554,8 +1554,8 @@ namespace Internal.NativeCrypto
         //        throw new CryptographicException(Marshal.GetLastWin32Error());
         //    return data;
         //}
-        
-		//end:sk
+
+        //end:gost
 
         // Helper method used by DeriveKey (above) to return the key contents.
         // WARNING: This function side-effects its first argument (hProv)

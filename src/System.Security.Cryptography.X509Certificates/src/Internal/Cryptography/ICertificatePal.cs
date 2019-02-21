@@ -22,9 +22,9 @@ namespace Internal.Cryptography
         RSA GetRSAPrivateKey();
         DSA GetDSAPrivateKey();
         ECDsa GetECDsaPrivateKey();
-        //add: sk
+        //begin: gost
         Gost3410 GetGost3410PrivateKey();
-        //end: sk
+        //end: gost
         string GetNameInfo(X509NameType nameType, bool forIssuer);
         void AppendPrivateKeyInfo(StringBuilder sb);
         ICertificatePal CopyWithPrivateKey(DSA privateKey);

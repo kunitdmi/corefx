@@ -20,17 +20,17 @@ namespace System.Security.Cryptography.Pkcs
             PrepareRegistrationRsa(s_lookup);
             PrepareRegistrationDsa(s_lookup);
             PrepareRegistrationECDsa(s_lookup);
-            //add: sk
+            //begin: gost
             PrepareRegistrationGost(s_lookup);
-            //end: sk
+            //end: gost
         }
 
         static partial void PrepareRegistrationRsa(Dictionary<string, CmsSignature> lookup);
         static partial void PrepareRegistrationDsa(Dictionary<string, CmsSignature> lookup);
         static partial void PrepareRegistrationECDsa(Dictionary<string, CmsSignature> lookup);
-        //add: sk
+        //begin: gost
         static partial void PrepareRegistrationGost(Dictionary<string, CmsSignature> lookup);
-        //end: sk
+        //end: gost
         protected abstract bool VerifyKeyType(AsymmetricAlgorithm key);
 
         internal abstract bool VerifySignature(

@@ -66,7 +66,7 @@ namespace Internal.Cryptography.Pal
             );
         }
 
-        //add: sk
+        //begin: gost
         public Gost3410 GetGost3410PrivateKey()
         {
             return GetPrivateKey<Gost3410>(
@@ -81,7 +81,7 @@ namespace Internal.Cryptography.Pal
                 }
             );
         }
-        //end: sk
+        //end: gost
 
         public ICertificatePal CopyWithPrivateKey(DSA dsa)
         {

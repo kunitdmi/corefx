@@ -52,7 +52,7 @@ namespace Internal.Cryptography
                     return HashAlgorithmName.SHA384;
                 case Oids.Sha512:
                     return HashAlgorithmName.SHA512;
-                //add: sk
+                //begin: gost
                 case Oids.Gost3411:
                     return HashAlgorithmName.Gost3411;
                 //case Oids.Gost28147:
@@ -63,7 +63,7 @@ namespace Internal.Cryptography
                 //    return new HashAlgorithmName("GR 34.11-2012 512");
                 //case Oids.Gost3410:
                 //    return new HashAlgorithmName("GOST DH 34.10-2001");
-                //end: sk 
+                //end: gost 
                 default:
                     throw new CryptographicException(SR.Cryptography_UnknownHashAlgorithm, oidValue);
             }
@@ -81,7 +81,7 @@ namespace Internal.Cryptography
                 return Oids.Sha384;
             if (algName == HashAlgorithmName.SHA512)
                 return Oids.Sha512;
-            //add: sk
+            //begin: gost
             if (algName == new HashAlgorithmName("GOST R 34.11-94"))
                 return Oids.Gost3411;
             if (algName == new HashAlgorithmName("HMAC GOST 28147-89"))
@@ -98,7 +98,7 @@ namespace Internal.Cryptography
             if (algName == new HashAlgorithmName("GOST DH 34.10-2012 512"))
                 return Oids.Gost34102012512;
             */
-            //end: sk
+            //end: gost
             throw new CryptographicException(SR.Cryptography_Cms_UnknownAlgorithm, algName.Name);
         }
 

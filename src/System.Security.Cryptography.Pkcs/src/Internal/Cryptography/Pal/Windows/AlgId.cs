@@ -15,8 +15,8 @@ namespace Internal.Cryptography.Pal.Windows
         CALG_RC4 = 0x00006801,
         CALG_DES = 0x00006601,
         CALG_3DES = 0x00006603,
-        //add: sk
+        //begin: gost
         CALG_GOST3410 = 0x00002e23,
-        //end: sk
-}
+        //end: gost
+    }
 }

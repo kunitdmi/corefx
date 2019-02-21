@@ -74,7 +74,7 @@ namespace Internal.Cryptography
         public const string TstInfo = "1.2.840.113549.1.9.16.1.4";
         public const string TimeStampingPurpose = "1.3.6.1.5.5.7.3.8";
 
-        //add: SK
+        //begin: gost
         // Hash algorithms GOST
         public const string Gost3411 = "1.2.643.2.2.9";
         public const string Gost28147 = "1.2.643.2.2.21";
@@ -83,6 +83,6 @@ namespace Internal.Cryptography
 
         //Sign algorithms GOST
         public const string Gost3410 = "1.2.643.2.2.19";
-        //end: SK
+        //end: gost
     }
 }

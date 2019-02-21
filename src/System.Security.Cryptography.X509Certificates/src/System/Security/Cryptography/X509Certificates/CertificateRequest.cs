@@ -471,13 +471,13 @@ namespace System.Security.Cryptography.X509Certificates
                         key = ecdsa;
                         generator = X509SignatureGenerator.CreateForECDsa(ecdsa);
                         break;
-                    //add: sk
+                    //begin: gost
                     //case Oids.Gost3410EL:
                     //    Gost3410 gost3410 = issuerCertificate.GetGost3410PrivateKey();
                     //    key = gost3410;
                     //    generator = X509SignatureGenerator.CreateForGost3410(gost3410);
                     //    break;
-                    //end: sk
+                    //end: gost
                     default:
                         throw new ArgumentException(
                             SR.Format(SR.Cryptography_UnknownKeyAlgorithm, keyAlgorithm),

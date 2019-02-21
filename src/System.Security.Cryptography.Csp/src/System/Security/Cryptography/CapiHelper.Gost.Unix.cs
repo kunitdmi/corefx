@@ -776,7 +776,7 @@ namespace Internal.NativeCrypto
             out bool randomKeyContainer)
         {
             CspParameters parameters;
-            //add: sk
+            //begin: gost
             if (userParameters != null && userParameters.ProviderType != (int)keyType)
             {
                 switch (keyType)
@@ -795,11 +795,11 @@ namespace Internal.NativeCrypto
                         break;
                 }
             }
-            //end: sk
+            //end: gost
 
             if (userParameters == null)
             {
-                //add: sk
+                //begin: gost
                 switch (keyType)
                 {
                     //case CspAlgorithmType.Dss:
@@ -815,7 +815,7 @@ namespace Internal.NativeCrypto
                         parameters = new CspParameters(DefaultRsaProviderType, null, null, defaultFlags);
                         break;
                 }
-                //end: sk
+                //end: gost
             }
             else
             {
@@ -967,7 +967,7 @@ namespace Internal.NativeCrypto
         }
 
   
-        //add:SK
+        //begin: gost
         /// <summary>
         /// Получение OID алгоритма для переданного объекта хеширования.
         /// </summary>
@@ -1029,9 +1029,9 @@ namespace Internal.NativeCrypto
             }
             return pbRawData;
         }
-        //end: SK
+        //end: gost
 
-        //    //add: sk
+        //    //begin: gost
         //    //HelperMethod used by HashData
         //    public static void CryptHashData(SafeHashHandle hHash, byte[] pbData, int dwDataLen, int dwFlags)
         //    {
@@ -1075,7 +1075,7 @@ namespace Internal.NativeCrypto
         //    //        throw new CryptographicException(Marshal.GetLastWin32Error());
         //    //    return data;
         //    //}
-        //    //end:sk
+        //    //end: gost
 
 
         /// <summary>

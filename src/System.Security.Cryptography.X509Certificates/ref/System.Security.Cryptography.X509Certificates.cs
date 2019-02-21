@@ -39,7 +39,7 @@ namespace System.Security.Cryptography.X509Certificates
         public static System.Security.Cryptography.DSA GetDSAPrivateKey(this System.Security.Cryptography.X509Certificates.X509Certificate2 certificate) { throw null; }
         public static System.Security.Cryptography.DSA GetDSAPublicKey(this System.Security.Cryptography.X509Certificates.X509Certificate2 certificate) { throw null; }
     }
-    //add: sk
+    //begin: gost
     public static partial class Gost3410CertificateExtensions
     {
         //public static System.Security.Cryptography.X509Certificates.X509Certificate2 CopyWithPrivateKey(this System.Security.Cryptography.X509Certificates.X509Certificate2 certificate, System.Security.Cryptography.DSA privateKey) { throw null; }
@@ -47,7 +47,7 @@ namespace System.Security.Cryptography.X509Certificates
         public static System.Security.Cryptography.Gost3410 GetGost3410PublicKey(this System.Security.Cryptography.X509Certificates.X509Certificate2 certificate) { throw null; }
     }
 
-    //end: sk
+    //end: gost
     public static partial class ECDsaCertificateExtensions
     {
         public static System.Security.Cryptography.X509Certificates.X509Certificate2 CopyWithPrivateKey(this System.Security.Cryptography.X509Certificates.X509Certificate2 certificate, System.Security.Cryptography.ECDsa privateKey) { throw null; }

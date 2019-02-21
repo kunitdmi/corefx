@@ -248,10 +248,10 @@ namespace Internal.Cryptography.Pal.Windows
                     return (T)(object)new RSACryptoServiceProvider(cspParams);
                 if (typeof(T) == typeof(DSA))
                     return (T)(object)new DSACryptoServiceProvider(cspParams);
-                //add: sk
+                //begin: gost
                 if (typeof(T) == typeof(Gost3410))
                     return (T)(object)new Gost3410CryptoServiceProvider(cspParams);
-                //end: sk
+                //end: gost
 
                 Debug.Fail($"Unknown CAPI key type request: {typeof(T).FullName}");
                 return null;

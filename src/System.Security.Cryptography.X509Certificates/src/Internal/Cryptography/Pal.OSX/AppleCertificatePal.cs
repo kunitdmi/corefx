@@ -20,12 +20,12 @@ namespace Internal.Cryptography.Pal
         private CertificateData _certData;
         private bool _readCertData;
 
-        //add: sk
+        //begin: gost
         public Gost3410 GetGost3410PrivateKey()
         {
             throw new NotSupportedException("Gost3410 keys are not supported.");//(SR.NotSupported_Gost3410_Cng); 
         }
-        //end: sk
+        //end: gost
 
         public static ICertificatePal FromHandle(IntPtr handle)
         {

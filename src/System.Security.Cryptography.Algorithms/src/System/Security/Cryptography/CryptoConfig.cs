@@ -30,7 +30,7 @@ namespace System.Security.Cryptography
         private const string OID_OIWSEC_SHA512 = "2.16.840.1.101.3.4.2.3";
         private const string OID_OIWSEC_RIPEMD160 = "1.3.36.3.2.1";
 
-        //add: sk
+        //begin: gost
         private const string OID_GOST3410 = Oids.Gost3410;
         private const string OID_GOST3410_2012_256 = Oids.Gost3410_2012_256;
         private const string OID_GOST3410_2012_512 = Oids.Gost3410_2012_512;
@@ -38,7 +38,7 @@ namespace System.Security.Cryptography
         private const string OID_GOST3411_2012_256 = Oids.Gost3410_2012_256;
         private const string OID_GOST3411_2012_512 = Oids.Gost3410_2012_512;
         private const string OID_GOST28147 = Oids.Gost28147;
-        //end: sk
+        //end: gost
 
         private const string ECDsaIdentifier = "ECDsa";
 
@@ -111,7 +111,7 @@ namespace System.Security.Cryptography
                 ht.Add("TripleDES", OID_RSA_DES_EDE3_CBC);
                 ht.Add("System.Security.Cryptography.TripleDESCryptoServiceProvider", OID_RSA_DES_EDE3_CBC);
 
-                //add: sk
+                //begin: gost
                 ht.Add("Gost3410", OID_GOST3410);
                 ht.Add("System.Security.Cryptography.Gost3410", OID_GOST3410);
                 ht.Add("System.Security.Cryptography.Gost3410CryptoServiceProvider", OID_GOST3410);
@@ -139,7 +139,7 @@ namespace System.Security.Cryptography
                 ht.Add("Gost28147", OID_GOST28147);
                 ht.Add("System.Security.Cryptography.Gost28147", OID_GOST28147);
                 ht.Add("System.Security.Cryptography.Gost28147CryptoServiceProvider", OID_GOST28147);
-                //end: sk
+                //end: gost
 
                 s_defaultOidHT = ht;
                 return s_defaultOidHT;
@@ -180,7 +180,7 @@ namespace System.Security.Cryptography
 
                 string ECDsaCngType = "System.Security.Cryptography.ECDsaCng, " + AssemblyName_Cng;
 
-                //add: sk
+                //begin: gost
                 string Gost3410Type = "System.Security.Cryptography.Gost3410CryptoServiceProvider, " + AssemblyName_Csp;
                 string Gost3411Type = "System.Security.Cryptography.Gost3411CryptoServiceProvider, " + AssemblyName_Csp;
 
@@ -191,7 +191,7 @@ namespace System.Security.Cryptography
                 string Gost3411_2012_512Type = "System.Security.Cryptography.Gost3411_2012_512CryptoServiceProvider, " + AssemblyName_Csp;
 
                 string Gost28147Type = "System.Security.Cryptography.Gost28147CryptoServiceProvider, " + AssemblyName_Csp;
-                //end: sk
+                //end: gost
 
                 // Random number generator
                 ht.Add("RandomNumberGenerator", RNGCryptoServiceProviderType);
@@ -203,7 +203,7 @@ namespace System.Security.Cryptography
                 ht.Add("System.Security.Cryptography.SHA1", SHA1CryptoServiceProviderType);
                 ht.Add("System.Security.Cryptography.HashAlgorithm", SHA1CryptoServiceProviderType);
 
-                //add: sk
+                //begin: gost
                 ht.Add("Gost3411", Gost3411Type);
                 ht.Add("System.Security.Cryptography.Gost3411", Gost3411Type);
 
@@ -215,7 +215,7 @@ namespace System.Security.Cryptography
 
                 ht.Add("Gost28147", Gost28147Type);
                 ht.Add("System.Security.Cryptography.Gost28147", Gost28147Type);
-                //end: sk
+                //end: gost
 
                 ht.Add("MD5", MD5CryptoServiceProviderType);
                 ht.Add("System.Security.Cryptography.MD5", MD5CryptoServiceProviderType);
@@ -263,7 +263,7 @@ namespace System.Security.Cryptography
                 ht.Add("ECDsaCng", ECDsaCngType);
                 ht.Add("System.Security.Cryptography.ECDsaCng", ECDsaCngType);
 
-                //add: sk
+                //begin: gost
                 ht.Add("Gost3410", Gost3410Type);
                 ht.Add("System.Security.Cryptography.Gost3410", Gost3410Type);
 
@@ -272,7 +272,7 @@ namespace System.Security.Cryptography
 
                 ht.Add("Gost3410_2012_512", Gost3410_2012_512Type);
                 ht.Add("System.Security.Cryptography.Gost3410_2012_512", Gost3410_2012_512Type);
-                //end: sk
+                //end: gost
 
                 // Symmetric algorithms
                 ht.Add("DES", DESCryptoServiceProviderType);
@@ -303,10 +303,10 @@ namespace System.Security.Cryptography
                 ht.Add("http://www.w3.org/2001/04/xmlenc#sha256", SHA256DefaultType);
                 ht.Add("http://www.w3.org/2001/04/xmlenc#sha512", SHA512DefaultType);
 
-                //add: sk
+                //begin: gost
                 ht.Add("urn:ietf:params:xml:ns:cpxmlsec:algorithms:gostr3411",
                     Gost3411Type);
-                //end: sk
+                //end: gost
 
                 // Xml Encryption symmetric keys
                 ht.Add("http://www.w3.org/2001/04/xmlenc#des-cbc", DESCryptoServiceProviderType);
