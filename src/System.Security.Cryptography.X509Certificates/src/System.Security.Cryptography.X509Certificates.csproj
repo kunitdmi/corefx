@@ -132,6 +132,7 @@
     <Compile Include="System\Security\Cryptography\X509Certificates\DSACertificateExtensions.cs" />
     <Compile Include="System\Security\Cryptography\X509Certificates\ECDsaCertificateExtensions.cs" />
     <Compile Include="System\Security\Cryptography\X509Certificates\ECDsaX509SignatureGenerator.cs" />
+    <Compile Include="System\Security\Cryptography\X509Certificates\Gost3410SignatureGenerator.cs" />
     <Compile Include="System\Security\Cryptography\X509Certificates\OpenFlags.cs" />
     <Compile Include="System\Security\Cryptography\X509Certificates\Pkcs10CertificationRequestInfo.cs" />
     <Compile Include="System\Security\Cryptography\X509Certificates\Pkcs9ExtensionRequest.cs" />
@@ -705,9 +706,10 @@
     <Reference Include="System.Security.Cryptography.Csp" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetsUnix)' == 'true' AND '$(TargetsOSX)' != 'true'">
+    <Reference Include="System.Security.Cryptography.Csp" />
     <Reference Include="System.Security.Cryptography.OpenSsl" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="@(AsnXml)" /> 
+    <None Include="@(AsnXml)" />
   </ItemGroup>
 </Project>

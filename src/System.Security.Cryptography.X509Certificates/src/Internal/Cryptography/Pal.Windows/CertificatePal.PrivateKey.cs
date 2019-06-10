@@ -146,6 +146,13 @@ namespace Internal.Cryptography.Pal
             }
         }
 
+        // begin: gost
+        public ICertificatePal CopyWithPrivateKey(Gost3410 gost)
+        {
+            return CopyWithPersistedCapiKey(((Gost3410CryptoServiceProvider)gost).CspKeyContainerInfo);
+        }
+        // end: gost
+
         public ICertificatePal CopyWithPrivateKey(RSA rsa)
         {
             RSACng rsaCng = rsa as RSACng;

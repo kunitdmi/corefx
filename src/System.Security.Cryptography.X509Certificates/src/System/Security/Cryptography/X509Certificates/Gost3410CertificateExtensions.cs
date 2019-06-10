@@ -29,27 +29,27 @@ namespace System.Security.Cryptography.X509Certificates
             return certificate.GetPrivateKey<Gost3410>();
         }
 
-        //public static X509Certificate2 CopyWithPrivateKey(this X509Certificate2 certificate, Gost3410 privateKey)
-        //{
-        //    if (certificate == null)
-        //        throw new ArgumentNullException(nameof(certificate));
-        //    if (privateKey == null)
-        //        throw new ArgumentNullException(nameof(privateKey));
+        public static X509Certificate2 CopyWithPrivateKey(this X509Certificate2 certificate, Gost3410 privateKey)
+        {
+            if (certificate == null)
+                throw new ArgumentNullException(nameof(certificate));
+            if (privateKey == null)
+                throw new ArgumentNullException(nameof(privateKey));
 
-        //    if (certificate.HasPrivateKey)
-        //        throw new InvalidOperationException(SR.Cryptography_Cert_AlreadyHasPrivateKey);
+            if (certificate.HasPrivateKey)
+                throw new InvalidOperationException(SR.Cryptography_Cert_AlreadyHasPrivateKey);
 
-        //    using (Gost3410 publicKey = GetGost3410PublicKey(certificate))
-        //    {
-        //        if (publicKey == null)
-        //            throw new ArgumentException(SR.Cryptography_PrivateKey_WrongAlgorithm);
+            using (Gost3410 publicKey = GetGost3410PublicKey(certificate))
+            {
+                if (publicKey == null)
+                    throw new ArgumentException(SR.Cryptography_PrivateKey_WrongAlgorithm);
 
-        //        Gost3410Parameters currentParameters = publicKey.ExportParameters(false);
-        //        Gost3410Parameters newParameters = privateKey.ExportParameters(false);
-        //    }
+                //Gost3410Parameters currentParameters = publicKey.ExportParameters(false);
+                //Gost3410Parameters newParameters = privateKey.ExportParameters(false);
+            }
 
-        //    ICertificatePal pal = certificate.Pal.CopyWithPrivateKey(privateKey);
-        //    return new X509Certificate2(pal);
-        //}
+            ICertificatePal pal = certificate.Pal.CopyWithPrivateKey(privateKey);
+            return new X509Certificate2(pal);
+        }
     }
 }

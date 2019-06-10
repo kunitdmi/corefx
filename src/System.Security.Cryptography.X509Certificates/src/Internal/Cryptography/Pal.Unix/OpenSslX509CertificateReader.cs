@@ -568,7 +568,14 @@ namespace Internal.Cryptography.Pal
                 return CopyWithPrivateKey((SafeEvpPKeyHandle)typedKey.DuplicateKeyHandle());
             }
         }
-
+		
+		// begin: gost
+        public ICertificatePal CopyWithPrivateKey(Gost3410 privateKey)
+        {
+            throw new NotSupportedException();
+        }
+		// end: gost
+		
         public string GetNameInfo(X509NameType nameType, bool forIssuer)
         {
             using (SafeBioHandle bioHandle = Interop.Crypto.GetX509NameInfo(_cert, (int)nameType, forIssuer))

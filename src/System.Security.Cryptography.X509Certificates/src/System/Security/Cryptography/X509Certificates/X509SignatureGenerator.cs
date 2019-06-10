@@ -47,5 +47,15 @@ namespace System.Security.Cryptography.X509Certificates
 
             throw new ArgumentException(SR.Cryptography_InvalidPaddingMode);
         }
+
+        // begin: gost
+        public static X509SignatureGenerator CreateForGost(Gost3410 key)
+        {
+            if (key == null)
+                throw new ArgumentNullException(nameof(key));
+
+            return new Gost3410SignatureGenerator(key);
+        }
+        //end: gost
     }
 }

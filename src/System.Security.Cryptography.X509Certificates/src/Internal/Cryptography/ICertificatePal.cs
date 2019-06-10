@@ -30,5 +30,8 @@ namespace Internal.Cryptography
         ICertificatePal CopyWithPrivateKey(DSA privateKey);
         ICertificatePal CopyWithPrivateKey(ECDsa privateKey);
         ICertificatePal CopyWithPrivateKey(RSA privateKey);
+        //begin: gost
+        ICertificatePal CopyWithPrivateKey(Gost3410 privateKey);
+        //end: gost
     }
 }
