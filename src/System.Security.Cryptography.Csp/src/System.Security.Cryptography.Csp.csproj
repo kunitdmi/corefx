@@ -277,6 +277,7 @@
     </Compile>
     <Compile Include="$(CommonPath)\Interop\Windows\Advapi32\Interop.CryptEncrypt.cs">
       <Link>Common\Interop\Windows\Advapi32\Interop.CryptEncrypt.cs</Link>
+    </Compile>  
     <Compile Include="$(CommonPath)\Interop\Windows\Advapi32\Interop.CryptDuplicateKey.cs">
       <Link>Common\Interop\Windows\Advapi32\Interop.CryptDuplicateKey.cs</Link>
     </Compile>
@@ -285,6 +286,7 @@
     </Compile>
     <Compile Include="$(CommonPath)\Interop\Windows\Advapi32\Interop.CryptGenRandom.cs">
       <Link>Common\Interop\Windows\Advapi32\Interop.CryptGenRandom.cs</Link>
+    </Compile>  
     <Compile Include="$(CommonPath)\Interop\Windows\Advapi32\Interop.CryptGenKey.cs">
       <Link>Common\Interop\Windows\Advapi32\Interop.CryptGenKey.cs</Link>
     </Compile>

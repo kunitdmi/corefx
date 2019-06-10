@@ -222,8 +222,7 @@ namespace Internal.NativeCrypto
             public static extern NTSTATUS BCryptImportKey(SafeAlgorithmHandle hAlgorithm, IntPtr hImportKey, string pszBlobType, out SafeKeyHandleBCrypt hKey, IntPtr pbKeyObject, int cbKeyObject, byte[] pbInput, int cbInput, int dwFlags);
 
             [DllImport(Libraries.BCrypt, CharSet = CharSet.Unicode)]
-            public static extern unsafe NTSTATUS BCryptEncrypt(SafeKeyHandle hKey, byte* pbInput, int cbInput, IntPtr paddingInfo, [In, Out] byte[] pbIV, int cbIV, byte* pbOutput, int cbOutput, out int cbResult, int dwFlags);
-            public static extern unsafe NTSTATUS BCryptEncrypt(SafeKeyHandleBCrypt hKey, byte* pbInput, int cbInput, IntPtr paddingInfo, [In,Out] byte [] pbIV, int cbIV, byte* pbOutput, int cbOutput, out int cbResult, int dwFlags);
+            public static extern unsafe NTSTATUS BCryptEncrypt(SafeKeyHandleBCrypt hKey, byte* pbInput, int cbInput, IntPtr paddingInfo, [In, Out] byte[] pbIV, int cbIV, byte* pbOutput, int cbOutput, out int cbResult, int dwFlags);
 
             [DllImport(Libraries.BCrypt, CharSet = CharSet.Unicode)]
             public static extern unsafe NTSTATUS BCryptDecrypt(SafeKeyHandleBCrypt hKey, byte* pbInput, int cbInput, IntPtr paddingInfo, [In, Out] byte[] pbIV, int cbIV, byte* pbOutput, int cbOutput, out int cbResult, int dwFlags);
