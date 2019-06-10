@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyName>System.Security.Cryptography.Xml</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -7,6 +7,9 @@
     <Configurations>net461-Debug;net461-Release;netfx-Debug;netfx-Release;netstandard-Debug;netstandard-Release</Configurations>
   </PropertyGroup>
   <ItemGroup Condition="'$(IsPartialFacadeAssembly)' != 'true'">
+    <Compile Include="$(CommonPath)\System\Security\Cryptography\GostConstants.cs">
+      <Link>Common\System\Security\Cryptography\GostConstants.cs</Link>
+    </Compile>
     <Compile Include="System\Security\Cryptography\Xml\AncestralNamespaceContextManager.cs" />
     <Compile Include="System\Security\Cryptography\Xml\AttributeSortOrder.cs" />
     <Compile Include="System\Security\Cryptography\Xml\C14NAncestralNamespaceContextManager.cs" />
@@ -111,6 +114,11 @@
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Security" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="System\Security\Cryptography\Xml\Gost2012_256KeyValue.cs" />
+    <Compile Include="System\Security\Cryptography\Xml\Gost2012_512KeyValue.cs" />
+    <Compile Include="System\Security\Cryptography\Xml\GostKeyValue.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\$(AssemblyName).rd.xml" />

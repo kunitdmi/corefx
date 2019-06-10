@@ -374,6 +374,26 @@ namespace System.Security.Cryptography.Xml
         public const string XmlDsigXPathTransformUrl = "http://www.w3.org/TR/1999/REC-xpath-19991116";
         public const string XmlDsigXsltTransformUrl = "http://www.w3.org/TR/1999/REC-xslt-19991116";
         public const string XmlLicenseTransformUrl = "urn:mpeg:mpeg21:2003:01-REL-R-NS:licenseTransform";
+        //begin: gost
+        public const string XmlDsigGost3411Url =
+            "urn:ietf:params:xml:ns:cpxmlsec:algorithms:gostr3411";
+        public const string XmlDsigGost3410Url =
+            "urn:ietf:params:xml:ns:cpxmlsec:algorithms:gostr34102001-gostr3411";
+        public const string XmlDsigGost3411HMACUrl =
+            "urn:ietf:params:xml:ns:cpxmlsec:algorithms:hmac-gostr3411";
+        public const string XmlDsigGost3411_2012_256Url =
+            "urn:ietf:params:xml:ns:cpxmlsec:algorithms:gostr34112012-256";
+        public const string XmlDsigGost3410_2012_256Url =
+            "urn:ietf:params:xml:ns:cpxmlsec:algorithms:gostr34102012-gostr34112012-256";
+        public const string XmlDsigGost3411_2012_256HMACUrl =
+            "urn:ietf:params:xml:ns:cpxmlsec:algorithms:hmac-gostr3411-2012-256";
+        public const string XmlDsigGost3411_2012_512Url =
+            "urn:ietf:params:xml:ns:cpxmlsec:algorithms:gostr34112012-512";
+        public const string XmlDsigGost3410_2012_512Url =
+            "urn:ietf:params:xml:ns:cpxmlsec:algorithms:gostr34102012-gostr34112012-512";
+        public const string XmlDsigGost3411_2012_512HMACUrl =
+            "urn:ietf:params:xml:ns:cpxmlsec:algorithms:hmac-gostr3411-2012-512";
+        //end: gost
         public SignedXml() { }
         public SignedXml(System.Xml.XmlDocument document) { }
         public SignedXml(System.Xml.XmlElement elem) { }

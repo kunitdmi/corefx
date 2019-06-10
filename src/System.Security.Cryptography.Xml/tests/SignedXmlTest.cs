@@ -1620,5 +1620,59 @@ namespace System.Security.Cryptography.Xml.Tests
                     xp.SelectSingleNode("/ds:SignedInfo/ds:Reference/ds:DigestMethod/@Algorithm", nsMgr)?.Value);
             }
         }
+
+        ////begin: gost
+
+        //[Fact]
+        //public void AsymmetricGostSignature()
+        //{
+        //    SignedXml signedXml = MSDNSample();
+
+        //    Gost3410_2012_256 key = GetGost2012_256Provider();
+        //    signedXml.SigningKey = key;
+
+        //    // Add a KeyInfo.
+        //    KeyInfo keyInfo = new KeyInfo();
+        //    keyInfo.AddClause(new Gost2012_256KeyValue(key));
+        //    signedXml.KeyInfo = keyInfo;
+
+        //    Assert.Equal(1, signedXml.KeyInfo.Count);
+        //    Assert.Null(signedXml.SignatureLength);
+        //    Assert.Null(signedXml.SignatureMethod);
+        //    Assert.Null(signedXml.SignatureValue);
+        //    Assert.Null(signedXml.SigningKeyName);
+
+        //    // Compute the signature.
+        //    signedXml.ComputeSignature();
+
+        //    Assert.Null(signedXml.SigningKeyName);
+
+        //    Assert.Equal("http://www.w3.org/2001/04/xmldsig-more#rsa-sha256", signedXml.SignatureMethod);
+
+        //    Assert.Equal(key.KeySize / 8, signedXml.SignatureValue.Length);
+        //    Assert.Null(signedXml.SigningKeyName);
+
+        //    // Get the XML representation of the signature.
+        //    XmlElement xmlSignature = signedXml.GetXml();
+
+        //    // LAMESPEC: we must reload the signature or it won't work
+        //    // MS framework throw a "malformed element"
+        //    SignedXml vrfy = new SignedXml();
+        //    vrfy.LoadXml(xmlSignature);
+
+        //    // assert that we can verify our own signature
+        //    Assert.True(vrfy.CheckSignature(), "RSA-Compute/Verify");
+        //}
+
+        //private static Gost3410_2012_256CryptoServiceProvider GetGost2012_256Provider()
+        //{
+        //    CspParameters cpsParams = new CspParameters(
+        //        75,
+        //        "",
+        //        "\\\\.\\HDIMAGE\\G2012256");
+        //    return new Gost3410_2012_256CryptoServiceProvider(cpsParams);
+        //}
+
+        ////end: gost
     }
 }

@@ -213,5 +213,14 @@
         internal const string GOST3410_STRING = "Gost3410";
         internal const string GOST3410_2012_256STRING = "Gost3410_2012_256";
         internal const string GOST3410_2012_512STRING = "Gost3410_2012_512";
+
+        /// <summary>
+        /// Базовый namespace XMLdsig.
+        /// </summary>
+        internal const string XmlDsigNamespace = "http://www.w3.org/2000/09/xmldsig#";
+        /// <summary>
+        /// Базовый namespace для XMLenc.
+        /// </summary>
+        internal const string XmlEncNamespace = "http://www.w3.org/2001/04/xmlenc#";
     }
 }

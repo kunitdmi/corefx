@@ -89,6 +89,27 @@ namespace System.Security.Cryptography.Xml
         public const string XmlDecryptionTransformUrl = "http://www.w3.org/2002/07/decrypt#XML";
         public const string XmlLicenseTransformUrl = "urn:mpeg:mpeg21:2003:01-REL-R-NS:licenseTransform";
 
+        //begin: gost
+        public const string XmlDsigGost3411Url =
+            "urn:ietf:params:xml:ns:cpxmlsec:algorithms:gostr3411";
+        public const string XmlDsigGost3410Url =
+            "urn:ietf:params:xml:ns:cpxmlsec:algorithms:gostr34102001-gostr3411";
+        public const string XmlDsigGost3411HMACUrl =
+            "urn:ietf:params:xml:ns:cpxmlsec:algorithms:hmac-gostr3411";
+        public const string XmlDsigGost3411_2012_256Url =
+            "urn:ietf:params:xml:ns:cpxmlsec:algorithms:gostr34112012-256";
+        public const string XmlDsigGost3410_2012_256Url =
+            "urn:ietf:params:xml:ns:cpxmlsec:algorithms:gostr34102012-gostr34112012-256";
+        public const string XmlDsigGost3411_2012_256HMACUrl =
+            "urn:ietf:params:xml:ns:cpxmlsec:algorithms:hmac-gostr3411-2012-256";
+        public const string XmlDsigGost3411_2012_512Url =
+            "urn:ietf:params:xml:ns:cpxmlsec:algorithms:gostr34112012-512";
+        public const string XmlDsigGost3410_2012_512Url =
+            "urn:ietf:params:xml:ns:cpxmlsec:algorithms:gostr34102012-gostr34112012-512";
+        public const string XmlDsigGost3411_2012_512HMACUrl =
+            "urn:ietf:params:xml:ns:cpxmlsec:algorithms:hmac-gostr3411-2012-512";
+        //end: gost
+
         //
         // public constructors
         //
@@ -403,6 +424,20 @@ namespace System.Security.Cryptography.Xml
                     if (SignedInfo.SignatureMethod == null)
                         SignedInfo.SignatureMethod = XmlDsigRSASHA256Url;
                 }
+                ////begin: gost
+                //else if (key is Gost3410)
+                //{
+                //    SignedInfo.SignatureMethod = XmlDsigGost3410Url;
+                //}
+                //else if (key is Gost3410_2012_256)
+                //{
+                //    SignedInfo.SignatureMethod = XmlDsigGost3410_2012_256Url;
+                //}
+                //else if (key is Gost3410_2012_512)
+                //{
+                //    SignedInfo.SignatureMethod = XmlDsigGost3410_2012_512Url;
+                //}
+                ////end: gost
                 else
                 {
                     throw new CryptographicException(SR.Cryptography_Xml_CreatedKeyFailed);
@@ -517,6 +552,23 @@ namespace System.Security.Cryptography.Xml
                             return key;
                     }
                 }
+                ////begin: gost
+                //GostKeyValue gost3410KeyValue = _keyInfoEnum.Current as GostKeyValue;
+                //if (gost3410KeyValue != null)
+                //{
+                //    return gost3410KeyValue.Key;
+                //}
+                //Gost2012_256KeyValue gost3410_2012_256KeyValue = _keyInfoEnum.Current as Gost2012_256KeyValue;
+                //if (gost3410_2012_256KeyValue != null)
+                //{
+                //    return gost3410_2012_256KeyValue.Key;
+                //}
+                //Gost2012_512KeyValue gost3410_2012_512KeyValue = _keyInfoEnum.Current as Gost2012_512KeyValue;
+                //if (gost3410_2012_512KeyValue != null)
+                //{
+                //    return gost3410_2012_512KeyValue.Key;
+                //}
+                ////end: gost
             }
 
             return null;

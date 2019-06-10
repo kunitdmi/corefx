@@ -51,14 +51,14 @@ namespace Internal.Cryptography
                 else
                 {
                     _hHash = hHash;
-                    // add:sk
+                    //begin: gost
                     if (hashAlgId != GostConstants.GOST3411_STRING)
                     {
-                    // end: sk
+                    //end: gost
                         _reusable = true;
-                    // add:sk
+                    //begin: gost
                     }
-                    // end: sk
+                    //end: gost
                 }
             }
 
