@@ -1044,12 +1044,6 @@ namespace System
     public readonly partial struct Double : System.IComparable, System.IComparable<double>, System.IConvertible, System.IEquatable<double>, System.IFormattable
     {
         private readonly double _dummyPrimitive;
-        //public const double Epsilon = 4.94065645841247E-324;     -- defined in System.Runtime.Manual.cs
-        //public const double MaxValue = 1.7976931348623157E+308;  -- defined in System.Runtime.Manual.cs
-        //public const double MinValue = -1.7976931348623157E+308; -- defined in System.Runtime.Manual.cs
-        //public const double NaN = 0.0 / 0.0;                     -- defined in System.Runtime.Manual.cs
-        //public const double NegativeInfinity = -1.0 / 0.0;       -- defined in System.Runtime.Manual.cs
-        //public const double PositiveInfinity = 1.0 / 0.0;        -- defined in System.Runtime.Manual.cs
         public int CompareTo(System.Double value) { throw null; }
         public int CompareTo(object value) { throw null; }
         public bool Equals(System.Double obj) { throw null; }
@@ -1379,10 +1373,10 @@ namespace System
         public static int Combine<T1, T2, T3, T4, T5, T6>(T1 value1, T2 value2, T3 value3, T4 value4, T5 value5, T6 value6) { throw null; }
         public static int Combine<T1, T2, T3, T4, T5, T6, T7>(T1 value1, T2 value2, T3 value3, T4 value4, T5 value5, T6 value6, T7 value7) { throw null; }
         public static int Combine<T1, T2, T3, T4, T5, T6, T7, T8>(T1 value1, T2 value2, T3 value3, T4 value4, T5 value5, T6 value6, T7 value7, T8 value8) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("HashCode is a mutable struct and should not be compared with other HashCodes.", true)]
         public override bool Equals(object obj) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("HashCode is a mutable struct and should not be compared with other HashCodes. Use ToHashCode to retrieve the computed hash code.", true)]
         public override int GetHashCode() { throw null; }
         public int ToHashCode() { throw null; }
@@ -1458,12 +1452,17 @@ namespace System
     public readonly partial struct Index : System.IEquatable<System.Index>
     {
         private readonly int _dummyPrimitive;
-        public Index(int value, bool fromEnd) { throw null; }
-        public bool FromEnd { get { throw null; } }
+        public Index(int value, bool fromEnd = false) { throw null; }
+        public static System.Index End { get { throw null; } }
+        public bool IsFromEnd { get { throw null; } }
+        public static System.Index Start { get { throw null; } }
         public int Value { get { throw null; } }
         public bool Equals(System.Index other) { throw null; }
         public override bool Equals(object value) { throw null; }
+        public static System.Index FromEnd(int value) { throw null; }
+        public static System.Index FromStart(int value) { throw null; }
         public override int GetHashCode() { throw null; }
+        public int GetOffset(int length) { throw null; }
         public static implicit operator System.Index (int value) { throw null; }
         public override string ToString() { throw null; }
     }
@@ -1725,7 +1724,7 @@ namespace System
         public MemberAccessException(string message) { }
         public MemberAccessException(string message, System.Exception inner) { }
     }
-    public readonly partial struct Memory<T>
+    public readonly partial struct Memory<T> : IEquatable<Memory<T>>
     {
         private readonly object _dummy;
         private readonly int _dummyPrimitive;
@@ -1737,9 +1736,9 @@ namespace System
         public System.Span<T> Span { get { throw null; } }
         public void CopyTo(System.Memory<T> destination) { }
         public bool Equals(System.Memory<T> other) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool Equals(object obj) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override int GetHashCode() { throw null; }
         public static implicit operator System.Memory<T> (System.ArraySegment<T> segment) { throw null; }
         public static implicit operator System.ReadOnlyMemory<T> (System.Memory<T> memory) { throw null; }
@@ -1762,6 +1761,9 @@ namespace System
     {
         AwayFromZero = 1,
         ToEven = 0,
+        ToNegativeInfinity = 3,
+        ToPositiveInfinity = 4,
+        ToZero = 2,
     }
     public partial class MissingFieldException : System.MissingMemberException, System.Runtime.Serialization.ISerializable
     {
@@ -1884,8 +1886,8 @@ namespace System
     }
     public static partial class Nullable
     {
-        public static int Compare<T>(System.Nullable<T> n1, System.Nullable<T> n2) where T : struct { throw null; }
-        public static bool Equals<T>(System.Nullable<T> n1, System.Nullable<T> n2) where T : struct { throw null; }
+        public static int Compare<T>(T? n1, T? n2) where T : struct { throw null; }
+        public static bool Equals<T>(T? n1, T? n2) where T : struct { throw null; }
         public static System.Type GetUnderlyingType(System.Type nullableType) { throw null; }
     }
     public partial struct Nullable<T> where T : struct
@@ -1899,8 +1901,8 @@ namespace System
         public override int GetHashCode() { throw null; }
         public T GetValueOrDefault() { throw null; }
         public T GetValueOrDefault(T defaultValue) { throw null; }
-        public static explicit operator T (System.Nullable<T> value) { throw null; }
-        public static implicit operator System.Nullable<T> (T value) { throw null; }
+        public static explicit operator T (T? value) { throw null; }
+        public static implicit operator T? (T value) { throw null; }
         public override string ToString() { throw null; }
     }
     public partial class NullReferenceException : System.SystemException
@@ -1971,15 +1973,16 @@ namespace System
     public readonly partial struct Range : System.IEquatable<System.Range>
     {
         private readonly int _dummyPrimitive;
+        public Range(System.Index start, System.Index end) { throw null; }
+        public static System.Range All { get { throw null; } }
         public System.Index End { get { throw null; } }
         public System.Index Start { get { throw null; } }
-        public static System.Range All() { throw null; }
-        public static System.Range Create(System.Index start, System.Index end) { throw null; }
+        public static System.Range EndAt(System.Index end) { throw null; }
         public override bool Equals(object value) { throw null; }
         public bool Equals(System.Range other) { throw null; }
-        public static System.Range FromStart(System.Index start) { throw null; }
         public override int GetHashCode() { throw null; }
-        public static System.Range ToEnd(System.Index end) { throw null; }
+        public (int Offset, int Length) GetOffsetAndLength(int length) { throw null; }
+        public static System.Range StartAt(System.Index start) { throw null; }
         public override string ToString() { throw null; }
     }
     public partial class RankException : System.SystemException
@@ -1989,7 +1992,7 @@ namespace System
         public RankException(string message) { }
         public RankException(string message, System.Exception innerException) { }
     }
-    public readonly partial struct ReadOnlyMemory<T>
+    public readonly partial struct ReadOnlyMemory<T> : IEquatable<ReadOnlyMemory<T>>
     {
         private readonly object _dummy;
         private readonly int _dummyPrimitive;
@@ -2000,10 +2003,10 @@ namespace System
         public int Length { get { throw null; } }
         public System.ReadOnlySpan<T> Span { get { throw null; } }
         public void CopyTo(System.Memory<T> destination) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override bool Equals(object obj) { throw null; }
         public bool Equals(System.ReadOnlyMemory<T> other) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public override int GetHashCode() { throw null; }
         public static implicit operator System.ReadOnlyMemory<T> (System.ArraySegment<T> segment) { throw null; }
         public static implicit operator System.ReadOnlyMemory<T> (T[] array) { throw null; }
@@ -2024,19 +2027,17 @@ namespace System
         public ReadOnlySpan(T[] array, int start, int length) { throw null; }
         public static System.ReadOnlySpan<T> Empty { get { throw null; } }
         public bool IsEmpty { get { throw null; } }
-        public ref readonly T this[System.Index index] { get { throw null; } }
         public ref readonly T this[int index] { get { throw null; } }
-        public System.ReadOnlySpan<T> this[System.Range range] { get { throw null; } }
         public int Length { get { throw null; } }
         public void CopyTo(System.Span<T> destination) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("Equals() on ReadOnlySpan will always throw an exception. Use == instead.")]
         public override bool Equals(object obj) { throw null; }
         public System.ReadOnlySpan<T>.Enumerator GetEnumerator() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("GetHashCode() on ReadOnlySpan will always throw an exception.")]
         public override int GetHashCode() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public ref readonly T GetPinnableReference() { throw null; }
         public static bool operator ==(System.ReadOnlySpan<T> left, System.ReadOnlySpan<T> right) { throw null; }
         public static implicit operator System.ReadOnlySpan<T> (System.ArraySegment<T> segment) { throw null; }
@@ -2162,12 +2163,6 @@ namespace System
     public readonly partial struct Single : System.IComparable, System.IComparable<float>, System.IConvertible, System.IEquatable<float>, System.IFormattable
     {
         private readonly float _dummyPrimitive;
-        //public const float Epsilon = 1.401298E-45f;         -- defined in System.Runtime.Manual.cs
-        //public const float MaxValue = 3.40282347E+38f;      -- defined in System.Runtime.Manual.cs
-        //public const float MinValue = -3.40282347E+38f;     -- defined in System.Runtime.Manual.cs
-        //public const float NaN = 0.0f / 0.0f;               -- defined in System.Runtime.Manual.cs
-        //public const float NegativeInfinity = -1.0f / 0.0f; -- defined in System.Runtime.Manual.cs
-        //public const float PositiveInfinity = 1.0f / 0.0f;  -- defined in System.Runtime.Manual.cs
         public int CompareTo(object value) { throw null; }
         public int CompareTo(System.Single value) { throw null; }
         public override bool Equals(object obj) { throw null; }
@@ -2228,21 +2223,19 @@ namespace System
         public Span(T[] array, int start, int length) { throw null; }
         public static System.Span<T> Empty { get { throw null; } }
         public bool IsEmpty { get { throw null; } }
-        public ref T this[System.Index index] { get { throw null; } }
         public ref T this[int index] { get { throw null; } }
-        public System.Span<T> this[System.Range range] { get { throw null; } }
         public int Length { get { throw null; } }
         public void Clear() { }
         public void CopyTo(System.Span<T> destination) { }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("Equals() on Span will always throw an exception. Use == instead.")]
         public override bool Equals(object obj) { throw null; }
         public void Fill(T value) { }
         public System.Span<T>.Enumerator GetEnumerator() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         [System.ObsoleteAttribute("GetHashCode() on Span will always throw an exception.")]
         public override int GetHashCode() { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public ref T GetPinnableReference() { throw null; }
         public static bool operator ==(System.Span<T> left, System.Span<T> right) { throw null; }
         public static implicit operator System.Span<T> (System.ArraySegment<T> segment) { throw null; }
@@ -2313,18 +2306,20 @@ namespace System
         public static System.String Concat(object arg0, object arg1) { throw null; }
         public static System.String Concat(object arg0, object arg1, object arg2) { throw null; }
         public static System.String Concat(params object[] args) { throw null; }
-        public static System.String Concat(System.String str0, System.String str1) { throw null; }
-        public static System.String Concat(System.String str0, System.String str1, System.String str2) { throw null; }
-        public static System.String Concat(System.String str0, System.String str1, System.String str2, System.String str3) { throw null; }
         public static System.String Concat(System.ReadOnlySpan<char> str0, System.ReadOnlySpan<char> str1) { throw null; }
         public static System.String Concat(System.ReadOnlySpan<char> str0, System.ReadOnlySpan<char> str1, System.ReadOnlySpan<char> str2) { throw null; }
         public static System.String Concat(System.ReadOnlySpan<char> str0, System.ReadOnlySpan<char> str1, System.ReadOnlySpan<char> str2, System.ReadOnlySpan<char> str3) { throw null; }
+        public static System.String Concat(System.String str0, System.String str1) { throw null; }
+        public static System.String Concat(System.String str0, System.String str1, System.String str2) { throw null; }
+        public static System.String Concat(System.String str0, System.String str1, System.String str2, System.String str3) { throw null; }
         public static System.String Concat(params string[] values) { throw null; }
         public static System.String Concat<T>(System.Collections.Generic.IEnumerable<T> values) { throw null; }
         public bool Contains(char value) { throw null; }
         public bool Contains(char value, System.StringComparison comparisonType) { throw null; }
         public bool Contains(System.String value) { throw null; }
         public bool Contains(System.String value, System.StringComparison comparisonType) { throw null; }
+        [System.ObsoleteAttribute("This API should not be used to create mutable strings. See https://go.microsoft.com/fwlink/?linkid=2084035 for alternatives.")]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static System.String Copy(System.String str) { throw null; }
         public void CopyTo(int sourceIndex, char[] destination, int destinationIndex, int count) { }
         public static System.String Create<TState>(int length, TState state, System.Buffers.SpanAction<char, TState> action) { throw null; }
@@ -2351,6 +2346,8 @@ namespace System
         public static int GetHashCode(System.ReadOnlySpan<char> value) { throw null; }
         public static int GetHashCode(System.ReadOnlySpan<char> value, System.StringComparison comparisonType) { throw null; }
         public int GetHashCode(System.StringComparison comparisonType) { throw null; }
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+        public ref readonly char GetPinnableReference() { throw null; }
         public System.TypeCode GetTypeCode() { throw null; }
         public int IndexOf(char value) { throw null; }
         public int IndexOf(char value, int startIndex) { throw null; }
@@ -2694,47 +2691,47 @@ namespace System
     }
     public static partial class TupleExtensions
     {
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static void Deconstruct<T1>(this System.Tuple<T1> value, out T1 item1) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static void Deconstruct<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this System.Tuple<T1, T2, T3, T4, T5, T6, T7, System.Tuple<T8, T9, T10>> value, out T1 item1, out T2 item2, out T3 item3, out T4 item4, out T5 item5, out T6 item6, out T7 item7, out T8 item8, out T9 item9, out T10 item10) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static void Deconstruct<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this System.Tuple<T1, T2, T3, T4, T5, T6, T7, System.Tuple<T8, T9, T10, T11>> value, out T1 item1, out T2 item2, out T3 item3, out T4 item4, out T5 item5, out T6 item6, out T7 item7, out T8 item8, out T9 item9, out T10 item10, out T11 item11) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static void Deconstruct<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this System.Tuple<T1, T2, T3, T4, T5, T6, T7, System.Tuple<T8, T9, T10, T11, T12>> value, out T1 item1, out T2 item2, out T3 item3, out T4 item4, out T5 item5, out T6 item6, out T7 item7, out T8 item8, out T9 item9, out T10 item10, out T11 item11, out T12 item12) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static void Deconstruct<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(this System.Tuple<T1, T2, T3, T4, T5, T6, T7, System.Tuple<T8, T9, T10, T11, T12, T13>> value, out T1 item1, out T2 item2, out T3 item3, out T4 item4, out T5 item5, out T6 item6, out T7 item7, out T8 item8, out T9 item9, out T10 item10, out T11 item11, out T12 item12, out T13 item13) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static void Deconstruct<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(this System.Tuple<T1, T2, T3, T4, T5, T6, T7, System.Tuple<T8, T9, T10, T11, T12, T13, T14>> value, out T1 item1, out T2 item2, out T3 item3, out T4 item4, out T5 item5, out T6 item6, out T7 item7, out T8 item8, out T9 item9, out T10 item10, out T11 item11, out T12 item12, out T13 item13, out T14 item14) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static void Deconstruct<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(this System.Tuple<T1, T2, T3, T4, T5, T6, T7, System.Tuple<T8, T9, T10, T11, T12, T13, T14, System.Tuple<T15>>> value, out T1 item1, out T2 item2, out T3 item3, out T4 item4, out T5 item5, out T6 item6, out T7 item7, out T8 item8, out T9 item9, out T10 item10, out T11 item11, out T12 item12, out T13 item13, out T14 item14, out T15 item15) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static void Deconstruct<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(this System.Tuple<T1, T2, T3, T4, T5, T6, T7, System.Tuple<T8, T9, T10, T11, T12, T13, T14, System.Tuple<T15, T16>>> value, out T1 item1, out T2 item2, out T3 item3, out T4 item4, out T5 item5, out T6 item6, out T7 item7, out T8 item8, out T9 item9, out T10 item10, out T11 item11, out T12 item12, out T13 item13, out T14 item14, out T15 item15, out T16 item16) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static void Deconstruct<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17>(this System.Tuple<T1, T2, T3, T4, T5, T6, T7, System.Tuple<T8, T9, T10, T11, T12, T13, T14, System.Tuple<T15, T16, T17>>> value, out T1 item1, out T2 item2, out T3 item3, out T4 item4, out T5 item5, out T6 item6, out T7 item7, out T8 item8, out T9 item9, out T10 item10, out T11 item11, out T12 item12, out T13 item13, out T14 item14, out T15 item15, out T16 item16, out T17 item17) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static void Deconstruct<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18>(this System.Tuple<T1, T2, T3, T4, T5, T6, T7, System.Tuple<T8, T9, T10, T11, T12, T13, T14, System.Tuple<T15, T16, T17, T18>>> value, out T1 item1, out T2 item2, out T3 item3, out T4 item4, out T5 item5, out T6 item6, out T7 item7, out T8 item8, out T9 item9, out T10 item10, out T11 item11, out T12 item12, out T13 item13, out T14 item14, out T15 item15, out T16 item16, out T17 item17, out T18 item18) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static void Deconstruct<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19>(this System.Tuple<T1, T2, T3, T4, T5, T6, T7, System.Tuple<T8, T9, T10, T11, T12, T13, T14, System.Tuple<T15, T16, T17, T18, T19>>> value, out T1 item1, out T2 item2, out T3 item3, out T4 item4, out T5 item5, out T6 item6, out T7 item7, out T8 item8, out T9 item9, out T10 item10, out T11 item11, out T12 item12, out T13 item13, out T14 item14, out T15 item15, out T16 item16, out T17 item17, out T18 item18, out T19 item19) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static void Deconstruct<T1, T2>(this System.Tuple<T1, T2> value, out T1 item1, out T2 item2) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static void Deconstruct<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20>(this System.Tuple<T1, T2, T3, T4, T5, T6, T7, System.Tuple<T8, T9, T10, T11, T12, T13, T14, System.Tuple<T15, T16, T17, T18, T19, T20>>> value, out T1 item1, out T2 item2, out T3 item3, out T4 item4, out T5 item5, out T6 item6, out T7 item7, out T8 item8, out T9 item9, out T10 item10, out T11 item11, out T12 item12, out T13 item13, out T14 item14, out T15 item15, out T16 item16, out T17 item17, out T18 item18, out T19 item19, out T20 item20) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static void Deconstruct<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21>(this System.Tuple<T1, T2, T3, T4, T5, T6, T7, System.Tuple<T8, T9, T10, T11, T12, T13, T14, System.Tuple<T15, T16, T17, T18, T19, T20, T21>>> value, out T1 item1, out T2 item2, out T3 item3, out T4 item4, out T5 item5, out T6 item6, out T7 item7, out T8 item8, out T9 item9, out T10 item10, out T11 item11, out T12 item12, out T13 item13, out T14 item14, out T15 item15, out T16 item16, out T17 item17, out T18 item18, out T19 item19, out T20 item20, out T21 item21) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static void Deconstruct<T1, T2, T3>(this System.Tuple<T1, T2, T3> value, out T1 item1, out T2 item2, out T3 item3) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static void Deconstruct<T1, T2, T3, T4>(this System.Tuple<T1, T2, T3, T4> value, out T1 item1, out T2 item2, out T3 item3, out T4 item4) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static void Deconstruct<T1, T2, T3, T4, T5>(this System.Tuple<T1, T2, T3, T4, T5> value, out T1 item1, out T2 item2, out T3 item3, out T4 item4, out T5 item5) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static void Deconstruct<T1, T2, T3, T4, T5, T6>(this System.Tuple<T1, T2, T3, T4, T5, T6> value, out T1 item1, out T2 item2, out T3 item3, out T4 item4, out T5 item5, out T6 item6) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static void Deconstruct<T1, T2, T3, T4, T5, T6, T7>(this System.Tuple<T1, T2, T3, T4, T5, T6, T7> value, out T1 item1, out T2 item2, out T3 item3, out T4 item4, out T5 item5, out T6 item6, out T7 item7) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static void Deconstruct<T1, T2, T3, T4, T5, T6, T7, T8>(this System.Tuple<T1, T2, T3, T4, T5, T6, T7, System.Tuple<T8>> value, out T1 item1, out T2 item2, out T3 item3, out T4 item4, out T5 item5, out T6 item6, out T7 item7, out T8 item8) { throw null; }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public static void Deconstruct<T1, T2, T3, T4, T5, T6, T7, T8, T9>(this System.Tuple<T1, T2, T3, T4, T5, T6, T7, System.Tuple<T8, T9>> value, out T1 item1, out T2 item2, out T3 item3, out T4 item4, out T5 item5, out T6 item6, out T7 item7, out T8 item8, out T9 item9) { throw null; }
         public static System.Tuple<T1> ToTuple<T1>(this System.ValueTuple<T1> value) { throw null; }
         public static System.Tuple<T1, T2, T3, T4, T5, T6, T7, System.Tuple<T8, T9, T10>> ToTuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this System.ValueTuple<T1, T2, T3, T4, T5, T6, T7, System.ValueTuple<T8, T9, T10>> value) { throw null; }
@@ -3143,6 +3140,7 @@ namespace System
     [System.CLSCompliantAttribute(false)]
     public ref partial struct TypedReference
     {
+        private object _dummy;
         private int _dummyPrimitive;
         public override bool Equals(object o) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -3542,12 +3540,12 @@ namespace System
         public int CompareTo(System.ValueTuple other) { throw null; }
         public static System.ValueTuple Create() { throw null; }
         public static System.ValueTuple<T1> Create<T1>(T1 item1) { throw null; }
-        public static System.ValueTuple<T1, T2> Create<T1, T2>(T1 item1, T2 item2) { throw null; }
-        public static System.ValueTuple<T1, T2, T3> Create<T1, T2, T3>(T1 item1, T2 item2, T3 item3) { throw null; }
-        public static System.ValueTuple<T1, T2, T3, T4> Create<T1, T2, T3, T4>(T1 item1, T2 item2, T3 item3, T4 item4) { throw null; }
-        public static System.ValueTuple<T1, T2, T3, T4, T5> Create<T1, T2, T3, T4, T5>(T1 item1, T2 item2, T3 item3, T4 item4, T5 item5) { throw null; }
-        public static System.ValueTuple<T1, T2, T3, T4, T5, T6> Create<T1, T2, T3, T4, T5, T6>(T1 item1, T2 item2, T3 item3, T4 item4, T5 item5, T6 item6) { throw null; }
-        public static System.ValueTuple<T1, T2, T3, T4, T5, T6, T7> Create<T1, T2, T3, T4, T5, T6, T7>(T1 item1, T2 item2, T3 item3, T4 item4, T5 item5, T6 item6, T7 item7) { throw null; }
+        public static (T1, T2) Create<T1, T2>(T1 item1, T2 item2) { throw null; }
+        public static (T1, T2, T3) Create<T1, T2, T3>(T1 item1, T2 item2, T3 item3) { throw null; }
+        public static (T1, T2, T3, T4) Create<T1, T2, T3, T4>(T1 item1, T2 item2, T3 item3, T4 item4) { throw null; }
+        public static (T1, T2, T3, T4, T5) Create<T1, T2, T3, T4, T5>(T1 item1, T2 item2, T3 item3, T4 item4, T5 item5) { throw null; }
+        public static (T1, T2, T3, T4, T5, T6) Create<T1, T2, T3, T4, T5, T6>(T1 item1, T2 item2, T3 item3, T4 item4, T5 item5, T6 item6) { throw null; }
+        public static (T1, T2, T3, T4, T5, T6, T7) Create<T1, T2, T3, T4, T5, T6, T7>(T1 item1, T2 item2, T3 item3, T4 item4, T5 item5, T6 item6, T7 item7) { throw null; }
         public static System.ValueTuple<T1, T2, T3, T4, T5, T6, T7, System.ValueTuple<T8>> Create<T1, T2, T3, T4, T5, T6, T7, T8>(T1 item1, T2 item2, T3 item3, T4 item4, T5 item5, T6 item6, T7 item7, T8 item8) { throw null; }
         public override bool Equals(object obj) { throw null; }
         public bool Equals(System.ValueTuple other) { throw null; }
@@ -3581,9 +3579,9 @@ namespace System
         public ValueTuple(T1 item1, T2 item2) { throw null; }
         object System.Runtime.CompilerServices.ITuple.this[int index] { get { throw null; } }
         int System.Runtime.CompilerServices.ITuple.Length { get { throw null; } }
-        public int CompareTo(System.ValueTuple<T1, T2> other) { throw null; }
+        public int CompareTo((T1, T2) other) { throw null; }
         public override bool Equals(object obj) { throw null; }
-        public bool Equals(System.ValueTuple<T1, T2> other) { throw null; }
+        public bool Equals((T1, T2) other) { throw null; }
         public override int GetHashCode() { throw null; }
         int System.Collections.IStructuralComparable.CompareTo(object other, System.Collections.IComparer comparer) { throw null; }
         bool System.Collections.IStructuralEquatable.Equals(object other, System.Collections.IEqualityComparer comparer) { throw null; }
@@ -3599,9 +3597,9 @@ namespace System
         public ValueTuple(T1 item1, T2 item2, T3 item3) { throw null; }
         object System.Runtime.CompilerServices.ITuple.this[int index] { get { throw null; } }
         int System.Runtime.CompilerServices.ITuple.Length { get { throw null; } }
-        public int CompareTo(System.ValueTuple<T1, T2, T3> other) { throw null; }
+        public int CompareTo((T1, T2, T3) other) { throw null; }
         public override bool Equals(object obj) { throw null; }
-        public bool Equals(System.ValueTuple<T1, T2, T3> other) { throw null; }
+        public bool Equals((T1, T2, T3) other) { throw null; }
         public override int GetHashCode() { throw null; }
         int System.Collections.IStructuralComparable.CompareTo(object other, System.Collections.IComparer comparer) { throw null; }
         bool System.Collections.IStructuralEquatable.Equals(object other, System.Collections.IEqualityComparer comparer) { throw null; }
@@ -3618,9 +3616,9 @@ namespace System
         public ValueTuple(T1 item1, T2 item2, T3 item3, T4 item4) { throw null; }
         object System.Runtime.CompilerServices.ITuple.this[int index] { get { throw null; } }
         int System.Runtime.CompilerServices.ITuple.Length { get { throw null; } }
-        public int CompareTo(System.ValueTuple<T1, T2, T3, T4> other) { throw null; }
+        public int CompareTo((T1, T2, T3, T4) other) { throw null; }
         public override bool Equals(object obj) { throw null; }
-        public bool Equals(System.ValueTuple<T1, T2, T3, T4> other) { throw null; }
+        public bool Equals((T1, T2, T3, T4) other) { throw null; }
         public override int GetHashCode() { throw null; }
         int System.Collections.IStructuralComparable.CompareTo(object other, System.Collections.IComparer comparer) { throw null; }
         bool System.Collections.IStructuralEquatable.Equals(object other, System.Collections.IEqualityComparer comparer) { throw null; }
@@ -3638,9 +3636,9 @@ namespace System
         public ValueTuple(T1 item1, T2 item2, T3 item3, T4 item4, T5 item5) { throw null; }
         object System.Runtime.CompilerServices.ITuple.this[int index] { get { throw null; } }
         int System.Runtime.CompilerServices.ITuple.Length { get { throw null; } }
-        public int CompareTo(System.ValueTuple<T1, T2, T3, T4, T5> other) { throw null; }
+        public int CompareTo((T1, T2, T3, T4, T5) other) { throw null; }
         public override bool Equals(object obj) { throw null; }
-        public bool Equals(System.ValueTuple<T1, T2, T3, T4, T5> other) { throw null; }
+        public bool Equals((T1, T2, T3, T4, T5) other) { throw null; }
         public override int GetHashCode() { throw null; }
         int System.Collections.IStructuralComparable.CompareTo(object other, System.Collections.IComparer comparer) { throw null; }
         bool System.Collections.IStructuralEquatable.Equals(object other, System.Collections.IEqualityComparer comparer) { throw null; }
@@ -3659,9 +3657,9 @@ namespace System
         public ValueTuple(T1 item1, T2 item2, T3 item3, T4 item4, T5 item5, T6 item6) { throw null; }
         object System.Runtime.CompilerServices.ITuple.this[int index] { get { throw null; } }
         int System.Runtime.CompilerServices.ITuple.Length { get { throw null; } }
-        public int CompareTo(System.ValueTuple<T1, T2, T3, T4, T5, T6> other) { throw null; }
+        public int CompareTo((T1, T2, T3, T4, T5, T6) other) { throw null; }
         public override bool Equals(object obj) { throw null; }
-        public bool Equals(System.ValueTuple<T1, T2, T3, T4, T5, T6> other) { throw null; }
+        public bool Equals((T1, T2, T3, T4, T5, T6) other) { throw null; }
         public override int GetHashCode() { throw null; }
         int System.Collections.IStructuralComparable.CompareTo(object other, System.Collections.IComparer comparer) { throw null; }
         bool System.Collections.IStructuralEquatable.Equals(object other, System.Collections.IEqualityComparer comparer) { throw null; }
@@ -3681,9 +3679,9 @@ namespace System
         public ValueTuple(T1 item1, T2 item2, T3 item3, T4 item4, T5 item5, T6 item6, T7 item7) { throw null; }
         object System.Runtime.CompilerServices.ITuple.this[int index] { get { throw null; } }
         int System.Runtime.CompilerServices.ITuple.Length { get { throw null; } }
-        public int CompareTo(System.ValueTuple<T1, T2, T3, T4, T5, T6, T7> other) { throw null; }
+        public int CompareTo((T1, T2, T3, T4, T5, T6, T7) other) { throw null; }
         public override bool Equals(object obj) { throw null; }
-        public bool Equals(System.ValueTuple<T1, T2, T3, T4, T5, T6, T7> other) { throw null; }
+        public bool Equals((T1, T2, T3, T4, T5, T6, T7) other) { throw null; }
         public override int GetHashCode() { throw null; }
         int System.Collections.IStructuralComparable.CompareTo(object other, System.Collections.IComparer comparer) { throw null; }
         bool System.Collections.IStructuralEquatable.Equals(object other, System.Collections.IEqualityComparer comparer) { throw null; }
@@ -3813,6 +3811,13 @@ namespace System.Buffers
         protected internal virtual bool TryGetArray(out System.ArraySegment<T> segment) { throw null; }
         public abstract void Unpin();
     }
+    public enum OperationStatus
+    {
+        DestinationTooSmall = 1,
+        Done = 0,
+        InvalidData = 3,
+        NeedMoreData = 2,
+    }
     public delegate void ReadOnlySpanAction<T, in TArg>(System.ReadOnlySpan<T> span, TArg arg);
     public delegate void SpanAction<T, in TArg>(System.Span<T> span, TArg arg);
 }
@@ -3824,7 +3829,7 @@ namespace System.Collections
         public DictionaryEntry(object key, object value) { throw null; }
         public object Key { get { throw null; } set { } }
         public object Value { get { throw null; } set { } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public void Deconstruct(out object key, out object value) { throw null; }
     }
     public partial interface ICollection : System.Collections.IEnumerable
@@ -3899,7 +3904,7 @@ namespace System.Collections.Generic
 {
     public partial interface IAsyncEnumerable<out T>
     {
-        System.Collections.Generic.IAsyncEnumerator<T> GetAsyncEnumerator(System.Threading.CancellationToken cancellationToken = default);
+        System.Collections.Generic.IAsyncEnumerator<T> GetAsyncEnumerator(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
     }
     public partial interface IAsyncEnumerator<out T> : System.IAsyncDisposable
     {
@@ -3999,7 +4004,7 @@ namespace System.Collections.Generic
         public KeyValuePair(TKey key, TValue value) { throw null; }
         public TKey Key { get { throw null; } }
         public TValue Value { get { throw null; } }
-        [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
         public void Deconstruct(out TKey key, out TValue value) { throw null; }
         public override string ToString() { throw null; }
     }
@@ -4377,7 +4382,7 @@ namespace System.Globalization
         public CultureNotFoundException(string paramName, string message) { }
         public CultureNotFoundException(string message, string invalidCultureName, System.Exception innerException) { }
         public CultureNotFoundException(string paramName, string invalidCultureName, string message) { }
-        public virtual System.Nullable<int> InvalidCultureId { get { throw null; } }
+        public virtual int? InvalidCultureId { get { throw null; } }
         public virtual string InvalidCultureName { get { throw null; } }
         public override string Message { get { throw null; } }
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
@@ -5140,6 +5145,7 @@ namespace System.IO
         public override bool CanRead { get { throw null; } }
         public override bool CanSeek { get { throw null; } }
         public override bool CanWrite { get { throw null; } }
+        public override System.Threading.Tasks.Task CopyToAsync(System.IO.Stream destination, int bufferSize, System.Threading.CancellationToken cancellationToken) { throw null; }
         [System.ObsoleteAttribute("This property has been deprecated.  Please use FileStream's SafeFileHandle property instead.  https://go.microsoft.com/fwlink/?linkid=14202")]
         public virtual System.IntPtr Handle { get { throw null; } }
         public virtual bool IsAsync { get { throw null; } }
@@ -5198,7 +5204,7 @@ namespace System.IO
         Current = 1,
         End = 2,
     }
-    public abstract partial class Stream : System.MarshalByRefObject, System.IDisposable
+    public abstract partial class Stream : System.MarshalByRefObject, System.IAsyncDisposable, System.IDisposable
     {
         public static readonly System.IO.Stream Null;
         protected Stream() { }
@@ -5269,6 +5275,7 @@ namespace System.Reflection
         public virtual bool GlobalAssemblyCache { get { throw null; } }
         public virtual long HostContext { get { throw null; } }
         public virtual string ImageRuntimeVersion { get { throw null; } }
+        public virtual bool IsCollectible { get { throw null; } }
         public virtual bool IsDynamic { get { throw null; } }
         public bool IsFullyTrusted { get { throw null; } }
         public virtual string Location { get { throw null; } }
@@ -5276,7 +5283,6 @@ namespace System.Reflection
         public virtual System.Collections.Generic.IEnumerable<System.Reflection.Module> Modules { get { throw null; } }
         public virtual bool ReflectionOnly { get { throw null; } }
         public virtual System.Security.SecurityRuleSet SecurityRuleSet { get { throw null; } }
-        public virtual bool IsCollectible { get { throw null; } }
         public virtual event System.Reflection.ModuleResolveEventHandler ModuleResolve { add { } remove { } }
         public object CreateInstance(string typeName) { throw null; }
         public object CreateInstance(string typeName, bool ignoreCase) { throw null; }
@@ -5855,12 +5861,12 @@ namespace System.Reflection
         protected MemberInfo() { }
         public virtual System.Collections.Generic.IEnumerable<System.Reflection.CustomAttributeData> CustomAttributes { get { throw null; } }
         public abstract System.Type DeclaringType { get; }
+        public virtual bool IsCollectible { get { throw null; } }
         public abstract System.Reflection.MemberTypes MemberType { get; }
         public virtual int MetadataToken { get { throw null; } }
         public virtual System.Reflection.Module Module { get { throw null; } }
         public abstract string Name { get; }
         public abstract System.Type ReflectedType { get; }
-        public virtual bool IsCollectible { get { throw null; } }
         public override bool Equals(object obj) { throw null; }
         public abstract object[] GetCustomAttributes(bool inherit);
         public abstract object[] GetCustomAttributes(System.Type attributeType, bool inherit);
@@ -6390,6 +6396,12 @@ namespace System.Reflection
 }
 namespace System.Runtime
 {
+    public sealed class AmbiguousImplementationException : System.Exception
+    {
+        public AmbiguousImplementationException() { }
+        public AmbiguousImplementationException(string message) { }
+        public AmbiguousImplementationException(string message, System.Exception innerException) { }
+    }
     [System.AttributeUsageAttribute(System.AttributeTargets.Assembly, Inherited=false)]
     public sealed partial class AssemblyTargetedPatchBandAttribute : System.Attribute
     {
@@ -6436,16 +6448,16 @@ namespace System.Runtime.CompilerServices
         public AccessedThroughPropertyAttribute(string propertyName) { }
         public string PropertyName { get { throw null; } }
     }
+    [System.AttributeUsageAttribute(System.AttributeTargets.Method, Inherited=false, AllowMultiple=false)]
+    public sealed partial class AsyncIteratorStateMachineAttribute : System.Runtime.CompilerServices.StateMachineAttribute
+    {
+        public AsyncIteratorStateMachineAttribute(System.Type stateMachineType) : base (default(System.Type)) { }
+    }
     [System.AttributeUsageAttribute(System.AttributeTargets.Class | System.AttributeTargets.Delegate | System.AttributeTargets.Enum | System.AttributeTargets.Interface | System.AttributeTargets.Struct, Inherited=false, AllowMultiple=false)]
     public sealed partial class AsyncMethodBuilderAttribute : System.Attribute
     {
         public AsyncMethodBuilderAttribute(System.Type builderType) { }
         public System.Type BuilderType { get { throw null; } }
-    }
-    [System.AttributeUsageAttribute(System.AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
-    public sealed partial class AsyncIteratorStateMachineAttribute : System.Runtime.CompilerServices.StateMachineAttribute
-    {
-        public AsyncIteratorStateMachineAttribute(System.Type stateMachineType) : base(default(System.Type)) { }
     }
     [System.AttributeUsageAttribute(System.AttributeTargets.Method, Inherited=false, AllowMultiple=false)]
     public sealed partial class AsyncStateMachineAttribute : System.Runtime.CompilerServices.StateMachineAttribute
@@ -6633,6 +6645,11 @@ namespace System.Runtime.CompilerServices
     {
         public DiscardableAttribute() { }
     }
+    [System.AttributeUsageAttribute(AttributeTargets.Parameter, Inherited = false)]
+    public sealed class EnumeratorCancellationAttribute : Attribute
+    {
+        public EnumeratorCancellationAttribute() { }
+    }
     [System.AttributeUsageAttribute(System.AttributeTargets.Assembly | System.AttributeTargets.Class | System.AttributeTargets.Method)]
     public sealed partial class ExtensionAttribute : System.Attribute
     {
@@ -6679,8 +6696,8 @@ namespace System.Runtime.CompilerServices
         public bool AllInternalsVisible { get { throw null; } set { } }
         public string AssemblyName { get { throw null; } }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
     [System.AttributeUsageAttribute(System.AttributeTargets.Struct)]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class IsByRefLikeAttribute : System.Attribute
     {
         public IsByRefLikeAttribute() { }
@@ -6689,7 +6706,7 @@ namespace System.Runtime.CompilerServices
     {
     }
     [System.AttributeUsageAttribute(System.AttributeTargets.All, Inherited=false)]
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed partial class IsReadOnlyAttribute : System.Attribute
     {
         public IsReadOnlyAttribute() { }
@@ -6761,9 +6778,7 @@ namespace System.Runtime.CompilerServices
     }
     public static partial class RuntimeFeature
     {
-#if FEATURE_DEFAULT_INTERFACES
         public const string DefaultImplementationsOfInterfaces = "DefaultImplementationsOfInterfaces";
-#endif
         public const string PortablePdb = "PortablePdb";
         public static bool IsDynamicCodeCompiled { get { throw null; } }
         public static bool IsDynamicCodeSupported { get { throw null; } }
@@ -6777,6 +6792,7 @@ namespace System.Runtime.CompilerServices
         public static void ExecuteCodeWithGuaranteedCleanup(System.Runtime.CompilerServices.RuntimeHelpers.TryCode code, System.Runtime.CompilerServices.RuntimeHelpers.CleanupCode backoutCode, object userData) { }
         public static int GetHashCode(object o) { throw null; }
         public static object GetObjectValue(object obj) { throw null; }
+        public static T[] GetSubArray<T>(T[] array, System.Range range) { throw null; }
         public static object GetUninitializedObject(System.Type type) { throw null; }
         public static void InitializeArray(System.Array array, System.RuntimeFieldHandle fldHandle) { }
         public static bool IsReferenceOrContainsReferences<T>() { throw null; }
@@ -6883,7 +6899,7 @@ namespace System.Runtime.CompilerServices
         public void OnCompleted(System.Action continuation) { }
         public void UnsafeOnCompleted(System.Action continuation) { }
     }
-    [System.ComponentModel.EditorBrowsableAttribute((System.ComponentModel.EditorBrowsableState)(1))]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
     public readonly partial struct YieldAwaitable
     {
         public System.Runtime.CompilerServices.YieldAwaitable.YieldAwaiter GetAwaiter() { throw null; }
@@ -7074,6 +7090,12 @@ namespace System.Runtime.Remoting
 }
 namespace System.Runtime.Serialization
 {
+    public sealed partial class DeserializationBlockedException : System.Exception
+    {
+        public DeserializationBlockedException() { }
+        public DeserializationBlockedException(String message) { }
+        public DeserializationBlockedException(Exception innerException) { }
+    }
     public partial interface IDeserializationCallback
     {
         void OnDeserialization(object sender);
@@ -7636,62 +7658,71 @@ namespace System.Text
         FormKC = 5,
         FormKD = 6,
     }
-    public readonly struct Rune : IComparable<Rune>, IEquatable<Rune>
+    public readonly partial struct Rune : System.IComparable<System.Text.Rune>, System.IEquatable<System.Text.Rune>
     {
         private readonly int _dummyPrimitive;
         public Rune(char ch) { throw null; }
+        public Rune(char highSurrogate, char lowSurrogate) { throw null; }
         public Rune(int value) { throw null; }
-        [CLSCompliant(false)]
+        [System.CLSCompliantAttribute(false)]
         public Rune(uint value) { throw null; }
-        public static bool operator ==(Rune left, Rune right) { throw null; }
-        public static bool operator !=(Rune left, Rune right) { throw null; }
-        public static bool operator <(Rune left, Rune right) { throw null; }
-        public static bool operator <=(Rune left, Rune right) { throw null; }
-        public static bool operator >(Rune left, Rune right) { throw null; }
-        public static bool operator >=(Rune left, Rune right) { throw null; }
-        public static explicit operator Rune(char ch) { throw null; }
-        [CLSCompliant(false)]
-        public static explicit operator Rune(uint value) { throw null; }
-        public static explicit operator Rune(int value) { throw null; }
         public bool IsAscii { get { throw null; } }
         public bool IsBmp { get { throw null; } }
         public int Plane { get { throw null; } }
-        public static Rune ReplacementChar { get { throw null; } }
+        public static System.Text.Rune ReplacementChar { get { throw null; } }
         public int Utf16SequenceLength { get { throw null; } }
         public int Utf8SequenceLength { get { throw null; } }
         public int Value { get { throw null; } }
-        public int CompareTo(Rune other) { throw null; }
+        public int CompareTo(System.Text.Rune other) { throw null; }
+        public static System.Buffers.OperationStatus DecodeFromUtf16(System.ReadOnlySpan<char> source, out System.Text.Rune result, out int charsConsumed) { throw null; }
+        public static System.Buffers.OperationStatus DecodeFromUtf8(System.ReadOnlySpan<byte> source, out System.Text.Rune result, out int bytesConsumed) { throw null; }
+        public static System.Buffers.OperationStatus DecodeLastFromUtf16(System.ReadOnlySpan<char> source, out System.Text.Rune result, out int charsConsumed) { throw null; }
+        public static System.Buffers.OperationStatus DecodeLastFromUtf8(System.ReadOnlySpan<byte> source, out System.Text.Rune value, out int bytesConsumed) { throw null; }
+        public int EncodeToUtf16(System.Span<char> destination) { throw null; }
+        public int EncodeToUtf8(System.Span<byte> destination) { throw null; }
         public override bool Equals(object obj) { throw null; }
-        public bool Equals(Rune other) { throw null; }
+        public bool Equals(System.Text.Rune other) { throw null; }
         public override int GetHashCode() { throw null; }
-        public static Rune GetRuneAt(string input, int index) { throw null; }
+        public static double GetNumericValue(System.Text.Rune value) { throw null; }
+        public static System.Text.Rune GetRuneAt(string input, int index) { throw null; }
+        public static System.Globalization.UnicodeCategory GetUnicodeCategory(System.Text.Rune value) { throw null; }
+        public static bool IsControl(System.Text.Rune value) { throw null; }
+        public static bool IsDigit(System.Text.Rune value) { throw null; }
+        public static bool IsLetter(System.Text.Rune value) { throw null; }
+        public static bool IsLetterOrDigit(System.Text.Rune value) { throw null; }
+        public static bool IsLower(System.Text.Rune value) { throw null; }
+        public static bool IsNumber(System.Text.Rune value) { throw null; }
+        public static bool IsPunctuation(System.Text.Rune value) { throw null; }
+        public static bool IsSeparator(System.Text.Rune value) { throw null; }
+        public static bool IsSymbol(System.Text.Rune value) { throw null; }
+        public static bool IsUpper(System.Text.Rune value) { throw null; }
         public static bool IsValid(int value) { throw null; }
-        [CLSCompliant(false)]
+        [System.CLSCompliantAttribute(false)]
         public static bool IsValid(uint value) { throw null; }
+        public static bool IsWhiteSpace(System.Text.Rune value) { throw null; }
+        public static bool operator ==(System.Text.Rune left, System.Text.Rune right) { throw null; }
+        public static explicit operator System.Text.Rune (char ch) { throw null; }
+        public static explicit operator System.Text.Rune (int value) { throw null; }
+        [System.CLSCompliantAttribute(false)]
+        public static explicit operator System.Text.Rune (uint value) { throw null; }
+        public static bool operator >(System.Text.Rune left, System.Text.Rune right) { throw null; }
+        public static bool operator >=(System.Text.Rune left, System.Text.Rune right) { throw null; }
+        public static bool operator !=(System.Text.Rune left, System.Text.Rune right) { throw null; }
+        public static bool operator <(System.Text.Rune left, System.Text.Rune right) { throw null; }
+        public static bool operator <=(System.Text.Rune left, System.Text.Rune right) { throw null; }
+        public static System.Text.Rune ToLower(System.Text.Rune value, System.Globalization.CultureInfo culture) { throw null; }
+        public static System.Text.Rune ToLowerInvariant(System.Text.Rune value) { throw null; }
         public override string ToString() { throw null; }
-        public static bool TryCreate(char ch, out Rune result) { throw null; }
-        public static bool TryCreate(int value, out Rune result) { throw null; }
-        [CLSCompliant(false)]
-        public static bool TryCreate(uint value, out Rune result) { throw null; }
-        public bool TryEncode(Span<char> destination, out int charsWritten) { throw null; }
-        public static bool TryGetRuneAt(string input, int index, out Rune value) { throw null; }
-        public static double GetNumericValue(Rune value) { throw null; }
-        public static System.Globalization.UnicodeCategory GetUnicodeCategory(Rune value) { throw null; }
-        public static bool IsControl(Rune value) { throw null; }
-        public static bool IsDigit(Rune value) { throw null; }
-        public static bool IsLetter(Rune value) { throw null; }
-        public static bool IsLetterOrDigit(Rune value) { throw null; }
-        public static bool IsLower(Rune value) { throw null; }
-        public static bool IsNumber(Rune value) { throw null; }
-        public static bool IsPunctuation(Rune value) { throw null; }
-        public static bool IsSeparator(Rune value) { throw null; }
-        public static bool IsSymbol(Rune value) { throw null; }
-        public static bool IsUpper(Rune value) { throw null; }
-        public static bool IsWhiteSpace(Rune value) { throw null; }
-        public static Rune ToLower(Rune value, System.Globalization.CultureInfo culture) { throw null; }
-        public static Rune ToLowerInvariant(Rune value) { throw null; }
-        public static Rune ToUpper(Rune value, System.Globalization.CultureInfo culture) { throw null; }
-        public static Rune ToUpperInvariant(Rune value) { throw null; }
+        public static System.Text.Rune ToUpper(System.Text.Rune value, System.Globalization.CultureInfo culture) { throw null; }
+        public static System.Text.Rune ToUpperInvariant(System.Text.Rune value) { throw null; }
+        public static bool TryCreate(char ch, out System.Text.Rune result) { throw null; }
+        public static bool TryCreate(char highSurrogate, char lowSurrogate, out System.Text.Rune result) { throw null; }
+        public static bool TryCreate(int value, out System.Text.Rune result) { throw null; }
+        [System.CLSCompliantAttribute(false)]
+        public static bool TryCreate(uint value, out System.Text.Rune result) { throw null; }
+        public bool TryEncodeToUtf16(System.Span<char> destination, out int charsWritten) { throw null; }
+        public bool TryEncodeToUtf8(System.Span<byte> destination, out int bytesWritten) { throw null; }
+        public static bool TryGetRuneAt(string input, int index, out System.Text.Rune value) { throw null; }
     }
     public sealed partial class StringBuilder : System.Runtime.Serialization.ISerializable
     {
@@ -7796,18 +7827,26 @@ namespace System.Text
             public bool MoveNext() { throw null; }
         }
     }
-    public partial struct StringRuneEnumerator : System.Collections.Generic.IEnumerable<System.Text.Rune>, System.Collections.Generic.IEnumerator<System.Text.Rune>
+    public partial struct StringRuneEnumerator : System.Collections.Generic.IEnumerable<System.Text.Rune>, System.Collections.Generic.IEnumerator<System.Text.Rune>, System.Collections.IEnumerable, System.Collections.IEnumerator, System.IDisposable
     {
-        private readonly object _dummyReference;
-        private readonly int _dummyPrimitive;
+        private object _dummy;
+        private int _dummyPrimitive;
         public System.Text.Rune Current { get { throw null; } }
-        public StringRuneEnumerator GetEnumerator() { throw null; }
-        public bool MoveNext() { throw null; }
         object System.Collections.IEnumerator.Current { get { throw null; } }
-        void IDisposable.Dispose() { }
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
+        public System.Text.StringRuneEnumerator GetEnumerator() { throw null; }
+        public bool MoveNext() { throw null; }
         System.Collections.Generic.IEnumerator<System.Text.Rune> System.Collections.Generic.IEnumerable<System.Text.Rune>.GetEnumerator() { throw null; }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { throw null; }
         void System.Collections.IEnumerator.Reset() { }
+        void System.IDisposable.Dispose() { }
+    }
+}
+namespace System.Text.Unicode
+{
+    public static partial class Utf8
+    {
+        public static System.Buffers.OperationStatus FromUtf16(ReadOnlySpan<char> source, Span<byte> destination, out int charsRead, out int bytesWritten, bool replaceInvalidSequences = true, bool isFinalBlock = true) { throw null; }
+        public static System.Buffers.OperationStatus ToUtf16(ReadOnlySpan<byte> source, Span<char> destination, out int bytesRead, out int charsWritten, bool replaceInvalidSequences = true, bool isFinalBlock = true) { throw null; }
     }
 }
 namespace System.Threading
@@ -7832,7 +7871,7 @@ namespace System.Threading
         public void ThrowIfCancellationRequested() { }
         public System.Threading.CancellationTokenRegistration UnsafeRegister(System.Action<object> callback, object state) { throw null; }
     }
-    public readonly partial struct CancellationTokenRegistration : System.IDisposable, System.IEquatable<System.Threading.CancellationTokenRegistration>
+    public readonly partial struct CancellationTokenRegistration : System.IAsyncDisposable, System.IDisposable, System.IEquatable<System.Threading.CancellationTokenRegistration>
     {
         private readonly object _dummy;
         private readonly int _dummyPrimitive;
@@ -7908,7 +7947,7 @@ namespace System.Threading.Tasks
         public object AsyncState { get { throw null; } }
         public static System.Threading.Tasks.Task CompletedTask { get { throw null; } }
         public System.Threading.Tasks.TaskCreationOptions CreationOptions { get { throw null; } }
-        public static System.Nullable<int> CurrentId { get { throw null; } }
+        public static int? CurrentId { get { throw null; } }
         public System.AggregateException Exception { get { throw null; } }
         public static System.Threading.Tasks.TaskFactory Factory { get { throw null; } }
         public int Id { get { throw null; } }

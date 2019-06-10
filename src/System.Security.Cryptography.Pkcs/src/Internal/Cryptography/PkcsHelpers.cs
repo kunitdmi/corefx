@@ -462,7 +462,7 @@ namespace Internal.Cryptography
                 throw new CryptographicException(SR.Cryptography_Der_Invalid_Encoding);
             }
 
-            if (reader.TryGetPrimitiveOctetStringBytes(out ReadOnlyMemory<byte> primitiveContents))
+            if (reader.TryReadPrimitiveOctetStringBytes(out ReadOnlyMemory<byte> primitiveContents))
             {
                 return primitiveContents;
             }

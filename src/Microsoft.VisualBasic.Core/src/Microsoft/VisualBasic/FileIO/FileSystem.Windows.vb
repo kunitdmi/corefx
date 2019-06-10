@@ -4,9 +4,10 @@
 Option Strict On
 Option Explicit On
 
+Imports System
 Imports System.ComponentModel
+Imports System.Diagnostics
 Imports System.Security
-Imports System.Runtime.Versioning
 Imports System.Text
 
 Imports Microsoft.VisualBasic.CompilerServices
@@ -31,15 +32,12 @@ Namespace Microsoft.VisualBasic.FileIO
         ''' Copy/MoveFile will call this directly. Copy/MoveDirectory will call ShellCopyOrMoveDirectory first
         ''' to change the path if needed.
         ''' </remarks>
-        <SecurityCritical()>
-        <ResourceExposure(ResourceScope.Machine)>
-        <ResourceConsumption(ResourceScope.Machine)>
         Private Shared Sub ShellCopyOrMove(ByVal Operation As CopyOrMove, ByVal TargetType As FileOrDirectory,
             ByVal FullSourcePath As String, ByVal FullTargetPath As String, ByVal ShowUI As UIOptionInternal, ByVal OnUserCancel As UICancelOption)
             Debug.Assert(System.Enum.IsDefined(GetType(CopyOrMove), Operation))
             Debug.Assert(System.Enum.IsDefined(GetType(FileOrDirectory), TargetType))
-            Debug.Assert(FullSourcePath <> "" And IO.Path.IsPathRooted(FullSourcePath), "Invalid FullSourcePath!!!")
-            Debug.Assert(FullTargetPath <> "" And IO.Path.IsPathRooted(FullTargetPath), "Invalid FullTargetPath!!!")
+            Debug.Assert(FullSourcePath <> "" And IO.Path.IsPathRooted(FullSourcePath), "Invalid FullSourcePath")
+            Debug.Assert(FullTargetPath <> "" And IO.Path.IsPathRooted(FullTargetPath), "Invalid FullTargetPath")
             Debug.Assert(ShowUI <> UIOptionInternal.NoUI, "Why call ShellDelete if ShowUI is NoUI???")
 
             ' Set operation type.
@@ -96,13 +94,10 @@ Namespace Microsoft.VisualBasic.FileIO
         ''' <remarks>
         ''' We don't need to consider Recursive flag here since we already verify that in DeleteDirectory.
         ''' </remarks>
-        <SecurityCritical()>
-        <ResourceExposure(ResourceScope.Machine)>
-        <ResourceConsumption(ResourceScope.Machine)>
         Private Shared Sub ShellDelete(ByVal FullPath As String,
             ByVal ShowUI As UIOptionInternal, ByVal recycle As RecycleOption, ByVal OnUserCancel As UICancelOption, ByVal FileOrDirectory As FileOrDirectory)
 
-            Debug.Assert(FullPath <> "" And IO.Path.IsPathRooted(FullPath), "FullPath must be a full path!!!")
+            Debug.Assert(FullPath <> "" And IO.Path.IsPathRooted(FullPath), "FullPath must be a full path")
             Debug.Assert(ShowUI <> UIOptionInternal.NoUI, "Why call ShellDelete if ShowUI is NoUI???")
 
             ' Set fFlags to control the operation details.
@@ -124,19 +119,13 @@ Namespace Microsoft.VisualBasic.FileIO
         ''' <param name="FullTarget">The full path to the target. Nothing if this is a Delete operation.</param>
         ''' <param name="OnUserCancel">Value from UICancelOption, specifying to throw or not when user cancels the operation.</param>
         '''<remarks></remarks>
-        '<HostProtection(Resources:=HostProtectionResource.ExternalProcessMgmt, UI:=True)>
-        <SecurityCritical()>
-        <ResourceExposure(ResourceScope.Machine)>
-        <ResourceConsumption(ResourceScope.Machine)>
         Private Shared Sub ShellFileOperation(ByVal OperationType As SHFileOperationType, ByVal OperationFlags As ShFileOperationFlags,
             ByVal FullSource As String, ByVal FullTarget As String, ByVal OnUserCancel As UICancelOption, ByVal FileOrDirectory As FileOrDirectory)
 
-            ' Apply HostProtectionAttribute(UI = true) to indicate this function belongs to UI type.
-
             Debug.Assert(System.Enum.IsDefined(GetType(SHFileOperationType), OperationType))
-            Debug.Assert(OperationType <> SHFileOperationType.FO_RENAME, "Don't call Shell to rename!!!")
-            Debug.Assert(FullSource <> "" And IO.Path.IsPathRooted(FullSource), "Invalid FullSource path!!!")
-            Debug.Assert(OperationType = SHFileOperationType.FO_DELETE OrElse (FullTarget <> "" And IO.Path.IsPathRooted(FullTarget)), "Invalid FullTarget path!!!")
+            Debug.Assert(OperationType <> SHFileOperationType.FO_RENAME, "Don't call Shell to rename")
+            Debug.Assert(FullSource <> "" And IO.Path.IsPathRooted(FullSource), "Invalid FullSource path")
+            Debug.Assert(OperationType = SHFileOperationType.FO_DELETE OrElse (FullTarget <> "" And IO.Path.IsPathRooted(FullTarget)), "Invalid FullTarget path")
 
 
             ' Get the SHFILEOPSTRUCT
@@ -171,11 +160,10 @@ Namespace Microsoft.VisualBasic.FileIO
         ''' <param name="SourcePath">The source file / directory path.</param>
         ''' <param name="TargetPath">The target file / directory path. Nothing in case of delete.</param>
         ''' <returns>A fully initialized SHFILEOPSTRUCT.</returns>
-        <SecurityCritical()>
         Private Shared Function GetShellOperationInfo(
                             ByVal OperationType As SHFileOperationType, ByVal OperationFlags As ShFileOperationFlags,
                             ByVal SourcePath As String, Optional ByVal TargetPath As String = Nothing) As SHFILEOPSTRUCT
-            Debug.Assert(SourcePath <> "" And IO.Path.IsPathRooted(SourcePath), "Invalid SourcePath!!!")
+            Debug.Assert(SourcePath <> "" And IO.Path.IsPathRooted(SourcePath), "Invalid SourcePath")
 
             Return GetShellOperationInfo(OperationType, OperationFlags, New String() {SourcePath}, TargetPath)
         End Function
@@ -188,13 +176,12 @@ Namespace Microsoft.VisualBasic.FileIO
         ''' <param name="SourcePaths">A string array containing the paths of source files. Must not be empty.</param>
         ''' <param name="TargetPath">The target file / directory path. Nothing in case of delete.</param>
         ''' <returns>A fully initialized SHFILEOPSTRUCT.</returns>
-        <SecurityCritical()>
         Private Shared Function GetShellOperationInfo(
                             ByVal OperationType As SHFileOperationType, ByVal OperationFlags As ShFileOperationFlags,
                             ByVal SourcePaths() As String, Optional ByVal TargetPath As String = Nothing) As SHFILEOPSTRUCT
-            Debug.Assert(System.Enum.IsDefined(GetType(SHFileOperationType), OperationType), "Invalid OperationType!!!")
-            Debug.Assert(TargetPath = "" Or IO.Path.IsPathRooted(TargetPath), "Invalid TargetPath!!!")
-            Debug.Assert(SourcePaths IsNot Nothing AndAlso SourcePaths.Length > 0, "Invalid SourcePaths!!!")
+            Debug.Assert(System.Enum.IsDefined(GetType(SHFileOperationType), OperationType), "Invalid OperationType")
+            Debug.Assert(TargetPath = "" Or IO.Path.IsPathRooted(TargetPath), "Invalid TargetPath")
+            Debug.Assert(SourcePaths IsNot Nothing AndAlso SourcePaths.Length > 0, "Invalid SourcePaths")
 
             Dim OperationInfo As SHFILEOPSTRUCT
 
@@ -250,7 +237,7 @@ Namespace Microsoft.VisualBasic.FileIO
         ''' <param name="FullPath">The full path to be converted.</param>
         ''' <returns>A string in the required format.</returns>
         Private Shared Function GetShellPath(ByVal FullPath As String) As String
-            Debug.Assert(FullPath <> "" And IO.Path.IsPathRooted(FullPath), "Must be full path!!!")
+            Debug.Assert(FullPath <> "" And IO.Path.IsPathRooted(FullPath), "Must be full path")
 
             Return GetShellPath(New String() {FullPath})
         End Function
@@ -262,8 +249,8 @@ Namespace Microsoft.VisualBasic.FileIO
         ''' <returns>A string in the required format.</returns>
         Private Shared Function GetShellPath(ByVal FullPaths() As String) As String
 #If DEBUG Then
-            Debug.Assert(FullPaths IsNot Nothing, "FullPaths is NULL!!!")
-            Debug.Assert(FullPaths.Length > 0, "FullPaths() is empty array!!!")
+            Debug.Assert(FullPaths IsNot Nothing, "FullPaths is NULL")
+            Debug.Assert(FullPaths.Length > 0, "FullPaths() is empty array")
             For Each FullPath As String In FullPaths
                 Debug.Assert(FullPath <> "" And IO.Path.IsPathRooted(FullPath), FullPath)
             Next
@@ -289,7 +276,6 @@ Namespace Microsoft.VisualBasic.FileIO
         ''' - Exception message does not contain the path since at this point it is normalized.
         ''' - Instead of using PInvoke of GetMessage and MakeHRFromErrorCode, use managed code.
         ''' </remarks>
-        <SecurityCritical()>
         Private Shared Sub ThrowWinIOError(ByVal errorCode As Integer)
             Select Case errorCode
                 Case NativeTypes.ERROR_FILE_NOT_FOUND

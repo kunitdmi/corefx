@@ -18,18 +18,11 @@ namespace System.Data.SqlClient.SNI
     /// <summary>
     /// Managed SNI proxy implementation. Contains many SNI entry points used by SqlClient.
     /// </summary>
-    internal class SNIProxy
+    internal partial class SNIProxy
     {
         private const int DefaultSqlServerPort = 1433;
         private const int DefaultSqlServerDacPort = 1434;
         private const string SqlServerSpnHeader = "MSSQLSvc";
-
-        internal class SspiClientContextResult
-        {
-            internal const uint OK = 0;
-            internal const uint Failed = 1;
-            internal const uint KerberosTicketMissing = 2;
-        }
 
         public static readonly SNIProxy Singleton = new SNIProxy();
 
@@ -89,18 +82,8 @@ namespace System.Data.SqlClient.SNI
                 credentialsHandle = NegotiateStreamPal.AcquireDefaultCredential(securityPackage, false);
             }
 
-            SecurityBuffer[] inSecurityBufferArray = null;
-            if (receivedBuff != null)
-            {
-                inSecurityBufferArray = new SecurityBuffer[] { new SecurityBuffer(receivedBuff, SecurityBufferType.SECBUFFER_TOKEN) };
-            }
-            else
-            {
-                inSecurityBufferArray = Array.Empty<SecurityBuffer>();
-            }
-
             int tokenSize = NegotiateStreamPal.QueryMaxTokenSize(securityPackage);
-            SecurityBuffer outSecurityBuffer = new SecurityBuffer(tokenSize, SecurityBufferType.SECBUFFER_TOKEN);
+            byte[] resultToken = new byte[tokenSize];
 
             ContextFlagsPal requestedContextFlags = ContextFlagsPal.Connection
                 | ContextFlagsPal.Confidentiality
@@ -110,23 +93,23 @@ namespace System.Data.SqlClient.SNI
             string serverSPN = System.Text.Encoding.UTF8.GetString(serverName);
 
             SecurityStatusPal statusCode = NegotiateStreamPal.InitializeSecurityContext(
-                       credentialsHandle,
+                       ref credentialsHandle,
                        ref securityContext,
                        serverSPN,
                        requestedContextFlags,
-                       inSecurityBufferArray,
-                       outSecurityBuffer,
+                       receivedBuff,
+                       null,
+                       ref resultToken,
                        ref contextFlags);
 
             if (statusCode.ErrorCode == SecurityStatusPalErrorCode.CompleteNeeded ||
                 statusCode.ErrorCode == SecurityStatusPalErrorCode.CompAndContinue)
             {
-                inSecurityBufferArray = new SecurityBuffer[] { outSecurityBuffer };
-                statusCode = NegotiateStreamPal.CompleteAuthToken(ref securityContext, inSecurityBufferArray);
-                outSecurityBuffer.token = null;
+                statusCode = NegotiateStreamPal.CompleteAuthToken(ref securityContext, resultToken);
+                resultToken = null;
             }
 
-            sendBuff = outSecurityBuffer.token;
+            sendBuff = resultToken;
             if (sendBuff == null)
             {
                 sendBuff = Array.Empty<byte>();
@@ -248,7 +231,7 @@ namespace System.Data.SqlClient.SNI
             {
                 result = handle.SendAsync(clonedPacket, true);
             }
-            
+
             return result;
         }
 
@@ -359,7 +342,7 @@ namespace System.Data.SqlClient.SNI
                 // If the DNS lookup failed, then resort to using the user provided hostname to construct the SPN.
                 fullyQualifiedDomainName = hostEntry?.HostName ?? hostNameOrAddress;
             }
-            string serverSpn = SqlServerSpnHeader + "/" + fullyQualifiedDomainName;
+            string serverSpn = SqlServerSpnHeader + SpnServiceHostSeparator + fullyQualifiedDomainName;
             if (!string.IsNullOrWhiteSpace(portOrInstanceName))
             {
                 serverSpn += ":" + portOrInstanceName;

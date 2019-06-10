@@ -128,7 +128,7 @@ namespace System.Security.Cryptography.Pkcs
                 // partial-fill gymnastics.
                 ieeeSignature.Clear();
 
-                ReadOnlySpan<byte> val = sequence.GetIntegerBytes().Span;
+                ReadOnlySpan<byte> val = sequence.ReadIntegerBytes().Span;
 
                 if (val.Length > fieldSize && val[0] == 0)
                 {
@@ -140,7 +140,7 @@ namespace System.Security.Cryptography.Pkcs
                     val.CopyTo(ieeeSignature.Slice(fieldSize - val.Length, val.Length));
                 }
 
-                val = sequence.GetIntegerBytes().Span;
+                val = sequence.ReadIntegerBytes().Span;
 
                 if (val.Length > fieldSize && val[0] == 0)
                 {

@@ -6,11 +6,12 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Threading.Tasks;
+using Microsoft.DotNet.RemoteExecutor;
 using Xunit;
 
 namespace System.Net.Sockets.Tests
 {
-    public class CreateSocket : RemoteExecutorTestBase
+    public class CreateSocket
     {
         public static object[][] DualModeSuccessInputs = {
             new object[] { SocketType.Stream, ProtocolType.Tcp },
@@ -30,6 +31,7 @@ namespace System.Net.Sockets.Tests
         };
 
         private static bool SupportsRawSockets => AdminHelpers.IsProcessElevated();
+        private static bool NotSupportsRawSockets => !SupportsRawSockets;
 
         [OuterLoop] // TODO: Issue #11345
         [Theory, MemberData(nameof(DualModeSuccessInputs))]
@@ -91,11 +93,25 @@ namespace System.Net.Sockets.Tests
         [InlineData(AddressFamily.InterNetworkV6, ProtocolType.Udp)]
         [InlineData(AddressFamily.InterNetworkV6, ProtocolType.IcmpV6)]
         [ConditionalTheory(nameof(SupportsRawSockets))]
-        public void Ctor_Raw_Success(AddressFamily addressFamily, ProtocolType protocolType)
+        public void Ctor_Raw_Supported_Success(AddressFamily addressFamily, ProtocolType protocolType)
         {
             using (new Socket(addressFamily, SocketType.Raw, protocolType))
             {
             }
+        }
+
+        [PlatformSpecific(TestPlatforms.AnyUnix)]
+        [InlineData(AddressFamily.InterNetwork, ProtocolType.Tcp)]
+        [InlineData(AddressFamily.InterNetwork, ProtocolType.Udp)]
+        [InlineData(AddressFamily.InterNetwork, ProtocolType.Icmp)]
+        [InlineData(AddressFamily.InterNetworkV6, ProtocolType.Tcp)]
+        [InlineData(AddressFamily.InterNetworkV6, ProtocolType.Udp)]
+        [InlineData(AddressFamily.InterNetworkV6, ProtocolType.IcmpV6)]
+        [ConditionalTheory(nameof(NotSupportsRawSockets))]
+        public void Ctor_Raw_NotSupported_ExpectedError(AddressFamily addressFamily, ProtocolType protocolType)
+        {
+            SocketException e = Assert.Throws<SocketException>(() => new Socket(addressFamily, SocketType.Raw, protocolType));
+            Assert.Contains(e.SocketErrorCode, new[] { SocketError.AccessDenied, SocketError.ProtocolNotSupported });
         }
 
         [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "Sockets are still inheritable on netfx: https://github.com/dotnet/corefx/pull/32903")]
@@ -110,7 +126,7 @@ namespace System.Net.Sockets.Tests
         {
             // Run the test in another process so as to not have trouble with other tests
             // launching child processes that might impact inheritance.
-            RemoteInvoke((validateClientString, acceptApiString) =>
+            RemoteExecutor.Invoke((validateClientString, acceptApiString) =>
             {
                 bool validateClient = bool.Parse(validateClientString);
                 int acceptApi = int.Parse(acceptApiString);
@@ -143,7 +159,7 @@ namespace System.Net.Sockets.Tests
                             // Create a child process that blocks waiting to receive a signal on the anonymous pipe.
                             // The whole purpose of the child is to test whether handles are inherited, so we
                             // keep the child process alive until we're done validating that handles close as expected.
-                            using (RemoteInvoke(clientPipeHandle =>
+                            using (RemoteExecutor.Invoke(clientPipeHandle =>
                                    {
                                        using (var clientPipe = new AnonymousPipeClientStream(PipeDirection.In, clientPipeHandle))
                                        {

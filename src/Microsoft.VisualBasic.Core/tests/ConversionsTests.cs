@@ -1586,7 +1586,7 @@ namespace Microsoft.VisualBasic.Tests
             yield return new object[] { " &o5", (float)5 };
             yield return new object[] { "&o0", (float)0 };
             yield return new object[] { 1.1.ToString(), (float)1.1 };
-            yield return new object[] { "18446744073709551616", float.Parse("1.844674E+19", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { "18446744073709551616", 18446744073709551616.0f };
             yield return new object[] { double.PositiveInfinity.ToString(), float.PositiveInfinity };
             yield return new object[] { double.NegativeInfinity.ToString(), float.NegativeInfinity };
             yield return new object[] { double.NaN.ToString(), float.NaN };
@@ -1663,42 +1663,42 @@ namespace Microsoft.VisualBasic.Tests
             // uint.
             yield return new object[] { uint.MinValue, (float)0 };
             yield return new object[] { (uint)1, (float)1 };
-            yield return new object[] { uint.MaxValue, float.Parse("4.294967E+09", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { uint.MaxValue, (float)uint.MaxValue };
             yield return new object[] { (UIntEnum)uint.MinValue, (float)0 };
             yield return new object[] { (UIntEnum)1, (float)1 };
-            yield return new object[] { (UIntEnum)uint.MaxValue, float.Parse("4.294967E+09", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { (UIntEnum)uint.MaxValue, (float)uint.MaxValue };
 
             // int.
-            yield return new object[] { int.MinValue, float.Parse("-2.147484E+09", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { int.MinValue, (float)int.MinValue };
             yield return new object[] { -1, (float)(-1) };
             yield return new object[] { 0, (float)0 };
             yield return new object[] { 1, (float)1 };
-            yield return new object[] { int.MaxValue, float.Parse("2.147484E+09", NumberStyles.Any, CultureInfo.InvariantCulture) };
-            yield return new object[] { (IntEnum)int.MinValue, float.Parse("-2.147484E+09", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { int.MaxValue, (float)int.MaxValue };
+            yield return new object[] { (IntEnum)int.MinValue, (float)int.MinValue };
             yield return new object[] { (IntEnum)(-1), (float)(-1) };
             yield return new object[] { (IntEnum)0, (float)0 };
             yield return new object[] { (IntEnum)1, (float)1 };
-            yield return new object[] { (IntEnum)int.MaxValue, float.Parse("2.147484E+09", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { (IntEnum)int.MaxValue, (float)int.MaxValue };
 
             // ulong.
             yield return new object[] { ulong.MinValue, (float)0 };
             yield return new object[] { (ulong)1, (float)1 };
-            yield return new object[] { ulong.MaxValue, float.Parse("1.844674E+19", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { ulong.MaxValue, (float)ulong.MaxValue };
             yield return new object[] { (ULongEnum)ulong.MinValue, (float)0 };
             yield return new object[] { (ULongEnum)1, (float)1 };
-            yield return new object[] { (ULongEnum)ulong.MaxValue, float.Parse("1.844674E+19", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { (ULongEnum)ulong.MaxValue, (float)ulong.MaxValue };
 
             // long.
-            yield return new object[] { long.MinValue, float.Parse("-9.223372E+18", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { long.MinValue, (float)long.MinValue };
             yield return new object[] { (long)(-1), (float)(-1) };
             yield return new object[] { (long)0, (float)0 };
             yield return new object[] { (long)1, (float)1 };
-            yield return new object[] { long.MaxValue, float.Parse("9.223372E+18", NumberStyles.Any, CultureInfo.InvariantCulture) };
-            yield return new object[] { (LongEnum)long.MinValue, float.Parse("-9.223372E+18", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { long.MaxValue, (float)long.MaxValue };
+            yield return new object[] { (LongEnum)long.MinValue, (float)long.MinValue };
             yield return new object[] { (LongEnum)(-1), (float)(-1) };
             yield return new object[] { (LongEnum)0, (float)0 };
             yield return new object[] { (LongEnum)1, (float)1 };
-            yield return new object[] { (LongEnum)long.MaxValue, float.Parse("9.223372E+18", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { (LongEnum)long.MaxValue, (float)long.MaxValue };
 
             // float.
             yield return new object[] { float.MinValue, float.MinValue };
@@ -1721,11 +1721,11 @@ namespace Microsoft.VisualBasic.Tests
             yield return new object[] { double.NaN, float.NaN };
 
             // decimal.
-            yield return new object[] { decimal.MinValue, float.Parse("-7.922816E+28", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { decimal.MinValue, (float)decimal.MinValue };
             yield return new object[] { (decimal)(-1), (float)(-1) };
             yield return new object[] { (decimal)0, (float)0 };
             yield return new object[] { (decimal)1, (float)1 };
-            yield return new object[] { decimal.MaxValue, float.Parse("7.922816E+28", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { decimal.MaxValue, (float)decimal.MaxValue };
 
             // bool.
             yield return new object[] { true, (float)(-1) };
@@ -1790,8 +1790,8 @@ namespace Microsoft.VisualBasic.Tests
             yield return new object[] { " &o5", (double)5 };
             yield return new object[] { "&o0", (double)0 };
             yield return new object[] { 1.1.ToString(), (double)1.1 };
-            yield return new object[] { "18446744073709551616", double.Parse("1.84467440737096E+19", NumberStyles.Any, CultureInfo.InvariantCulture) };
-            yield return new object[] { "1844674407370955161618446744073709551616", double.Parse("1.84467440737096E+39", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { "18446744073709551616", 18446744073709551616.0 };
+            yield return new object[] { "1844674407370955161618446744073709551616", 1844674407370955161618446744073709551616.0 };
             yield return new object[] { double.PositiveInfinity.ToString(), double.PositiveInfinity };
             yield return new object[] { double.NegativeInfinity.ToString(), double.NegativeInfinity };
             yield return new object[] { double.NaN.ToString(), double.NaN };
@@ -1876,29 +1876,29 @@ namespace Microsoft.VisualBasic.Tests
             // ulong.
             yield return new object[] { ulong.MinValue, (double)0 };
             yield return new object[] { (ulong)1, (double)1 };
-            yield return new object[] { ulong.MaxValue, double.Parse("1.84467440737096E+19", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { ulong.MaxValue, (double)ulong.MaxValue };
             yield return new object[] { (ULongEnum)ulong.MinValue, (double)0 };
             yield return new object[] { (ULongEnum)1, (double)1 };
-            yield return new object[] { (ULongEnum)ulong.MaxValue, double.Parse("1.84467440737096E+19", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { (ULongEnum)ulong.MaxValue, (double)ulong.MaxValue };
 
             // long.
-            yield return new object[] { long.MinValue, double.Parse("-9.22337203685478E+18", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { long.MinValue, (double)long.MinValue };
             yield return new object[] { (long)(-1), (double)(-1) };
             yield return new object[] { (long)0, (double)0 };
             yield return new object[] { (long)1, (double)1 };
-            yield return new object[] { long.MaxValue, double.Parse("9.22337203685478E+18", NumberStyles.Any, CultureInfo.InvariantCulture) };
-            yield return new object[] { (LongEnum)long.MinValue, double.Parse("-9.22337203685478E+18", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { long.MaxValue, (double)long.MaxValue };
+            yield return new object[] { (LongEnum)long.MinValue, (double)long.MinValue };
             yield return new object[] { (LongEnum)(-1), (double)(-1) };
             yield return new object[] { (LongEnum)0, (double)0 };
             yield return new object[] { (LongEnum)1, (double)1 };
-            yield return new object[] { (LongEnum)long.MaxValue, double.Parse("9.22337203685478E+18", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { (LongEnum)long.MaxValue, (double)long.MaxValue };
 
             // float.
-            yield return new object[] { float.MinValue, double.Parse("-3.40282346638529E+38", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { float.MinValue, (double)float.MinValue };
             yield return new object[] { (float)(-1), (double)(-1) };
             yield return new object[] { (float)0, (double)0 };
             yield return new object[] { (float)1, (double)1 };
-            yield return new object[] { float.MaxValue, double.Parse("3.40282346638529E+38", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { float.MaxValue, (double)float.MaxValue };
             yield return new object[] { float.PositiveInfinity, double.PositiveInfinity };
             yield return new object[] { float.NegativeInfinity, double.NegativeInfinity };
             yield return new object[] { float.NaN, double.NaN };
@@ -1914,11 +1914,11 @@ namespace Microsoft.VisualBasic.Tests
             yield return new object[] { double.NaN, double.NaN };
 
             // decimal.
-            yield return new object[] { decimal.MinValue, double.Parse("-7.92281625142643E+28", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { decimal.MinValue, (double)decimal.MinValue };
             yield return new object[] { (decimal)(-1), (double)(-1) };
             yield return new object[] { (decimal)0, (double)0 };
             yield return new object[] { (decimal)1, (double)1 };
-            yield return new object[] { decimal.MaxValue, double.Parse("7.92281625142643E+28", NumberStyles.Any, CultureInfo.InvariantCulture) };
+            yield return new object[] { decimal.MaxValue, (double)decimal.MaxValue };
 
             // bool.
             yield return new object[] { true, (double)(-1) };
@@ -1980,7 +1980,7 @@ namespace Microsoft.VisualBasic.Tests
             yield return new object[] { " &o5", (decimal)5 };
             yield return new object[] { "&o0", (decimal)0 };
             yield return new object[] { 1.1.ToString(), (decimal)1.1 };
-            yield return new object[] { "18446744073709551616", decimal.Parse("18446744073709551616", CultureInfo.InvariantCulture) };
+            yield return new object[] { "18446744073709551616", 18446744073709551616.0m };
         }
 
         [Theory]
@@ -2082,10 +2082,10 @@ namespace Microsoft.VisualBasic.Tests
             // ulong.
             yield return new object[] { ulong.MinValue, (decimal)0 };
             yield return new object[] { (ulong)1, (decimal)1 };
-            yield return new object[] { ulong.MaxValue, decimal.Parse("18446744073709551615", CultureInfo.InvariantCulture) };
+            yield return new object[] { ulong.MaxValue, (decimal)ulong.MaxValue };
             yield return new object[] { (ULongEnum)ulong.MinValue, (decimal)0 };
             yield return new object[] { (ULongEnum)1, (decimal)1 };
-            yield return new object[] { (ULongEnum)ulong.MaxValue, decimal.Parse("18446744073709551615", CultureInfo.InvariantCulture) };
+            yield return new object[] { (ULongEnum)ulong.MaxValue, (decimal)ulong.MaxValue };
 
             // long.
             yield return new object[] { long.MinValue, (decimal)(-9223372036854775808) };
@@ -2552,6 +2552,181 @@ namespace Microsoft.VisualBasic.Tests
             Assert.Throws<InvalidOperationException>(() => Conversions.ToChar(value));
         }
 
+        public static IEnumerable<object[]> ToString_IConvertible_TestData()
+        {
+            // byte.
+            yield return new object[] { byte.MinValue, "0" };
+            yield return new object[] { (byte)1, "1" };
+            yield return new object[] { byte.MaxValue, "255" };
+            yield return new object[] { (ByteEnum)byte.MinValue, "0" };
+            yield return new object[] { (ByteEnum)1, "1" };
+            yield return new object[] { (ByteEnum)byte.MaxValue, "255" };
+
+            // sbyte.
+            yield return new object[] { sbyte.MinValue, "-128" };
+            yield return new object[] { (sbyte)(-1), "-1" };
+            yield return new object[] { (sbyte)0, "0" };
+            yield return new object[] { (sbyte)1, "1" };
+            yield return new object[] { sbyte.MaxValue, "127" };
+            yield return new object[] { (SByteEnum)sbyte.MinValue, "-128" };
+            yield return new object[] { (SByteEnum)(-1), "-1" };
+            yield return new object[] { (SByteEnum)0, "0" };
+            yield return new object[] { (SByteEnum)1, "1" };
+            yield return new object[] { (SByteEnum)sbyte.MaxValue, "127" };
+
+            // ushort.
+            yield return new object[] { ushort.MinValue, "0" };
+            yield return new object[] { (ushort)1, "1" };
+            yield return new object[] { ushort.MaxValue, "65535" };
+            yield return new object[] { (UShortEnum)ushort.MinValue, "0" };
+            yield return new object[] { (UShortEnum)1, "1" };
+            yield return new object[] { (UShortEnum)ushort.MaxValue, "65535" };
+
+            // short.
+            yield return new object[] { short.MinValue, "-32768" };
+            yield return new object[] { (short)(-1), "-1" };
+            yield return new object[] { (short)0, "0" };
+            yield return new object[] { (short)1, "1" };
+            yield return new object[] { short.MaxValue, "32767" };
+            yield return new object[] { (ShortEnum)short.MinValue, "-32768" };
+            yield return new object[] { (ShortEnum)(-1), "-1" };
+            yield return new object[] { (ShortEnum)0, "0" };
+            yield return new object[] { (ShortEnum)1, "1" };
+            yield return new object[] { (ShortEnum)short.MaxValue, "32767" };
+
+            // uint.
+            yield return new object[] { uint.MinValue, "0" };
+            yield return new object[] { (uint)1, "1" };
+            yield return new object[] { uint.MaxValue, "4294967295" };
+            yield return new object[] { (UIntEnum)uint.MinValue, "0" };
+            yield return new object[] { (UIntEnum)1, "1" };
+            yield return new object[] { (UIntEnum)uint.MaxValue, "4294967295" };
+
+            // int.
+            yield return new object[] { int.MinValue, "-2147483648" };
+            yield return new object[] { -1, "-1" };
+            yield return new object[] { 0, "0" };
+            yield return new object[] { 1, "1" };
+            yield return new object[] { int.MaxValue, "2147483647" };
+            yield return new object[] { (IntEnum)int.MinValue, "-2147483648" };
+            yield return new object[] { (IntEnum)(-1), "-1" };
+            yield return new object[] { (IntEnum)0, "0" };
+            yield return new object[] { (IntEnum)1, "1" };
+            yield return new object[] { (IntEnum)int.MaxValue, "2147483647" };
+
+            // ulong.
+            yield return new object[] { ulong.MinValue, "0" };
+            yield return new object[] { (ulong)1, "1" };
+            yield return new object[] { ulong.MaxValue, "18446744073709551615" };
+            yield return new object[] { (ULongEnum)ulong.MinValue, "0" };
+            yield return new object[] { (ULongEnum)1, "1" };
+            yield return new object[] { (ULongEnum)ulong.MaxValue, "18446744073709551615" };
+
+            // long.
+            yield return new object[] { long.MinValue, "-9223372036854775808" };
+            yield return new object[] { (long)(-1), "-1" };
+            yield return new object[] { (long)0, "0" };
+            yield return new object[] { (long)1, "1" };
+            yield return new object[] { long.MaxValue, "9223372036854775807" };
+            yield return new object[] { (LongEnum)long.MinValue, "-9223372036854775808" };
+            yield return new object[] { (LongEnum)(-1), "-1" };
+            yield return new object[] { (LongEnum)0, "0" };
+            yield return new object[] { (LongEnum)1, "1" };
+            yield return new object[] { (LongEnum)long.MaxValue, "9223372036854775807" };
+
+            // float.
+            yield return new object[] { (float)(-1), "-1" };
+            yield return new object[] { (float)0, "0" };
+            yield return new object[] { (float)1, "1" };
+            yield return new object[] { float.PositiveInfinity, float.PositiveInfinity.ToString() };
+            yield return new object[] { float.NegativeInfinity, float.NegativeInfinity.ToString() };
+            yield return new object[] { float.NaN, "NaN" };
+
+            // double.
+            yield return new object[] { (double)(-1), "-1" };
+            yield return new object[] { (double)0, "0" };
+            yield return new object[] { (double)1, "1" };
+            yield return new object[] { double.PositiveInfinity, double.PositiveInfinity.ToString() };
+            yield return new object[] { double.NegativeInfinity, double.NegativeInfinity.ToString() };
+            yield return new object[] { double.NaN, "NaN" };
+
+            // decimal.
+            yield return new object[] { decimal.MinValue, decimal.MinValue.ToString() };
+            yield return new object[] { (decimal)(-1), "-1" };
+            yield return new object[] { (decimal)0, "0" };
+            yield return new object[] { (decimal)1, "1" };
+            yield return new object[] { decimal.MaxValue, decimal.MaxValue.ToString() };
+
+            // bool.
+            yield return new object[] { true, "True" };
+            yield return new object[] { false, "False" };
+            if (ReflectionEmitSupported)
+            {
+                yield return new object[] { BoolEnum, "False" };
+            }
+
+            // string.
+            yield return new object[] { "", "" };
+            yield return new object[] { "abc", "abc" };
+
+            // null.
+            yield return new object[] { null, (string)null };
+
+            // char.
+            yield return new object[] { char.MinValue, "\0" };
+            yield return new object[] { (char)1, "\u0001" };
+            yield return new object[] { 'a', "a" };
+            yield return new object[] { char.MaxValue, char.MaxValue.ToString() };
+
+            // DateTime.
+            yield return new object[] { new DateTime(10), new DateTime(10).ToString("T", null) };
+        }
+
+        [Theory]
+        [MemberData(nameof(ToString_IConvertible_TestData))]
+        public void ToString_IConvertible_ReturnsExpected(IConvertible value, string expected)
+        {
+            AssertEqual(expected, Conversions.ToString(value));
+            if (value != null)
+            {
+                AssertEqual(expected, Conversions.ToString(new ConvertibleWrapper(value)));
+            }
+        }
+
+        public static IEnumerable<object[]> ToString_Object_TestData()
+        {
+            // char[]
+            yield return new object[] { new char[0], "" };
+            yield return new object[] { new char[] { (char)0 }, "\0" };
+            yield return new object[] { new char[] { 'A', 'B' }, "AB" };
+        }
+
+        [Theory]
+        [MemberData(nameof(ToString_Object_TestData))]
+        public void ToString_Object_ReturnsExpected(object value, string expected)
+        {
+            AssertEqual(expected, Conversions.ToString(value));
+        }
+
+        public static IEnumerable<object[]> ToString_InvalidObject_TestData()
+        {
+            yield return new object[] { new object() };
+        }
+
+        [Theory]
+        [MemberData(nameof(ToString_InvalidObject_TestData))]
+        public void ToString_InvalidObject_ThrowsInvalidCastException(object value)
+        {
+            Assert.Throws<InvalidCastException>(() => Conversions.ToString(value));
+        }
+
+        [Theory]
+        [MemberData(nameof(InvalidBool_TestData))]
+        public void ToString_InvalidBool_ThrowsInvalidOperationException(object value)
+        {
+            Assert.Throws<InvalidOperationException>(() => Conversions.ToString(value));
+        }
+
         private static object s_floatEnum;
 
         public static object FloatEnum
@@ -2698,21 +2873,21 @@ namespace Microsoft.VisualBasic.Tests
                 Assert.Equal(expected, actual);
             }
         }
-
-        public enum ByteEnum : byte { Value = 1 }
-
-        public enum SByteEnum : sbyte { Value = 1 }
-
-        public enum UShortEnum : ushort { Value = 1 }
-
-        public enum ShortEnum : short { Value = 1 }
-
-        public enum UIntEnum : uint { Value = 1 }
-
-        public enum IntEnum : int { Value = 1 }
-
-        public enum ULongEnum : ulong { Value = 1 }
-
-        public enum LongEnum : long { Value = 1 }
     }
+
+    public enum ByteEnum : byte { Value = 1 }
+
+    public enum SByteEnum : sbyte { Value = 1 }
+
+    public enum UShortEnum : ushort { Value = 1 }
+
+    public enum ShortEnum : short { Value = 1 }
+
+    public enum UIntEnum : uint { Value = 1 }
+
+    public enum IntEnum : int { Value = 1 }
+
+    public enum ULongEnum : ulong { Value = 1 }
+
+    public enum LongEnum : long { Value = 1 }
 }

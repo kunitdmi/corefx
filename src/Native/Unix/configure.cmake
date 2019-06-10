@@ -119,6 +119,11 @@ check_symbol_exists(
     HAVE_STAT64)
 
 check_symbol_exists(
+    vfork
+    unistd.h
+    HAVE_VFORK)
+
+check_symbol_exists(
     pipe2
     unistd.h
     HAVE_PIPE2)
@@ -199,6 +204,17 @@ check_struct_has_member(
     st_birthtimespec
     "sys/types.h;sys/stat.h"
     HAVE_STAT_BIRTHTIME)
+
+check_struct_has_member(
+    "struct stat"
+    st_flags
+    "sys/types.h;sys/stat.h"
+    HAVE_STAT_FLAGS)
+
+check_symbol_exists(
+    lchflags
+    "sys/types.h;sys/stat.h"
+    HAVE_LCHFLAGS)
 
 check_struct_has_member(
     "struct stat"
@@ -778,8 +794,18 @@ check_c_source_compiles(
         return x;
     }
     "
-    HAVE_TCP_H_TCP_KEEPALIVE
-)
+    HAVE_TCP_H_TCP_KEEPALIVE)
+
+check_c_source_compiles(
+    "
+    #include <unistd.h>
+    int main(void)
+    {
+        size_t result;
+        (void)__builtin_mul_overflow(0, 0, &result);
+    }
+    "
+    HAVE_BUILTIN_MUL_OVERFLOW)
 
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/Common/pal_config.h.in
