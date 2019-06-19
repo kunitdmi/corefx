@@ -16,5 +16,6 @@ internal static partial class Interop
         internal const string AppleCryptoNative = "System.Security.Cryptography.Native.Apple";
         internal const string Advapi32 = "/opt/cprocsp/lib/libcapi10.dylib";
         internal const string Crypt32 = "/opt/cprocsp/lib/libcapi20.dylib";
+        internal const string Kernel32 = "/opt/cprocsp/lib/librdrsup.dylib";
     }
 }

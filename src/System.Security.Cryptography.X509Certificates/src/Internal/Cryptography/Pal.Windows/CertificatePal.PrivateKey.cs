@@ -12,6 +12,8 @@ using Microsoft.Win32.SafeHandles;
 
 using Internal.Cryptography.Pal.Native;
 
+using SafeNCryptKeyHandle = Microsoft.Win32.SafeHandles.SafeNCryptKeyHandle;
+
 namespace Internal.Cryptography.Pal
 {
     internal sealed partial class CertificatePal : IDisposable, ICertificatePal

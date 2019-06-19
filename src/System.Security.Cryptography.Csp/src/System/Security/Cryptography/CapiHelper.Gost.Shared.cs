@@ -19,8 +19,8 @@ namespace Internal.NativeCrypto
             int bufLength = cb; // ebp+0x34
             if (fDone)
             {
-                // Мы не используем в отличии от MS реализации Final
-                // поэтому на 8 байт CAPI Padding меньше
+                // РњС‹ РЅРµ РёСЃРїРѕР»СЊР·СѓРµРј РІ РѕС‚Р»РёС‡РёРё РѕС‚ MS СЂРµР°Р»РёР·Р°С†РёРё Final
+                // РїРѕСЌС‚РѕРјСѓ РЅР° 8 Р±Р°Р№С‚ CAPI Padding РјРµРЅСЊС€Рµ
                 bufLength += 8;
             }
             int remainder = cb & 7; // ebp+0x30
@@ -64,7 +64,7 @@ namespace Internal.NativeCrypto
                     {
                         int c = cb; // ebp+0x48;
                         dwDataLen += fill;
-                        // без while: итак 0.
+                        // Р±РµР· while: РёС‚Р°Рє 0.
                         tmpBuffer[dwDataLen - 1] = fill;
                         break;
                     }
@@ -97,10 +97,10 @@ namespace Internal.NativeCrypto
                             );
                 }
             }
-            // Утверждалось, что "Это похоже ошибка CSP. Не дает шифровать 0 байт в конце."
+            // РЈС‚РІРµСЂР¶РґР°Р»РѕСЃСЊ, С‡С‚Рѕ "Р­С‚Рѕ РїРѕС…РѕР¶Рµ РѕС€РёР±РєР° CSP. РќРµ РґР°РµС‚ С€РёС„СЂРѕРІР°С‚СЊ 0 Р±Р°Р№С‚ РІ РєРѕРЅС†Рµ."
             // if (dwDataLen != 0)
             // 
-            // Не используем CAPI Padding!
+            // РќРµ РёСЃРїРѕР»СЊР·СѓРµРј CAPI Padding!
             bool ret = Interop.Advapi32.CryptEncrypt(hKey, SafeHashHandle.InvalidHandle,
                 false, 0, tmpBuffer,
                 ref dwDataLen, (int)bufLength);
@@ -135,8 +135,8 @@ namespace Internal.NativeCrypto
                 throw new ArgumentOutOfRangeException("cb", SR.ArgumentOutOfRange_NeedNonNegNum);
             if ((ib > data.Length) || (ib + cb > data.Length))
                 throw new ArgumentException(SR.Argument_InvalidValue);
-            // CryptDecrypt использует один буфер с данными,
-            // поэтому от new не избавиться.
+            // CryptDecrypt РёСЃРїРѕР»СЊР·СѓРµС‚ РѕРґРёРЅ Р±СѓС„РµСЂ СЃ РґР°РЅРЅС‹РјРё,
+            // РїРѕСЌС‚РѕРјСѓ РѕС‚ new РЅРµ РёР·Р±Р°РІРёС‚СЊСЃСЏ.
             byte[] tmpBuffer = new byte[dwDataLen]; // ebp + 0x50
             Array.Copy(data, ib, tmpBuffer, 0, dwDataLen);
             if (!Interop.Advapi32.CryptDecrypt(
@@ -204,16 +204,16 @@ namespace Internal.NativeCrypto
         }
 
         /// <summary>
-        /// Завершение начатого процесса шифрования/расшифрования и
-        /// перевод его в начальное состояние.
+        /// Р—Р°РІРµСЂС€РµРЅРёРµ РЅР°С‡Р°С‚РѕРіРѕ РїСЂРѕС†РµСЃСЃР° С€РёС„СЂРѕРІР°РЅРёСЏ/СЂР°СЃС€РёС„СЂРѕРІР°РЅРёСЏ Рё
+        /// РїРµСЂРµРІРѕРґ РµРіРѕ РІ РЅР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ.
         /// </summary>
         /// 
-        /// <param name="safeKeyHandle">Ключ, на котором происходит 
-        /// процесс шифрования расшифрования.</param>
-        /// <param name="encrypting">Режим: Зашифрование, расшифрование.</param>
+        /// <param name="safeKeyHandle">РљР»СЋС‡, РЅР° РєРѕС‚РѕСЂРѕРј РїСЂРѕРёСЃС…РѕРґРёС‚ 
+        /// РїСЂРѕС†РµСЃСЃ С€РёС„СЂРѕРІР°РЅРёСЏ СЂР°СЃС€РёС„СЂРѕРІР°РЅРёСЏ.</param>
+        /// <param name="encrypting">Р РµР¶РёРј: Р—Р°С€РёС„СЂРѕРІР°РЅРёРµ, СЂР°СЃС€РёС„СЂРѕРІР°РЅРёРµ.</param>
         /// 
-        /// <exception cref="CryptographicException">При ошибках на native
-        /// уровне.</exception>
+        /// <exception cref="CryptographicException">РџСЂРё РѕС€РёР±РєР°С… РЅР° native
+        /// СѓСЂРѕРІРЅРµ.</exception>
         internal static void EndCrypt(SafeKeyHandle safeKeyHandle, bool encrypting)
         {
             bool ret;
@@ -261,21 +261,21 @@ namespace Internal.NativeCrypto
         }
 
         /// <summary>
-        /// Кодирование Public ключа ГОСТ 34.10 в BLOB для импорта.
+        /// РљРѕРґРёСЂРѕРІР°РЅРёРµ Public РєР»СЋС‡Р° Р“РћРЎРў 34.10 РІ BLOB РґР»СЏ РёРјРїРѕСЂС‚Р°.
         /// </summary>
         /// 
-        /// <param name="cspObject">Открытый ключ с параметрами.</param>
-        /// <param name="alg">Тип алгоритма</param>
+        /// <param name="cspObject">РћС‚РєСЂС‹С‚С‹Р№ РєР»СЋС‡ СЃ РїР°СЂР°РјРµС‚СЂР°РјРё.</param>
+        /// <param name="alg">РўРёРї Р°Р»РіРѕСЂРёС‚РјР°</param>
         /// 
-        /// <returns>BLOB для импорта.</returns>
+        /// <returns>BLOB РґР»СЏ РёРјРїРѕСЂС‚Р°.</returns>
         /// 
-        /// <exception cref="CryptographicException">При ошибках
-        /// кодирования структуры.</exception>
+        /// <exception cref="CryptographicException">РџСЂРё РѕС€РёР±РєР°С…
+        /// РєРѕРґРёСЂРѕРІР°РЅРёСЏ СЃС‚СЂСѓРєС‚СѓСЂС‹.</exception>
         /// <argnull name="cspObject" />
         /// 
-        /// <intdoc><para>Аналог в MS отсутствует, часть реализации
-        /// присутствует в ImportKey. У нас функция используется еще 
-        /// и при разборе открытого клуча в обходе
+        /// <intdoc><para>РђРЅР°Р»РѕРі РІ MS РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚, С‡Р°СЃС‚СЊ СЂРµР°Р»РёР·Р°С†РёРё
+        /// РїСЂРёСЃСѓС‚СЃС‚РІСѓРµС‚ РІ ImportKey. РЈ РЅР°СЃ С„СѓРЅРєС†РёСЏ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РµС‰Рµ 
+        /// Рё РїСЂРё СЂР°Р·Р±РѕСЂРµ РѕС‚РєСЂС‹С‚РѕРіРѕ РєР»СѓС‡Р° РІ РѕР±С…РѕРґРµ
         /// CryptoPro.Sharpei.NetDetours.CPPublicKey.</para></intdoc>
         /// 
         /// <unmanagedperm action="LinkDemand" />
@@ -330,22 +330,22 @@ namespace Internal.NativeCrypto
         }
 
         /// <summary>
-        /// Кодирование Public ключа ГОСТ 34.10 в BLOB для импорта.
+        /// РљРѕРґРёСЂРѕРІР°РЅРёРµ Public РєР»СЋС‡Р° Р“РћРЎРў 34.10 РІ BLOB РґР»СЏ РёРјРїРѕСЂС‚Р°.
         /// </summary>
         /// 
-        /// <param name="keyBlob">Откытый ключ без параметров.</param>
-        /// <param name="paramBlob">Параметры откытого ключа</param>
-        /// <param name="alg">Тип алгоритма</param>
+        /// <param name="keyBlob">РћС‚РєС‹С‚С‹Р№ РєР»СЋС‡ Р±РµР· РїР°СЂР°РјРµС‚СЂРѕРІ.</param>
+        /// <param name="paramBlob">РџР°СЂР°РјРµС‚СЂС‹ РѕС‚РєС‹С‚РѕРіРѕ РєР»СЋС‡Р°</param>
+        /// <param name="alg">РўРёРї Р°Р»РіРѕСЂРёС‚РјР°</param>
         /// 
-        /// <returns>BLOB для импорта.</returns>
+        /// <returns>BLOB РґР»СЏ РёРјРїРѕСЂС‚Р°.</returns>
         /// 
-        /// <exception cref="CryptographicException">При ошибках
-        /// кодирования структуры.</exception>
+        /// <exception cref="CryptographicException">РџСЂРё РѕС€РёР±РєР°С…
+        /// РєРѕРґРёСЂРѕРІР°РЅРёСЏ СЃС‚СЂСѓРєС‚СѓСЂС‹.</exception>
         /// <argnull name="cspObject" />
         /// 
-        /// <intdoc><para>Аналог в MS отсутствует, часть реализации
-        /// присутствует в ImportKey. У нас функция используется еще 
-        /// и при разборе открытого клуча в обходе
+        /// <intdoc><para>РђРЅР°Р»РѕРі РІ MS РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚, С‡Р°СЃС‚СЊ СЂРµР°Р»РёР·Р°С†РёРё
+        /// РїСЂРёСЃСѓС‚СЃС‚РІСѓРµС‚ РІ ImportKey. РЈ РЅР°СЃ С„СѓРЅРєС†РёСЏ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РµС‰Рµ 
+        /// Рё РїСЂРё СЂР°Р·Р±РѕСЂРµ РѕС‚РєСЂС‹С‚РѕРіРѕ РєР»СѓС‡Р° РІ РѕР±С…РѕРґРµ
         /// CryptoPro.Sharpei.NetDetours.CPPublicKey.</para></intdoc>
         /// 
         /// <unmanagedperm action="LinkDemand" />
@@ -395,20 +395,20 @@ namespace Internal.NativeCrypto
         }
 
         /// <summary>
-        /// Разбор BLOB открытого ключа ГОСТ 34.10.
+        /// Р Р°Р·Р±РѕСЂ BLOB РѕС‚РєСЂС‹С‚РѕРіРѕ РєР»СЋС‡Р° Р“РћРЎРў 34.10.
         /// </summary>
         /// 
         /// <param name="obj">Gost3410CspObject</param>
         /// <param name="data">BLOB</param>
-        /// <param name="alg">Тип алгоритма</param>
+        /// <param name="alg">РўРёРї Р°Р»РіРѕСЂРёС‚РјР°</param>
         /// 
         /// <argnull name="obj" />
-        /// <exception cref="CryptographicException">Если 
-        /// <paramref name="obj"/> не объект типа 
+        /// <exception cref="CryptographicException">Р•СЃР»Рё 
+        /// <paramref name="obj"/> РЅРµ РѕР±СЉРµРєС‚ С‚РёРїР° 
         /// <see cref="Gost3410CspObject"/></exception>
         /// 
-        /// <intdoc><para>Аналог в MS отсутствует, часть реализации
-        /// присутствует в ImportKey. </para></intdoc>
+        /// <intdoc><para>РђРЅР°Р»РѕРі РІ MS РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚, С‡Р°СЃС‚СЊ СЂРµР°Р»РёР·Р°С†РёРё
+        /// РїСЂРёСЃСѓС‚СЃС‚РІСѓРµС‚ РІ ImportKey. </para></intdoc>
         /// 
         /// <unmanagedperm action="LinkDemand" />
         internal static void DecodePublicBlob(Object obj, byte[] data, CspAlgorithmType alg)
@@ -465,20 +465,20 @@ namespace Internal.NativeCrypto
         }
 
         ///// <summary>
-        ///// Кодирование сессионного ключа в SIMPLE BLOB.
+        ///// РљРѕРґРёСЂРѕРІР°РЅРёРµ СЃРµСЃСЃРёРѕРЅРЅРѕРіРѕ РєР»СЋС‡Р° РІ SIMPLE BLOB.
         ///// </summary>
         ///// 
-        ///// <param name="cspObject">Зашифрованный сессионный ключ.</param>
-        ///// <param name="algid">Алгоритм зашифрованного ключа.</param>
+        ///// <param name="cspObject">Р—Р°С€РёС„СЂРѕРІР°РЅРЅС‹Р№ СЃРµСЃСЃРёРѕРЅРЅС‹Р№ РєР»СЋС‡.</param>
+        ///// <param name="algid">РђР»РіРѕСЂРёС‚Рј Р·Р°С€РёС„СЂРѕРІР°РЅРЅРѕРіРѕ РєР»СЋС‡Р°.</param>
         ///// 
         ///// <returns>BLOB</returns>
         ///// 
-        ///// <exception cref="CryptographicException">При ошибках
-        ///// кодирования структуры.</exception>
+        ///// <exception cref="CryptographicException">РџСЂРё РѕС€РёР±РєР°С…
+        ///// РєРѕРґРёСЂРѕРІР°РЅРёСЏ СЃС‚СЂСѓРєС‚СѓСЂС‹.</exception>
         ///// <argnull name="cspObject" />
         ///// 
-        ///// <intdoc><para>Аналог в MS отсутствует, часть реализации
-        ///// присутствует в ImportKey. </para></intdoc>
+        ///// <intdoc><para>РђРЅР°Р»РѕРі РІ MS РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚, С‡Р°СЃС‚СЊ СЂРµР°Р»РёР·Р°С†РёРё
+        ///// РїСЂРёСЃСѓС‚СЃС‚РІСѓРµС‚ РІ ImportKey. </para></intdoc>
         ///// 
         ///// <unmanagedperm action="LinkDemand" />
         //internal static byte[] EncodeSimpleBlob(GostWrappedKeyObject cspObject, int algid)
@@ -534,8 +534,8 @@ namespace Internal.NativeCrypto
         //}
 
         ///// <summary>
-        ///// Декодирование зашифрованного сессионного ключа из BLOB
-        ///// в структуру.
+        ///// Р”РµРєРѕРґРёСЂРѕРІР°РЅРёРµ Р·Р°С€РёС„СЂРѕРІР°РЅРЅРѕРіРѕ СЃРµСЃСЃРёРѕРЅРЅРѕРіРѕ РєР»СЋС‡Р° РёР· BLOB
+        ///// РІ СЃС‚СЂСѓРєС‚СѓСЂСѓ.
         ///// </summary>
         ///// 
         ///// <param name="cspObject"><see cref="GostWrappedKeyObject"/></param>
@@ -543,11 +543,11 @@ namespace Internal.NativeCrypto
         ///// 
         ///// <argnull name="data" />
         ///// <argnull name="cspObject" />
-        ///// <exception cref="CryptographicException">При ошибках
-        ///// декодирования структуры.</exception>
+        ///// <exception cref="CryptographicException">РџСЂРё РѕС€РёР±РєР°С…
+        ///// РґРµРєРѕРґРёСЂРѕРІР°РЅРёСЏ СЃС‚СЂСѓРєС‚СѓСЂС‹.</exception>
         ///// 
-        ///// <intdoc><para>Аналог в MS отсутствует, часть реализации
-        ///// присутствует в ImportKey. </para></intdoc>
+        ///// <intdoc><para>РђРЅР°Р»РѕРі РІ MS РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚, С‡Р°СЃС‚СЊ СЂРµР°Р»РёР·Р°С†РёРё
+        ///// РїСЂРёСЃСѓС‚СЃС‚РІСѓРµС‚ РІ ImportKey. </para></intdoc>
         ///// 
         ///// <unmanagedperm action="LinkDemand" />
         //internal static void DecodeSimpleBlob(GostWrappedKeyObject cspObject, byte[] data)

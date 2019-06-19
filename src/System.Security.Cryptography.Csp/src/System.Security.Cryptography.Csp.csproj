@@ -254,8 +254,6 @@
     <Compile Include="$(CommonPath)\System\Security\Cryptography\KeySizeHelpers.cs">
       <Link>Common\System\Security\Cryptography\KeySizeHelpers.cs</Link>
     </Compile>
-
-
     <Compile Include="System\Security\Cryptography\CapiHelper.Windows.cs" />
     <Compile Include="$(CommonPath)\Interop\Windows\advapi32\Interop.CryptAcquireContext.cs">
       <Link>Common\Interop\Windows\advapi32\Interop.CryptAcquireContext.cs</Link>
@@ -334,15 +332,20 @@
     </Compile>
     <Compile Include="System\Security\Cryptography\CapiHelper.DSA.Windows.cs" />
     <Compile Include="System\Security\Cryptography\CspKeyContainerInfo.Windows.cs" />
+    <Compile Include="System\Security\Cryptography\DSACryptoServiceProvider.Windows.cs" />
+    <Compile Include="System\Security\Cryptography\RSACryptoServiceProvider.Windows.cs" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetsUnix)' == 'true'">
+    <Compile Include="$(CommonPath)\Interop\Windows\Crypt32\Interop.FindOidInfo.Unix.cs">
+      <Link>Common\Interop\Windows\Crypt32\Interop.FindOidInfo.Unix.cs</Link>
+    </Compile>
     <!-- <Compile Include="System\Security\Cryptography\CapiHelper.Unix.cs" /> -->
     <!-- <Compile Include="System\Security\Cryptography\CspKeyContainerInfo.Unix.cs" /> -->
     <Compile Include="System\Security\Cryptography\DESCryptoServiceProvider.Unix.cs" />
-    <Compile Include="System\Security\Cryptography\DSACryptoServiceProvider.Unix.cs" />
+    <!-- <Compile Include="System\Security\Cryptography\DSACryptoServiceProvider.Unix.cs" /> -->
     <Compile Include="System\Security\Cryptography\PasswordDeriveBytes.Unix.cs" />
     <Compile Include="System\Security\Cryptography\RC2CryptoServiceProvider.Unix.cs" />
-    <Compile Include="System\Security\Cryptography\RSACryptoServiceProvider.Unix.cs" />
+    <!-- <Compile Include="System\Security\Cryptography\RSACryptoServiceProvider.Unix.cs" /> -->
     <Compile Include="Internal\Cryptography\Unix\HashAlgorithmNames.cs" />
     <Compile Include="$(CommonPath)\Internal\Cryptography\AsymmetricAlgorithmHelpers.Hash.cs">
       <Link>Common\Internal\Cryptography\AsymmetricAlgorithmHelpers.Hash.cs</Link>
@@ -355,12 +358,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup Condition="'$(TargetsWindows)' == 'true'">
+    <Compile Include="$(CommonPath)\Interop\Windows\Crypt32\Interop.FindOidInfo.Win.cs">
+      <Link>Common\Interop\Windows\Crypt32\Interop.FindOidInfo.Win.cs</Link>
+    </Compile>
     <!-- <Compile Include="System\Security\Cryptography\CspKeyContainerInfo.Windows.cs" /> -->
     <Compile Include="System\Security\Cryptography\DESCryptoServiceProvider.Windows.cs" />
-    <Compile Include="System\Security\Cryptography\DSACryptoServiceProvider.Windows.cs" />
+    <!-- <Compile Include="System\Security\Cryptography\DSACryptoServiceProvider.Windows.cs" /> -->
     <Compile Include="System\Security\Cryptography\PasswordDeriveBytes.Windows.cs" />
     <Compile Include="System\Security\Cryptography\RC2CryptoServiceProvider.Windows.cs" />
-    <Compile Include="System\Security\Cryptography\RSACryptoServiceProvider.Windows.cs" />
+    <!-- <Compile Include="System\Security\Cryptography\RSACryptoServiceProvider.Windows.cs" /> -->
     <Compile Include="System\Security\Cryptography\CapiHelper.SymmetricKey.cs" />
     <Compile Include="Internal\Cryptography\BasicSymmetricCipherCsp.cs" />
     <Compile Include="$(CommonPath)\Internal\Cryptography\BasicSymmetricCipher.cs">
