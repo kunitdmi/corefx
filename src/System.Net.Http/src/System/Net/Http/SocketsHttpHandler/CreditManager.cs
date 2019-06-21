@@ -4,34 +4,43 @@
 
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace System.Net.Http
 {
-    internal class CreditManager : IDisposable
+    internal sealed class CreditManager : IDisposable
     {
         private struct Waiter
         {
             public int Amount;
-            public TaskCompletionSource<int> TaskCompletionSource;
+            public TaskCompletionSourceWithCancellation<int> TaskCompletionSource;
         }
 
         private int _current;
-        private object _syncObject;
         private Queue<Waiter> _waiters;
         private bool _disposed;
 
         public CreditManager(int initialCredit)
         {
             _current = initialCredit;
-            _syncObject = new object();
             _waiters = null;
             _disposed = false;
         }
 
-        public ValueTask<int> RequestCreditAsync(int amount)
+        private object SyncObject
         {
-            lock (_syncObject)
+            get
+            {
+                // Generally locking on "this" is considered poor form, but this type is internal,
+                // and it's unnecessary overhead to allocate another object just for this purpose.
+                return this;
+            }
+        }
+
+        public ValueTask<int> RequestCreditAsync(int amount, CancellationToken cancellationToken)
+        {
+            lock (SyncObject)
             {
                 if (_disposed)
                 {
@@ -47,16 +56,21 @@ namespace System.Net.Http
                     return new ValueTask<int>(granted);
                 }
 
-                var tcs = new TaskCompletionSource<int>(TaskContinuationOptions.RunContinuationsAsynchronously);
+                // Uses RunContinuationsAsynchronously internally.
+                var tcs = new TaskCompletionSourceWithCancellation<int>();
 
                 if (_waiters == null)
                 {
                     _waiters = new Queue<Waiter>();
                 }
 
-                _waiters.Enqueue(new Waiter { Amount = amount, TaskCompletionSource = tcs });
+                Waiter waiter = new Waiter { Amount = amount, TaskCompletionSource = tcs };
 
-                return new ValueTask<int>(tcs.Task);
+                _waiters.Enqueue(waiter);
+
+                return new ValueTask<int>(cancellationToken.CanBeCanceled ?
+                                          tcs.WaitWithCancellationAsync(cancellationToken) :
+                                          tcs.Task);
             }
         }
 
@@ -65,7 +79,7 @@ namespace System.Net.Http
             // Note credit can be adjusted *downward* as well.
             // This can cause the current credit to become negative.
 
-            lock (_syncObject)
+            lock (SyncObject)
             {
                 if (_disposed)
                 {
@@ -84,8 +98,12 @@ namespace System.Net.Http
                     while (_current > 0 && _waiters.TryDequeue(out Waiter waiter))
                     {
                         int granted = Math.Min(waiter.Amount, _current);
-                        _current -= granted;
-                        waiter.TaskCompletionSource.SetResult(granted);
+
+                        // Ensure that we grant credit only if the task has not been canceled.
+                        if (waiter.TaskCompletionSource.TrySetResult(granted))
+                        {
+                            _current -= granted;
+                        }
                     }
                 }
             }
@@ -93,7 +111,7 @@ namespace System.Net.Http
 
         public void Dispose()
         {
-            lock (_syncObject)
+            lock (SyncObject)
             {
                 if (_disposed)
                 {
@@ -106,7 +124,7 @@ namespace System.Net.Http
                 {
                     while (_waiters.TryDequeue(out Waiter waiter))
                     {
-                        waiter.TaskCompletionSource.SetException(new ObjectDisposedException(nameof(CreditManager)));
+                        waiter.TaskCompletionSource.TrySetException(new ObjectDisposedException(nameof(CreditManager)));
                     }
                 }
             }

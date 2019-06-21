@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <ProjectGuid>{6F8576C2-6CD0-4DF3-8394-00B002D82E40}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -8,20 +8,15 @@
     <Configurations>netcoreapp-OSX-Debug;netcoreapp-OSX-Release;netcoreapp-Unix-Debug;netcoreapp-Unix-Release;netcoreapp-Windows_NT-Debug;netcoreapp-Windows_NT-Release;uap-Windows_NT-Debug;uap-Windows_NT-Release</Configurations>
   </PropertyGroup>
   <Import Project="$(CommonPath)\System\Security\Cryptography\Asn1\AsnXml.targets" />
+  <Import Project="$(CommonPath)\System\Security\Cryptography\Asn1Reader\System.Security.Cryptography.Asn1Reader.Shared.projitems" />
   <ItemGroup>
     <Compile Include="Internal\Cryptography\ICertificatePal.cs" />
     <Compile Include="Internal\Cryptography\ICertificatePalCore.cs" />
     <Compile Include="$(CommonPath)\Microsoft\Win32\SafeHandles\SafeHandleCache.cs">
       <Link>Common\Microsoft\Win32\SafeHandles\SafeHandleCache.cs</Link>
     </Compile>
-    <Compile Include="$(CommonPath)\System\Security\Cryptography\Asn1V2.cs">
-      <Link>Common\System\Security\Cryptography\Asn1V2.cs</Link>
-    </Compile>
-    <Compile Include="$(CommonPath)\System\Security\Cryptography\AsnReader.cs">
-      <Link>Common\System\Security\Cryptography\AsnReader.cs</Link>
-    </Compile>
-    <Compile Include="$(CommonPath)\System\Security\Cryptography\AsnWriter.cs">
-      <Link>Common\System\Security\Cryptography\AsnWriter.cs</Link>
+    <Compile Include="$(CommonPath)\System\Memory\PointerMemoryManager.cs">
+      <Link>Common\System\Memory\PointerMemoryManager.cs</Link>
     </Compile>
     <Compile Include="$(CommonPath)\System\Security\Cryptography\GostConstants.cs">
       <Link>Common\System\Security\Cryptography\GostConstants.cs</Link>
@@ -341,6 +336,9 @@
     <Compile Include="$(CommonPath)\Interop\Unix\Interop.Libraries.Capi.cs">
       <Link>Common\Interop\Unix\Interop.Libraries.Capi.cs</Link>
     </Compile>
+    <Compile Include="$(CommonPath)\Interop\Unix\System.Native\Interop.PrintF.cs">
+      <Link>Common\Interop\Unix\System.Native\Interop.PrintF.cs</Link>
+    </Compile>
     <AsnXml Include="System\Security\Cryptography\X509Certificates\Asn1\DistributionPointAsn.xml" />
     <Compile Include="System\Security\Cryptography\X509Certificates\Asn1\DistributionPointAsn.xml.cs">
       <DependentUpon>System\Security\Cryptography\X509Certificates\Asn1\DistributionPointAsn.xml</DependentUpon>
@@ -384,6 +382,9 @@
     <Compile Include="$(CommonPath)\Interop\Unix\System.Security.Cryptography.Native\Interop.ASN1.GetIntegerBytes.cs">
       <Link>Common\Interop\Unix\System.Security.Cryptography.Native\Interop.ASN1.GetIntegerBytes.cs</Link>
     </Compile>
+    <Compile Include="$(CommonPath)\Interop\Unix\System.Security.Cryptography.Native\Interop.ASN1.Nid.cs">
+      <Link>Common\Interop\Unix\System.Security.Cryptography.Native\Interop.ASN1.Nid.cs</Link>
+    </Compile>
     <Compile Include="$(CommonPath)\Interop\Unix\System.Security.Cryptography.Native\Interop.Bignum.cs">
       <Link>Common\Interop\Unix\System.Security.Cryptography.Native\Interop.Bignum.cs</Link>
     </Compile>
@@ -398,6 +399,9 @@
     </Compile>
     <Compile Include="$(CommonPath)\Interop\Unix\System.Security.Cryptography.Native\Interop.Initialization.cs">
       <Link>Common\Interop\Unix\System.Security.Cryptography.Native\Interop.Initialization.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\Interop\Unix\System.Security.Cryptography.Native\Interop.OCSP.cs">
+      <Link>Common\Interop\Unix\System.Security.Cryptography.Native\Interop.OCSP.cs</Link>
     </Compile>
     <Compile Include="$(CommonPath)\Interop\Unix\System.Security.Cryptography.Native\Interop.Pkcs12.cs">
       <Link>Common\Interop\Unix\System.Security.Cryptography.Native\Interop.Pkcs12.cs</Link>
@@ -544,9 +548,6 @@
     </Compile>
     <Compile Include="$(CommonPath)\Microsoft\Win32\SafeHandles\SafeCreateHandle.OSX.cs">
       <Link>Common\Microsoft\Win32\SafeHandles\SafeCreateHandle.OSX.cs</Link>
-    </Compile>
-    <Compile Include="$(CommonPath)\System\Memory\PointerMemoryManager.cs">
-      <Link>Common\System\Memory\PointerMemoryManager.cs</Link>
     </Compile>
     <Compile Include="$(CommonPath)\System\Security\Cryptography\DSAKeyFormatHelper.cs">
       <Link>Common\System\Security\Cryptography\DSAKeyFormatHelper.cs</Link>
@@ -741,6 +742,7 @@
     
   </ItemGroup> -->
   <ItemGroup Condition="'$(TargetsUnix)' == 'true' AND '$(TargetsOSX)' != 'true'">
+    <Reference Include="System.Diagnostics.StackTrace" />
     <Reference Include="System.Security.Cryptography.Csp" />
     <Reference Include="System.Security.Cryptography.OpenSsl" />
   </ItemGroup>

@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Text.Json
 {
-    internal static class ThrowHelper
+    internal static partial class ThrowHelper
     {
         public static ArgumentException GetArgumentException_MaxDepthMustBePositive()
         {
@@ -45,17 +45,9 @@ namespace System.Text.Json
             throw GetArgumentException(SR.SpecialNumberValuesNotSupported);
         }
 
-        public static void ThrowArgumentException(ExceptionResource resource, int minimumSize = 0)
+        public static void ThrowInvalidOperationException_NeedLargerSpan()
         {
-            if (resource == ExceptionResource.FailedToGetLargerSpan)
-            {
-                throw GetArgumentException(SR.FailedToGetLargerSpan);
-            }
-            else
-            {
-                Debug.Assert(resource == ExceptionResource.FailedToGetMinimumSizeSpan);
-                throw GetArgumentException(SR.Format(SR.FailedToGetMinimumSizeSpan, minimumSize));
-            }
+            throw GetInvalidOperationException(SR.FailedToGetLargerSpan);
         }
 
         public static void ThrowArgumentException(ReadOnlySpan<byte> propertyName, ReadOnlySpan<byte> value)
@@ -150,7 +142,7 @@ namespace System.Text.Json
             }
             else
             {
-                return new InvalidOperationException(SR.Format(SR.EmptyJsonIsInvalid));
+                return new InvalidOperationException(SR.EmptyJsonIsInvalid);
             }
         }
 
@@ -183,10 +175,39 @@ namespace System.Text.Json
             return GetInvalidOperationException("string", tokenType);
         }
 
+        public static InvalidOperationException GetInvalidOperationException_ExpectedStringComparison(JsonTokenType tokenType)
+        {
+            return GetInvalidOperationException(tokenType);
+        }
+
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static InvalidOperationException GetInvalidOperationException(string message, JsonTokenType tokenType)
         {
             return new InvalidOperationException(SR.Format(SR.InvalidCast, tokenType, message));
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static InvalidOperationException GetInvalidOperationException(JsonTokenType tokenType)
+        {
+            return new InvalidOperationException(SR.Format(SR.InvalidComparison, tokenType));
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        internal static InvalidOperationException GetJsonElementWrongTypeException(
+            JsonTokenType expectedType,
+            JsonTokenType actualType)
+        {
+            return new InvalidOperationException(
+                SR.Format(SR.JsonElementHasWrongType, expectedType.ToValueType(), actualType.ToValueType()));
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        internal static InvalidOperationException GetJsonElementWrongTypeException(
+            string expectedTypeName,
+            JsonTokenType actualType)
+        {
+            return new InvalidOperationException(
+                SR.Format(SR.JsonElementHasWrongType, expectedTypeName, actualType.ToValueType()));
         }
 
         public static void ThrowJsonReaderException(ref Utf8JsonReader json, ExceptionResource resource, byte nextByte = default, ReadOnlySpan<byte> bytes = default)
@@ -208,20 +229,32 @@ namespace System.Text.Json
 
         private static bool IsPrintable(byte value) => value >= 0x20 && value < 0x7F;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetPrintableString(byte value)
+        {
+            return IsPrintable(value) ? ((char)value).ToString() : $"0x{value:X2}";
+        }
+
         // This function will convert an ExceptionResource enum value to the resource string.
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static string GetResourceString(ref Utf8JsonReader json, ExceptionResource resource, byte nextByte, string characters)
         {
-            string character = IsPrintable(nextByte) ? ((char)nextByte).ToString() : $"0x{nextByte:X2}";
+            string character = GetPrintableString(nextByte);
 
             string message = "";
             switch (resource)
             {
                 case ExceptionResource.ArrayDepthTooLarge:
-                    message = SR.Format(SR.ArrayDepthTooLarge, json.CurrentDepth + 1, json.CurrentState.MaxDepth);
+                    message = SR.Format(SR.ArrayDepthTooLarge, json.CurrentState.Options.MaxDepth);
                     break;
                 case ExceptionResource.MismatchedObjectArray:
                     message = SR.Format(SR.MismatchedObjectArray, character);
+                    break;
+                case ExceptionResource.TrailingCommaNotAllowedBeforeArrayEnd:
+                    message = SR.TrailingCommaNotAllowedBeforeArrayEnd;
+                    break;
+                case ExceptionResource.TrailingCommaNotAllowedBeforeObjectEnd:
+                    message = SR.TrailingCommaNotAllowedBeforeObjectEnd;
                     break;
                 case ExceptionResource.EndOfStringNotFound:
                     message = SR.EndOfStringNotFound;
@@ -253,6 +286,9 @@ namespace System.Text.Json
                 case ExceptionResource.ExpectedStartOfPropertyOrValueNotFound:
                     message = SR.ExpectedStartOfPropertyOrValueNotFound;
                     break;
+                case ExceptionResource.ExpectedStartOfPropertyOrValueAfterComment:
+                    message = SR.Format(SR.ExpectedStartOfPropertyOrValueAfterComment, character);
+                    break;
                 case ExceptionResource.ExpectedStartOfValueNotFound:
                     message = SR.Format(SR.ExpectedStartOfValueNotFound, character);
                     break;
@@ -266,7 +302,7 @@ namespace System.Text.Json
                     message = SR.Format(SR.InvalidEndOfJsonNonPrimitive, json.TokenType);
                     break;
                 case ExceptionResource.ObjectDepthTooLarge:
-                    message = SR.Format(SR.ObjectDepthTooLarge, json.CurrentDepth + 1, json.CurrentState.MaxDepth);
+                    message = SR.Format(SR.ObjectDepthTooLarge, json.CurrentState.Options.MaxDepth);
                     break;
                 case ExceptionResource.ExpectedFalse:
                     message = SR.Format(SR.ExpectedFalse, characters);
@@ -290,7 +326,7 @@ namespace System.Text.Json
                     message = SR.EndOfCommentNotFound;
                     break;
                 case ExceptionResource.ZeroDepthAtEnd:
-                    message = SR.Format(SR.ZeroDepthAtEnd, json.CurrentDepth);
+                    message = SR.Format(SR.ZeroDepthAtEnd);
                     break;
                 case ExceptionResource.ExpectedJsonTokens:
                     message = SR.ExpectedJsonTokens;
@@ -303,9 +339,14 @@ namespace System.Text.Json
             return message;
         }
 
-        public static void ThrowInvalidOperationException(ExceptionResource resource, int currentDepth = default, byte token = default, JsonTokenType tokenType = default)
+        public static void ThrowInvalidOperationException(ExceptionResource resource, int currentDepth, byte token, JsonTokenType tokenType)
         {
             throw GetInvalidOperationException(resource, currentDepth, token, tokenType);
+        }
+
+        public static void ThrowArgumentException_InvalidCommentValue()
+        {
+            throw new ArgumentException(SR.CannotWriteCommentWithEmbeddedDelimiter);
         }
 
         public static void ThrowArgumentException_InvalidUTF8(ReadOnlySpan<byte> value)
@@ -332,12 +373,27 @@ namespace System.Text.Json
                 builder.Append("...");
             }
 
-            throw new ArgumentException(SR.Format(SR.CannotWriteInvalidUTF8, builder.ToString()));
+            throw new ArgumentException(SR.Format(SR.CannotWriteInvalidUTF8, builder));
         }
 
         public static void ThrowArgumentException_InvalidUTF16(int charAsInt)
         {
             throw new ArgumentException(SR.Format(SR.CannotWriteInvalidUTF16, $"0x{charAsInt:X2}"));
+        }
+
+        public static void ThrowInvalidOperationException_ReadInvalidUTF16(int charAsInt)
+        {
+            throw new InvalidOperationException(SR.Format(SR.CannotReadInvalidUTF16, $"0x{charAsInt:X2}"));
+        }
+
+        public static void ThrowInvalidOperationException_ReadInvalidUTF16()
+        {
+            throw new InvalidOperationException(SR.CannotReadIncompleteUTF16);
+        }
+
+        public static InvalidOperationException GetInvalidOperationException_ReadInvalidUTF8(DecoderFallbackException innerException)
+        {
+            return new InvalidOperationException(SR.CannotTranscodeInvalidUtf8, innerException);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -355,7 +411,8 @@ namespace System.Text.Json
             switch (resource)
             {
                 case ExceptionResource.MismatchedObjectArray:
-                    message = SR.Format(SR.MismatchedObjectArray, token);
+                    Debug.Assert(token == JsonConstants.CloseBracket || token == JsonConstants.CloseBrace);
+                    message = SR.Format(SR.MismatchedObjectArray, (char)token);
                     break;
                 case ExceptionResource.DepthTooLarge:
                     message = SR.Format(SR.DepthTooLarge, currentDepth & JsonConstants.RemoveFlagsBitMask, JsonConstants.MaxWriterDepth);
@@ -382,6 +439,61 @@ namespace System.Text.Json
 
             return message;
         }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static FormatException GetFormatException(NumericType numericType)
+        {
+            string message = "";
+
+            switch (numericType)
+            {
+                case NumericType.Int32:
+                    message = SR.FormatInt32;
+                    break;
+                case NumericType.Int64:
+                    message = SR.FormatInt64;
+                    break;
+                case NumericType.UInt32:
+                    message = SR.FormatUInt32;
+                    break;
+                case NumericType.UInt64:
+                    message = SR.FormatUInt64;
+                    break;
+                case NumericType.Single:
+                    message = SR.FormatSingle;
+                    break;
+                case NumericType.Double:
+                    message = SR.FormatDouble;
+                    break;
+                case NumericType.Decimal:
+                    message = SR.FormatDecimal;
+                    break;
+                default:
+                    Debug.Fail($"The NumericType enum value: {numericType} is not part of the switch. Add the appropriate case and exception message.");
+                    break;
+            }
+            return new FormatException(message);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static FormatException GetFormatException(DateType dateType)
+        {
+            string message = "";
+
+            switch (dateType)
+            {
+                case DateType.DateTime:
+                    message = SR.FormatDateTime;
+                    break;
+                case DateType.DateTimeOffset:
+                    message = SR.FormatDateTimeOffset;
+                    break;
+                default:
+                    Debug.Fail($"The DateType enum value: {dateType} is not part of the switch. Add the appropriate case and exception message.");
+                    break;
+            }
+            return new FormatException(message);
+        }
     }
 
     internal enum ExceptionResource
@@ -400,6 +512,7 @@ namespace System.Text.Json
         ExpectedSeparatorAfterPropertyNameNotFound,
         ExpectedStartOfPropertyNotFound,
         ExpectedStartOfPropertyOrValueNotFound,
+        ExpectedStartOfPropertyOrValueAfterComment,
         ExpectedStartOfValueNotFound,
         ExpectedTrue,
         ExpectedValueAfterPropertyNameNotFound,
@@ -416,9 +529,26 @@ namespace System.Text.Json
         CannotStartObjectArrayAfterPrimitiveOrClose,
         CannotWriteValueWithinObject,
         CannotWriteValueAfterPrimitive,
-        FailedToGetMinimumSizeSpan,
-        FailedToGetLargerSpan,
         CannotWritePropertyWithinArray,
-        ExpectedJsonTokens
+        ExpectedJsonTokens,
+        TrailingCommaNotAllowedBeforeArrayEnd,
+        TrailingCommaNotAllowedBeforeObjectEnd,
+    }
+
+    internal enum NumericType
+    {
+        Int32,
+        Int64,
+        UInt32,
+        UInt64,
+        Single,
+        Double,
+        Decimal
+    }
+
+    internal enum DateType
+    {
+        DateTime,
+        DateTimeOffset
     }
 }

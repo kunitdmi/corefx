@@ -453,7 +453,7 @@ namespace Internal.NativeCrypto
                     }
                     default:
                     {
-                        Debug.Assert(false);
+                        Debug.Fail($"Unexpected key param {keyParam}");
                         break;
                     }
                 }

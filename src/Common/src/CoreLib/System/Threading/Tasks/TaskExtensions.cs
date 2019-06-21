@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+#nullable enable
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -47,6 +48,13 @@ namespace System.Threading.Tasks
                 task.Result ??
                 Task.FromCanceled<TResult>(new CancellationToken(true));
         }
+
+        /// <summary>Configures how awaits on the tasks returned from an async disposable will be performed.</summary>
+        /// <param name="source">The source async disposable.</param>
+        /// <param name="continueOnCapturedContext">Whether to capture and marshal back to the current context.</param>
+        /// <returns>The configured async disposable.</returns>
+        public static ConfiguredAsyncDisposable ConfigureAwait(this IAsyncDisposable source, bool continueOnCapturedContext) =>
+            new ConfiguredAsyncDisposable(source, continueOnCapturedContext);
 
         /// <summary>Configures how awaits on the tasks returned from an async iteration will be performed.</summary>
         /// <typeparam name="T">The type of the objects being iterated.</typeparam>

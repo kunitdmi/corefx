@@ -830,11 +830,11 @@ namespace System.Drawing.Tests
                 Graphics graphics = Graphics.FromImage(image);
                 graphics.Dispose();
 
-                AssertExtensions.Throws<ArgumentException>(null, () => font.ToLogFont(new LOGFONT(), graphics));
+                Assert.Throws<ArgumentException>(() => font.ToLogFont(new LOGFONT(), graphics));
             }
         }
 
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public class LOGFONT
         {
             public int lfHeight;

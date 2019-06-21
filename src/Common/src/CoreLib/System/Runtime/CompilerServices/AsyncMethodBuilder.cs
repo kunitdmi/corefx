@@ -10,23 +10,15 @@
 //
 // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+#nullable enable
 using System.Diagnostics;
 using System.Diagnostics.Tracing;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
-#if FEATURE_COMINTEROP
-using System.Runtime.InteropServices.WindowsRuntime;
-#endif // FEATURE_COMINTEROP
 using System.Threading;
 using System.Threading.Tasks;
 using System.Text;
 using Internal.Runtime.CompilerServices;
-using Internal.Runtime.Augments;
-using Internal.Threading.Tasks;
-
-#if CORERT
-using Thread = Internal.Runtime.Augments.RuntimeThread;
-#endif
 
 namespace System.Runtime.CompilerServices
 {
@@ -37,7 +29,7 @@ namespace System.Runtime.CompilerServices
     public struct AsyncVoidMethodBuilder
     {
         /// <summary>The synchronization context associated with this operation.</summary>
-        private SynchronizationContext _synchronizationContext;
+        private SynchronizationContext? _synchronizationContext;
         /// <summary>The builder this void builder wraps.</summary>
         private AsyncTaskMethodBuilder _builder; // mutable struct: must not be readonly
 
@@ -45,9 +37,17 @@ namespace System.Runtime.CompilerServices
         /// <returns>The initialized <see cref="AsyncVoidMethodBuilder"/>.</returns>
         public static AsyncVoidMethodBuilder Create()
         {
-            SynchronizationContext sc = SynchronizationContext.Current;
+            SynchronizationContext? sc = SynchronizationContext.Current;
             sc?.OperationStarted();
+#if PROJECTN
+            // ProjectN's AsyncTaskMethodBuilder.Create() currently does additional debugger-related
+            // work, so we need to delegate to it.
+            return new AsyncVoidMethodBuilder() { _synchronizationContext = sc, _builder = AsyncTaskMethodBuilder.Create() };
+#else
+            // _builder should be initialized to AsyncTaskMethodBuilder.Create(), but on coreclr
+            // that Create() is a nop, so we can just return the default here.
             return new AsyncVoidMethodBuilder() { _synchronizationContext = sc };
+#endif
         }
 
         /// <summary>Initiates the builder's execution with the associated state machine.</summary>
@@ -95,9 +95,9 @@ namespace System.Runtime.CompilerServices
         /// <summary>Completes the method builder successfully.</summary>
         public void SetResult()
         {
-            if (AsyncCausalitySupport.LoggingOn)
+            if (AsyncCausalityTracer.LoggingOn)
             {
-                AsyncCausalitySupport.TraceOperationCompletedSuccess(this.Task);
+                AsyncCausalityTracer.TraceOperationCompletion(this.Task, AsyncCausalityStatus.Completed);
             }
 
             // Mark the builder as completed.  As this is a void-returning method, this mostly
@@ -121,9 +121,9 @@ namespace System.Runtime.CompilerServices
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.exception);
             }
 
-            if (AsyncCausalitySupport.LoggingOn)
+            if (AsyncCausalityTracer.LoggingOn)
             {
-                AsyncCausalitySupport.TraceOperationCompletedError(this.Task);
+                AsyncCausalityTracer.TraceOperationCompletion(this.Task, AsyncCausalityStatus.Error);
             }
 
             if (_synchronizationContext != null)
@@ -132,7 +132,7 @@ namespace System.Runtime.CompilerServices
                 // and decrement its outstanding operation count.
                 try
                 {
-                    AsyncMethodBuilderCore.ThrowAsync(exception, targetContext: _synchronizationContext);
+                    System.Threading.Tasks.Task.ThrowAsync(exception!, targetContext: _synchronizationContext); // TODO-NULLABLE: https://github.com/dotnet/csharplang/issues/538
                 }
                 finally
                 {
@@ -144,7 +144,7 @@ namespace System.Runtime.CompilerServices
                 // Otherwise, queue the exception to be thrown on the ThreadPool.  This will
                 // result in a crash unless legacy exception behavior is enabled by a config
                 // file or a CLR host.
-                AsyncMethodBuilderCore.ThrowAsync(exception, targetContext: null);
+                System.Threading.Tasks.Task.ThrowAsync(exception!, targetContext: null); // TODO-NULLABLE: https://github.com/dotnet/csharplang/issues/538
             }
 
             // The exception was propagated already; we don't need or want to fault the builder, just mark it as completed.
@@ -163,7 +163,7 @@ namespace System.Runtime.CompilerServices
             {
                 // If the interaction with the SynchronizationContext goes awry,
                 // fall back to propagating on the ThreadPool.
-                AsyncMethodBuilderCore.ThrowAsync(exc, targetContext: null);
+                Task.ThrowAsync(exc, targetContext: null);
             }
         }
 
@@ -195,7 +195,7 @@ namespace System.Runtime.CompilerServices
 #if PROJECTN
         private static readonly Task<VoidTaskResult> s_cachedCompleted = AsyncTaskCache.CreateCacheableTask<VoidTaskResult>(default(VoidTaskResult));
 #else
-        private readonly static Task<VoidTaskResult> s_cachedCompleted = AsyncTaskMethodBuilder<VoidTaskResult>.s_defaultResultTask;
+        private static readonly Task<VoidTaskResult> s_cachedCompleted = AsyncTaskMethodBuilder<VoidTaskResult>.s_defaultResultTask;
 #endif
 
         /// <summary>The generic builder object to which this non-generic instance delegates.</summary>
@@ -203,7 +203,16 @@ namespace System.Runtime.CompilerServices
 
         /// <summary>Initializes a new <see cref="AsyncTaskMethodBuilder"/>.</summary>
         /// <returns>The initialized <see cref="AsyncTaskMethodBuilder"/>.</returns>
-        public static AsyncTaskMethodBuilder Create() => default;
+        public static AsyncTaskMethodBuilder Create() =>
+#if PROJECTN
+            // ProjectN's AsyncTaskMethodBuilder<VoidTaskResult>.Create() currently does additional debugger-related
+            // work, so we need to delegate to it.
+            new AsyncTaskMethodBuilder { m_builder = AsyncTaskMethodBuilder<VoidTaskResult>.Create() };
+#else
+            // m_builder should be initialized to AsyncTaskMethodBuilder<VoidTaskResult>.Create(), but on coreclr
+            // that Create() is a nop, so we can just return the default here.
+            default;
+#endif
 
         /// <summary>Initiates the builder's execution with the associated state machine.</summary>
         /// <typeparam name="TStateMachine">Specifies the type of the state machine.</typeparam>
@@ -306,7 +315,7 @@ namespace System.Runtime.CompilerServices
     {
 #if !PROJECTN
         /// <summary>A cached task for default(TResult).</summary>
-        internal readonly static Task<TResult> s_defaultResultTask = AsyncTaskCache.CreateCacheableTask(default(TResult));
+        internal readonly static Task<TResult> s_defaultResultTask = AsyncTaskCache.CreateCacheableTask(default(TResult)!); // TODO-NULLABLE-GENERIC
 #endif
 
         /// <summary>The lazily-initialized built task.</summary>
@@ -316,10 +325,20 @@ namespace System.Runtime.CompilerServices
         /// <returns>The initialized <see cref="AsyncTaskMethodBuilder"/>.</returns>
         public static AsyncTaskMethodBuilder<TResult> Create()
         {
-            return default;
+#if PROJECTN
+            var result = new AsyncTaskMethodBuilder<TResult>();
+            if (System.Threading.Tasks.Task.s_asyncDebuggingEnabled)
+            {
+                // This allows the debugger to access m_task directly without evaluating ObjectIdForDebugger for ProjectN
+                result.InitializeTaskAsStateMachineBox();
+            }            
+            return result;
+#else
             // NOTE: If this method is ever updated to perform more initialization,
             //       other Create methods like AsyncTaskMethodBuilder.Create and
             //       AsyncValueTaskMethodBuilder.Create must be updated to call this.
+            return default;
+#endif
         }
 
         /// <summary>Initiates the builder's execution with the associated state machine.</summary>
@@ -370,7 +389,7 @@ namespace System.Runtime.CompilerServices
             }
             catch (Exception e)
             {
-                AsyncMethodBuilderCore.ThrowAsync(e, targetContext: null);
+                System.Threading.Tasks.Task.ThrowAsync(e, targetContext: null);
             }
         }
 
@@ -381,6 +400,8 @@ namespace System.Runtime.CompilerServices
         /// <typeparam name="TStateMachine">Specifies the type of the state machine.</typeparam>
         /// <param name="awaiter">The awaiter.</param>
         /// <param name="stateMachine">The state machine.</param>
+        // AggressiveOptimization to workaround boxing allocations in Tier0 until: https://github.com/dotnet/coreclr/issues/14474
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         public void AwaitUnsafeOnCompleted<TAwaiter, TStateMachine>(
             ref TAwaiter awaiter, ref TStateMachine stateMachine)
             where TAwaiter : ICriticalNotifyCompletion
@@ -391,17 +412,17 @@ namespace System.Runtime.CompilerServices
             // The null tests here ensure that the jit can optimize away the interface
             // tests when TAwaiter is a ref type.
 
-            if ((null != (object)default(TAwaiter)) && (awaiter is ITaskAwaiter))
+            if ((null != (object)default(TAwaiter)!) && (awaiter is ITaskAwaiter)) // TODO-NULLABLE: https://github.com/dotnet/roslyn/issues/34757
             {
                 ref TaskAwaiter ta = ref Unsafe.As<TAwaiter, TaskAwaiter>(ref awaiter); // relies on TaskAwaiter/TaskAwaiter<T> having the same layout
                 TaskAwaiter.UnsafeOnCompletedInternal(ta.m_task, box, continueOnCapturedContext: true);
             }
-            else if ((null != (object)default(TAwaiter)) && (awaiter is IConfiguredTaskAwaiter))
+            else if ((null != (object)default(TAwaiter)!) && (awaiter is IConfiguredTaskAwaiter)) // TODO-NULLABLE: https://github.com/dotnet/roslyn/issues/34757
             {
                 ref ConfiguredTaskAwaitable.ConfiguredTaskAwaiter ta = ref Unsafe.As<TAwaiter, ConfiguredTaskAwaitable.ConfiguredTaskAwaiter>(ref awaiter);
                 TaskAwaiter.UnsafeOnCompletedInternal(ta.m_task, box, ta.m_continueOnCapturedContext);
             }
-            else if ((null != (object)default(TAwaiter)) && (awaiter is IStateMachineBoxAwareAwaiter))
+            else if ((null != (object)default(TAwaiter)!) && (awaiter is IStateMachineBoxAwareAwaiter)) // TODO-NULLABLE: https://github.com/dotnet/roslyn/issues/34757
             {
                 try
                 {
@@ -416,7 +437,7 @@ namespace System.Runtime.CompilerServices
                     // exceptions well at that location in the state machine, especially if the exception may occur
                     // after the ValueTaskAwaiter already successfully hooked up the callback, in which case it's possible
                     // two different flows of execution could end up happening in the same async method call.
-                    AsyncMethodBuilderCore.ThrowAsync(e, targetContext: null);
+                    System.Threading.Tasks.Task.ThrowAsync(e, targetContext: null);
                 }
             }
             else
@@ -428,7 +449,7 @@ namespace System.Runtime.CompilerServices
                 }
                 catch (Exception e)
                 {
-                    AsyncMethodBuilderCore.ThrowAsync(e, targetContext: null);
+                    System.Threading.Tasks.Task.ThrowAsync(e, targetContext: null);
                 }
             }
         }
@@ -441,7 +462,7 @@ namespace System.Runtime.CompilerServices
             ref TStateMachine stateMachine)
             where TStateMachine : IAsyncStateMachine
         {
-            ExecutionContext currentContext = ExecutionContext.Capture();
+            ExecutionContext? currentContext = ExecutionContext.Capture();
 
             // Check first for the most common case: not the first yield in an async method.
             // In this case, the first yield will have already "boxed" the state machine in
@@ -536,7 +557,7 @@ namespace System.Runtime.CompilerServices
                 // Fire an event with details about the state machine to help with debugging.
                 if (!IsCompleted) // double-check it's not completed, just to help minimize false positives
                 {
-                    TplEtwProvider.Log.IncompleteAsyncMethod(this);
+                    TplEventSource.Log.IncompleteAsyncMethod(this);
                 }
             }
         }
@@ -549,19 +570,23 @@ namespace System.Runtime.CompilerServices
             where TStateMachine : IAsyncStateMachine
         {
             /// <summary>Delegate used to invoke on an ExecutionContext when passed an instance of this box type.</summary>
-            private static readonly ContextCallback s_callback = s =>
+            private static readonly ContextCallback s_callback = ExecutionContextCallback;
+
+            // Used to initialize s_callback above. We don't use a lambda for this on purpose: a lambda would
+            // introduce a new generic type behind the scenes that comes with a hefty size penalty in AOT builds.
+            private static void ExecutionContextCallback(object? s)
             {
                 Debug.Assert(s is AsyncStateMachineBox<TStateMachine>);
                 // Only used privately to pass directly to EC.Run
                 Unsafe.As<AsyncStateMachineBox<TStateMachine>>(s).StateMachine.MoveNext();
-            };
+            }
 
             /// <summary>A delegate to the <see cref="MoveNext()"/> method.</summary>
-            private Action _moveNextAction;
+            private Action? _moveNextAction;
             /// <summary>The state machine itself.</summary>
-            public TStateMachine StateMachine; // mutable struct; do not make this readonly. SOS DumpAsync command depends on this name.
+            public TStateMachine StateMachine = default!; // mutable struct; do not make this readonly. SOS DumpAsync command depends on this name. // TODO-NULLABLE-GENERIC
             /// <summary>Captured ExecutionContext with which to invoke <see cref="MoveNextAction"/>; may be null.</summary>
-            public ExecutionContext Context;
+            public ExecutionContext? Context;
 
             /// <summary>A delegate to the <see cref="MoveNext()"/> method.</summary>
             public Action MoveNextAction => _moveNextAction ?? (_moveNextAction = new Action(MoveNext));
@@ -571,17 +596,17 @@ namespace System.Runtime.CompilerServices
             /// <summary>Calls MoveNext on <see cref="StateMachine"/></summary>
             public void MoveNext() => MoveNext(threadPoolThread: null);
 
-            private void MoveNext(Thread threadPoolThread)
+            private void MoveNext(Thread? threadPoolThread)
             {
                 Debug.Assert(!IsCompleted);
 
-                bool loggingOn = AsyncCausalitySupport.LoggingOn;
+                bool loggingOn = AsyncCausalityTracer.LoggingOn;
                 if (loggingOn)
                 {
-                    AsyncCausalitySupport.TraceSynchronousWorkStart(this);
+                    AsyncCausalityTracer.TraceSynchronousWorkStart(this, CausalitySynchronousWork.Execution);
                 }
 
-                ExecutionContext context = Context;
+                ExecutionContext? context = Context;
                 if (context == null)
                 {
                     StateMachine.MoveNext();
@@ -603,7 +628,7 @@ namespace System.Runtime.CompilerServices
                     // Clear out state now that the async method has completed.
                     // This avoids keeping arbitrary state referenced by lifted locals
                     // if this Task / state machine box is held onto.
-                    StateMachine = default;
+                    StateMachine = default!; // TODO-NULLABLE-GENERIC
                     Context = default;
 
 #if !CORERT
@@ -619,7 +644,7 @@ namespace System.Runtime.CompilerServices
 
                 if (loggingOn)
                 {
-                    AsyncCausalitySupport.TraceSynchronousWorkCompletion();
+                    AsyncCausalityTracer.TraceSynchronousWorkCompletion(CausalitySynchronousWork.Execution);
                 }
             }
 
@@ -698,7 +723,7 @@ namespace System.Runtime.CompilerServices
         {
             Debug.Assert(m_task != null, "Expected non-null task");
 
-            if (AsyncCausalitySupport.LoggingOn || System.Threading.Tasks.Task.s_asyncDebuggingEnabled)
+            if (AsyncCausalityTracer.LoggingOn || System.Threading.Tasks.Task.s_asyncDebuggingEnabled)
             {
                 LogExistingTaskCompletion();
             }
@@ -714,15 +739,15 @@ namespace System.Runtime.CompilerServices
         {
             Debug.Assert(m_task != null);
 
-            if (AsyncCausalitySupport.LoggingOn)
+            if (AsyncCausalityTracer.LoggingOn)
             {
-                AsyncCausalitySupport.TraceOperationCompletedSuccess(m_task);
+                AsyncCausalityTracer.TraceOperationCompletion(m_task, AsyncCausalityStatus.Completed);
             }
 
             // only log if we have a real task that was previously created
             if (System.Threading.Tasks.Task.s_asyncDebuggingEnabled)
             {
-                System.Threading.Tasks.Task.RemoveFromActiveTasks(m_task.Id);
+                System.Threading.Tasks.Task.RemoveFromActiveTasks(m_task);
             }
         }
 
@@ -746,7 +771,7 @@ namespace System.Runtime.CompilerServices
             else
             {
                 // Otherwise, complete the task that's there.
-                SetExistingTaskResult(default);
+                SetExistingTaskResult(default!); // TODO-NULLABLE-GENERIC
             }
         }
 
@@ -770,7 +795,7 @@ namespace System.Runtime.CompilerServices
             // If the exception represents cancellation, cancel the task.  Otherwise, fault the task.
             bool successfullySet = exception is OperationCanceledException oce ?
                 task.TrySetCanceled(oce.CancellationToken, oce) :
-                task.TrySetException(exception);
+                task.TrySetException(exception!); // TODO-NULLABLE: https://github.com/dotnet/csharplang/issues/538
 
             // Unlike with TaskCompletionSource, we do not need to spin here until _taskAndStateMachine is completed,
             // since AsyncTaskMethodBuilder.SetException should not be immediately followed by any code
@@ -854,7 +879,7 @@ namespace System.Runtime.CompilerServices
             // find a cached value, since static fields (even if readonly and integral types) 
             // require special access helpers in this NGEN'd and domain-neutral.
 
-            if (null != (object)default(TResult)) // help the JIT avoid the value type branches for ref types
+            if (null != (object)default(TResult)!) // help the JIT avoid the value type branches for ref types // TODO-NULLABLE: https://github.com/dotnet/roslyn/issues/34757
             {
                 // Special case simple value types:
                 // - Boolean
@@ -870,7 +895,7 @@ namespace System.Runtime.CompilerServices
                 // For Boolean, we cache all possible values.
                 if (typeof(TResult) == typeof(bool)) // only the relevant branches are kept for each value-type generic instantiation
                 {
-                    bool value = (bool)(object)result;
+                    bool value = (bool)(object)result!; // TODO-NULLABLE: https://github.com/dotnet/roslyn/issues/34976
                     Task<bool> task = value ? AsyncTaskCache.TrueTask : AsyncTaskCache.FalseTask;
                     return Unsafe.As<Task<TResult>>(task); // UnsafeCast avoids type check we know will succeed
                 }
@@ -880,7 +905,7 @@ namespace System.Runtime.CompilerServices
                     // Compare to constants to avoid static field access if outside of cached range.
                     // We compare to the upper bound first, as we're more likely to cache miss on the upper side than on the 
                     // lower side, due to positive values being more common than negative as return values.
-                    int value = (int)(object)result;
+                    int value = (int)(object)result!; // TODO-NULLABLE: https://github.com/dotnet/roslyn/issues/34976
                     if (value < AsyncTaskCache.EXCLUSIVE_INT32_MAX &&
                         value >= AsyncTaskCache.INCLUSIVE_INT32_MIN)
                     {
@@ -890,16 +915,16 @@ namespace System.Runtime.CompilerServices
                 }
                 // For other known value types, we only special-case 0 / default(TResult).
                 else if (
-                    (typeof(TResult) == typeof(uint) && default == (uint)(object)result) ||
-                    (typeof(TResult) == typeof(byte) && default(byte) == (byte)(object)result) ||
-                    (typeof(TResult) == typeof(sbyte) && default(sbyte) == (sbyte)(object)result) ||
-                    (typeof(TResult) == typeof(char) && default(char) == (char)(object)result) ||
-                    (typeof(TResult) == typeof(long) && default == (long)(object)result) ||
-                    (typeof(TResult) == typeof(ulong) && default == (ulong)(object)result) ||
-                    (typeof(TResult) == typeof(short) && default(short) == (short)(object)result) ||
-                    (typeof(TResult) == typeof(ushort) && default(ushort) == (ushort)(object)result) ||
-                    (typeof(TResult) == typeof(IntPtr) && default == (IntPtr)(object)result) ||
-                    (typeof(TResult) == typeof(UIntPtr) && default == (UIntPtr)(object)result))
+                    (typeof(TResult) == typeof(uint) && default == (uint)(object)result!) ||
+                    (typeof(TResult) == typeof(byte) && default(byte) == (byte)(object)result!) ||
+                    (typeof(TResult) == typeof(sbyte) && default(sbyte) == (sbyte)(object)result!) ||
+                    (typeof(TResult) == typeof(char) && default(char) == (char)(object)result!) ||
+                    (typeof(TResult) == typeof(long) && default == (long)(object)result!) ||
+                    (typeof(TResult) == typeof(ulong) && default == (ulong)(object)result!) ||
+                    (typeof(TResult) == typeof(short) && default(short) == (short)(object)result!) ||
+                    (typeof(TResult) == typeof(ushort) && default(ushort) == (ushort)(object)result!) ||
+                    (typeof(TResult) == typeof(IntPtr) && default == (IntPtr)(object)result!) ||
+                    (typeof(TResult) == typeof(UIntPtr) && default == (UIntPtr)(object)result!)) // TODO-NULLABLE: https://github.com/dotnet/roslyn/issues/34976
                 {
                     return s_defaultResultTask;
                 }
@@ -989,32 +1014,32 @@ namespace System.Runtime.CompilerServices
             // Capture references to Thread Contexts
             Thread currentThread0 = Thread.CurrentThread;
             Thread currentThread = currentThread0;
-            ExecutionContext previousExecutionCtx0 = currentThread0.ExecutionContext;
+            ExecutionContext? previousExecutionCtx0 = currentThread0._executionContext;
 
             // Store current ExecutionContext and SynchronizationContext as "previousXxx".
             // This allows us to restore them and undo any Context changes made in stateMachine.MoveNext
             // so that they won't "leak" out of the first await.
-            ExecutionContext previousExecutionCtx = previousExecutionCtx0;
-            SynchronizationContext previousSyncCtx = currentThread0.SynchronizationContext;
+            ExecutionContext? previousExecutionCtx = previousExecutionCtx0;
+            SynchronizationContext? previousSyncCtx = currentThread0._synchronizationContext;
 
             try
             {
-                stateMachine.MoveNext();
+                stateMachine!.MoveNext(); // TODO-NULLABLE: https://github.com/dotnet/csharplang/issues/538
             }
             finally
             {
                 // Re-enregistrer variables post EH with 1 post-fix so they can be used in registers rather than from stack
-                SynchronizationContext previousSyncCtx1 = previousSyncCtx;
+                SynchronizationContext? previousSyncCtx1 = previousSyncCtx;
                 Thread currentThread1 = currentThread;
                 // The common case is that these have not changed, so avoid the cost of a write barrier if not needed.
-                if (previousSyncCtx1 != currentThread1.SynchronizationContext)
+                if (previousSyncCtx1 != currentThread1._synchronizationContext)
                 {
                     // Restore changed SynchronizationContext back to previous
-                    currentThread1.SynchronizationContext = previousSyncCtx1;
+                    currentThread1._synchronizationContext = previousSyncCtx1;
                 }
 
-                ExecutionContext previousExecutionCtx1 = previousExecutionCtx;
-                ExecutionContext currentExecutionCtx1 = currentThread1.ExecutionContext;
+                ExecutionContext? previousExecutionCtx1 = previousExecutionCtx;
+                ExecutionContext? currentExecutionCtx1 = currentThread1._executionContext;
                 if (previousExecutionCtx1 != currentExecutionCtx1)
                 {
                     ExecutionContext.RestoreChangedContextToThread(currentThread1, previousExecutionCtx1, currentExecutionCtx1);
@@ -1027,7 +1052,7 @@ namespace System.Runtime.CompilerServices
         internal static bool TrackAsyncMethodCompletion
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => TplEtwProvider.Log.IsEnabled(EventLevel.Warning, TplEtwProvider.Keywords.AsyncMethod);
+            get => TplEventSource.Log.IsEnabled(EventLevel.Warning, TplEventSource.Keywords.AsyncMethod);
         }
 #endif
 
@@ -1050,7 +1075,7 @@ namespace System.Runtime.CompilerServices
             return sb.ToString();
         }
 
-        internal static Action CreateContinuationWrapper(Action continuation, Action<Action,Task> invokeAction, Task innerTask) =>
+        internal static Action CreateContinuationWrapper(Action continuation, Action<Action, Task> invokeAction, Task innerTask) =>
             new ContinuationWrapper(continuation, invokeAction, innerTask).Invoke;
 
         /// <summary>This helper routine is targeted by the debugger. Its purpose is to remove any delegate wrappers introduced by
@@ -1060,57 +1085,15 @@ namespace System.Runtime.CompilerServices
 #endif
         internal static Action TryGetStateMachineForDebugger(Action action) // debugger depends on this exact name/signature
         {
-            object target = action.Target;
+            object? target = action.Target;
             return
                 target is IAsyncStateMachineBox sm ? sm.GetStateMachineObject().MoveNext :
                 target is ContinuationWrapper cw ? TryGetStateMachineForDebugger(cw._continuation) :
                 action;
         }
 
-        internal static Task TryGetContinuationTask(Action continuation) =>
+        internal static Task? TryGetContinuationTask(Action continuation) =>
             (continuation?.Target as ContinuationWrapper)?._innerTask;
-
-        /// <summary>Throws the exception on the ThreadPool.</summary>
-        /// <param name="exception">The exception to propagate.</param>
-        /// <param name="targetContext">The target context on which to propagate the exception.  Null to use the ThreadPool.</param>
-        internal static void ThrowAsync(Exception exception, SynchronizationContext targetContext)
-        {
-            // Capture the exception into an ExceptionDispatchInfo so that its 
-            // stack trace and Watson bucket info will be preserved
-            var edi = ExceptionDispatchInfo.Capture(exception);
-
-            // If the user supplied a SynchronizationContext...
-            if (targetContext != null)
-            {
-                try
-                {
-                    // Post the throwing of the exception to that context, and return.
-                    targetContext.Post(state => ((ExceptionDispatchInfo)state).Throw(), edi);
-                    return;
-                }
-                catch (Exception postException)
-                {
-                    // If something goes horribly wrong in the Post, we'll 
-                    // propagate both exceptions on the ThreadPool
-                    edi = ExceptionDispatchInfo.Capture(new AggregateException(exception, postException));
-                }
-            }
-
-#if CORERT
-            RuntimeAugments.ReportUnhandledException(edi.SourceException);
-#else
-
-#if FEATURE_COMINTEROP
-            // If we have the new error reporting APIs, report this error.
-            if (WindowsRuntimeMarshal.ReportUnhandledError(edi.SourceException))
-                return;
-#endif // FEATURE_COMINTEROP
-
-            // Propagate the exception(s) on the ThreadPool
-            ThreadPool.QueueUserWorkItem(state => ((ExceptionDispatchInfo)state).Throw(), edi);
-
-#endif // CORERT
-        }
 
         /// <summary>
         /// Logically we pass just an Action (delegate) to a task for its action to 'ContinueWith' when it completes.
@@ -1120,20 +1103,21 @@ namespace System.Runtime.CompilerServices
         /// (like the action after that (which is also a ContinuationWrapper and thus form a linked list).  
         ///  We also store that task if the action is associate with at task.  
         /// </summary>
-        private sealed class ContinuationWrapper
+        private sealed class ContinuationWrapper // SOS DumpAsync command depends on this name
         {
             private readonly Action<Action, Task> _invokeAction; // This wrapper is an action that wraps another action, this is that Action.  
-            internal readonly Action _continuation;              // This is continuation which will happen after m_invokeAction  (and is probably a ContinuationWrapper)
+            internal readonly Action _continuation;              // This is continuation which will happen after m_invokeAction  (and is probably a ContinuationWrapper). SOS DumpAsync command depends on this name.
             internal readonly Task _innerTask;                   // If the continuation is logically going to invoke a task, this is that task (may be null)
 
             internal ContinuationWrapper(Action continuation, Action<Action, Task> invokeAction, Task innerTask)
             {
                 Debug.Assert(continuation != null, "Expected non-null continuation");
-                Debug.Assert(invokeAction != null, "Expected non-null continuation");
+                Debug.Assert(invokeAction != null, "Expected non-null invokeAction");
+                Debug.Assert(innerTask != null, "Expected non-null innerTask");
 
                 _invokeAction = invokeAction;
                 _continuation = continuation;
-                _innerTask = innerTask ?? TryGetContinuationTask(continuation); // if we don't have a task, see if our continuation is a wrapper and use that.
+                _innerTask = innerTask;
             }
 
             internal void Invoke() => _invokeAction(_continuation, _innerTask);

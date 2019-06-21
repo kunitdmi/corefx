@@ -191,6 +191,9 @@ namespace System.Net.Primitives.Functional.Tests
 
             ip = new IPAddress(IPAddress.IPv6Loopback.GetAddressBytes()); //IpV6 loopback
             Assert.True(IPAddress.IsLoopback(ip));
+
+            ip = new IPAddress(IPAddress.Loopback.MapToIPv6().GetAddressBytes()); // IPv4 loopback mapped to IPv6
+            Assert.Equal(!PlatformDetection.IsFullFramework, IPAddress.IsLoopback(ip)); // https://github.com/dotnet/corefx/issues/35454
         }
 
         [Fact]
@@ -275,7 +278,7 @@ namespace System.Net.Primitives.Functional.Tests
             Assert.Equal(ip.GetHashCode(), clonedIp.GetHashCode());
         }
 
-        private static IEnumerable<object[]> GetValidIPAddresses()
+        public static IEnumerable<object[]> GetValidIPAddresses()
         {
             return IPAddressParsing.ValidIpv4Addresses
                 .Concat(IPAddressParsing.ValidIpv6Addresses)

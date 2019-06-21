@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using Xunit;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -12,6 +11,8 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Resources;
 using System.Diagnostics;
+using Microsoft.DotNet.RemoteExecutor;
+using Xunit;
 
 [assembly:NeutralResourcesLanguage("en")]
 
@@ -24,7 +25,7 @@ namespace System.Resources.Tests
         }
     }
 
-    public class ResourceManagerTests : RemoteExecutorTestBase
+    public class ResourceManagerTests
     {
         [Fact]
         public static void ExpectMissingManifestResourceException()
@@ -148,7 +149,7 @@ namespace System.Resources.Tests
         [SkipOnTargetFramework(TargetFrameworkMonikers.Uap, "UWP does not use satellite assemblies in most cases")]
         public static void GetString_ExpectEvents()
         {
-            RemoteInvoke(() =>
+            RemoteExecutor.Invoke(() =>
             {
                 // Events only fire first time.  Remote to make sure test runs in a separate process
                 Remote_ExpectEvents();
@@ -277,6 +278,19 @@ namespace System.Resources.Tests
             Assert.Equal(GetImageData(expectedValue), GetImageData(manager.GetObject(key, new CultureInfo("en-US"))));
         }
 
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Uap)]
+        [ConditionalTheory(Helpers.IsDrawingSupported)]
+        [MemberData(nameof(EnglishImageResourceData))]
+        public static void GetObject_Images_ResourceSet(string key, object expectedValue)
+        {
+            var manager = new ResourceManager(
+                "System.Resources.Tests.Resources.TestResx.netstandard17",
+                typeof(ResourceManagerTests).GetTypeInfo().Assembly,
+                typeof(ResourceSet));
+            Assert.Equal(GetImageData(expectedValue), GetImageData(manager.GetObject(key)));
+            Assert.Equal(GetImageData(expectedValue), GetImageData(manager.GetObject(key, new CultureInfo("en-US"))));
+        }
+
         [Theory]
         [MemberData(nameof(EnglishResourceData))]
         public static void GetResourceSet_Strings(string key, string expectedValue)
@@ -362,6 +376,19 @@ namespace System.Resources.Tests
                     Assert.Equal(b, stream.ReadByte());
                 }
             }
+        }
+
+        [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.UapAot, "UwpAot currently allows custom assembly in ResourceManager constructor")]
+        public static void ConstructorNonRuntimeAssembly()
+        {
+            MockAssembly assembly = new MockAssembly();
+            Assert.Throws<ArgumentException>(() => new ResourceManager("name", assembly));
+            Assert.Throws<ArgumentException>(() => new ResourceManager("name", assembly, null));
+        }
+
+        private class MockAssembly : Assembly
+        {
         }
     }
 }

@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Text;
 using System.Security;
 using System.Runtime.InteropServices;
+using System.Buffers;
 
 namespace System.Data.SqlClient
 {
@@ -63,8 +64,8 @@ namespace System.Data.SqlClient
         // Packet state variables
         internal byte _outputMessageType = 0;                   // tds header type
         internal byte _messageStatus;                               // tds header status
-        internal byte _outputPacketNumber = 1;                   // number of packets sent to server
-                                                                 // in message - start at 1 per ramas
+        internal byte _outputPacketNumber = 1;                   // number of packets sent to server in message - start at 1 per ramas
+        internal uint _outputPacketCount;
         internal bool _pendingData = false;
         internal volatile bool _fResetEventOwned = false;               // ResetEvent serializing call to sp_reset_connection
         internal volatile bool _fResetConnectionSent = false;               // For multiple packet execute
@@ -659,7 +660,7 @@ namespace System.Data.SqlClient
             // If the first sqlbulkcopy timeout, _outputPacketNumber may not be 1, 
             // the next sqlbulkcopy (same connection string) requires this to be 1, hence reset 
             // it here when exception happens in the first sqlbulkcopy
-            _outputPacketNumber = 1;
+            ResetPacketCounters();
 
             // VSDD#907507, if bulkcopy write timeout happens, it already sent the attention, 
             // so no need to send it again
@@ -855,7 +856,7 @@ namespace System.Data.SqlClient
 
             // NOTE: TdsParserSessionPool may call DecrementPendingCallbacks on a TdsParserStateObject which is already disposed
             // This is not dangerous (since the stateObj is no longer in use), but we need to add a workaround in the assert for it
-            Debug.Assert((remaining == -1 && SessionHandle.IsNull) || (0 <= remaining && remaining < 3), string.Format("_pendingCallbacks values is invalid after decrementing: {0}", remaining));
+            Debug.Assert((remaining == -1 && SessionHandle.IsNull) || (0 <= remaining && remaining < 3), $"_pendingCallbacks values is invalid after decrementing: {remaining}");
             return remaining;
         }
 
@@ -904,7 +905,7 @@ namespace System.Data.SqlClient
         internal int IncrementPendingCallbacks()
         {
             int remaining = Interlocked.Increment(ref _pendingCallbacks);
-            Debug.Assert(0 < remaining && remaining <= 3, string.Format("_pendingCallbacks values is invalid after incrementing: {0}", remaining));
+            Debug.Assert(0 < remaining && remaining <= 3, $"_pendingCallbacks values is invalid after incrementing: {remaining}");
             return remaining;
         }
 
@@ -1104,7 +1105,7 @@ namespace System.Data.SqlClient
                 }
                 else
                 {
-                    Debug.Assert(false, "entered negative _inBytesPacket loop");
+                    Debug.Fail("entered negative _inBytesPacket loop");
                 }
                 AssertValidState();
             }
@@ -1115,6 +1116,12 @@ namespace System.Data.SqlClient
         internal void ResetBuffer()
         {
             _outBytesUsed = _outputHeaderLen;
+        }
+
+        internal void ResetPacketCounters()
+        {
+            _outputPacketNumber = 1;
+            _outputPacketCount = 0;
         }
 
         internal bool SetPacketSize(int size)
@@ -1274,15 +1281,6 @@ namespace System.Data.SqlClient
                 AssertValidState();
             }
 
-            if ((_messageStatus != TdsEnums.ST_EOM) && ((_inBytesPacket == 0) || (_inBytesUsed == _inBytesRead)))
-            {
-                if (!TryPrepareBuffer())
-                {
-                    return false;
-                }
-            }
-
-            AssertValidState();
             return true;
         }
 
@@ -1646,12 +1644,14 @@ namespace System.Data.SqlClient
             int cBytes = length << 1;
             byte[] buf;
             int offset = 0;
+            bool rentedBuffer = false;
 
             if (((_inBytesUsed + cBytes) > _inBytesRead) || (_inBytesPacket < cBytes))
             {
                 if (_bTmp == null || _bTmp.Length < cBytes)
                 {
-                    _bTmp = new byte[cBytes];
+                    _bTmp = ArrayPool<byte>.Shared.Rent(cBytes);
+                    rentedBuffer = true;
                 }
 
                 if (!TryReadByteArray(_bTmp, cBytes))
@@ -1677,6 +1677,10 @@ namespace System.Data.SqlClient
             }
 
             value = System.Text.Encoding.Unicode.GetString(buf, offset, cBytes);
+            if (rentedBuffer)
+            {
+                 ArrayPool<byte>.Shared.Return(_bTmp, clearArray: true);
+            }
             return true;
         }
 
@@ -1709,6 +1713,7 @@ namespace System.Data.SqlClient
             }
             byte[] buf = null;
             int offset = 0;
+            bool rentedBuffer = false;
 
             if (isPlp)
             {
@@ -1726,7 +1731,8 @@ namespace System.Data.SqlClient
                 {
                     if (_bTmp == null || _bTmp.Length < length)
                     {
-                        _bTmp = new byte[length];
+                        _bTmp = ArrayPool<byte>.Shared.Rent(length);
+                        rentedBuffer = true;
                     }
 
                     if (!TryReadByteArray(_bTmp, length))
@@ -1754,6 +1760,10 @@ namespace System.Data.SqlClient
 
             // BCL optimizes to not use char[] underneath
             value = encoding.GetString(buf, offset, length);
+            if (rentedBuffer)
+            {
+                ArrayPool<byte>.Shared.Return(_bTmp, clearArray: true);
+            }
             return true;
         }
 
@@ -2796,8 +2806,6 @@ namespace System.Data.SqlClient
             }
         }
 
-#pragma warning disable 0420 // a reference to a volatile field will not be treated as volatile
-
         public void WriteAsyncCallback(PacketHandle packet, uint sniError)
         {
             WriteAsyncCallback(IntPtr.Zero, packet, sniError);
@@ -2885,8 +2893,6 @@ namespace System.Data.SqlClient
             }
         }
 
-#pragma warning restore 0420
-
         /////////////////////////////////////////
         // Network/Packet Writing & Processing //
         /////////////////////////////////////////
@@ -2923,13 +2929,11 @@ namespace System.Data.SqlClient
         internal Task WaitForAccumulatedWrites()
         {
             // Checked for stored exceptions
-#pragma warning disable 420 // A reference to a volatile field will not be treated as volatile - Disabling since the Interlocked APIs are volatile aware
             var delayedException = Interlocked.Exchange(ref _delayedWriteAsyncCallbackException, null);
             if (delayedException != null)
             {
                 throw delayedException;
             }
-#pragma warning restore 420
 
             if (_asyncWriteCount == 0)
             {
@@ -2949,13 +2953,11 @@ namespace System.Data.SqlClient
             }
 
             // Check for stored exceptions
-#pragma warning disable 420 // A reference to a volatile field will not be treated as volatile - Disabling since the Interlocked APIs are volatile aware
             delayedException = Interlocked.Exchange(ref _delayedWriteAsyncCallbackException, null);
             if (delayedException != null)
             {
                 throw delayedException;
             }
-#pragma warning restore 420
 
             // If there are no outstanding writes, see if we can shortcut and return null
             if ((_asyncWriteCount == 0) && ((!task.IsCompleted) || (task.Exception == null)))
@@ -3122,7 +3124,8 @@ namespace System.Data.SqlClient
         // Dumps contents of buffer to SNI for network write.
         internal Task WritePacket(byte flushMode, bool canAccumulate = false)
         {
-            if ((_parser.State == TdsParserState.Closed) || (_parser.State == TdsParserState.Broken))
+            TdsParserState state = _parser.State;
+            if ((state == TdsParserState.Closed) || (state == TdsParserState.Broken))
             {
                 throw ADP.ClosedConnectionError();
             }
@@ -3132,12 +3135,12 @@ namespace System.Data.SqlClient
                 // However, since we don't know the version prior to login IsYukonOrNewer was always false prior to login
                 // So removing the IsYukonOrNewer check causes issues since the login packet happens to meet the rest of the conditions below
                 // So we need to avoid this check prior to login completing
-                _parser.State == TdsParserState.OpenLoggedIn &&
+                state == TdsParserState.OpenLoggedIn &&
                 !_bulkCopyOpperationInProgress && // ignore the condition checking for bulk copy
                     _outBytesUsed == (_outputHeaderLen + BitConverter.ToInt32(_outBuff, _outputHeaderLen))
-                    && _outputPacketNumber == 1
+                    && _outputPacketCount == 0
                 || _outBytesUsed == _outputHeaderLen
-                    && _outputPacketNumber == 1)
+                    && _outputPacketCount == 0)
             {
                 return null;
             }
@@ -3150,22 +3153,23 @@ namespace System.Data.SqlClient
             if (willCancel)
             {
                 status = TdsEnums.ST_EOM | TdsEnums.ST_IGNORE;
-                _outputPacketNumber = 1;
+                ResetPacketCounters();
             }
             else if (TdsEnums.HARDFLUSH == flushMode)
             {
                 status = TdsEnums.ST_EOM;
-                _outputPacketNumber = 1;              // end of message - reset to 1 - per ramas                
+                ResetPacketCounters();
             }
             else if (TdsEnums.SOFTFLUSH == flushMode)
             {
                 status = TdsEnums.ST_BATCH;
                 _outputPacketNumber++;
+                _outputPacketCount++;
             }
             else
             {
                 status = TdsEnums.ST_EOM;
-                Debug.Assert(false, string.Format((IFormatProvider)null, "Unexpected argument {0,-2:x2} to WritePacket", flushMode));
+                Debug.Fail($"Unexpected argument {flushMode,-2:x2} to WritePacket");
             }
 
             _outBuff[0] = _outputMessageType;         // Message Type
@@ -3211,8 +3215,6 @@ namespace System.Data.SqlClient
                 _parser.Connection.ThreadHasParserLockForClose = false;
             }
         }
-
-#pragma warning disable 0420 // a reference to a volatile field will not be treated as volatile
 
         private Task SNIWritePacket(PacketHandle packet, out uint sniError, bool canAccumulate, bool callerHasConnectionLock)
         {
@@ -3350,8 +3352,6 @@ namespace System.Data.SqlClient
         internal abstract bool IsValidPacket(PacketHandle packetPointer);
 
         internal abstract uint WritePacket(PacketHandle packet, bool sync);
-
-#pragma warning restore 0420
 
         // Sends an attention signal - executing thread will consume attn.
         internal void SendAttention(bool mustTakeWriteLock = false)
@@ -3520,26 +3520,13 @@ namespace System.Data.SqlClient
 
         private void AssertValidState()
         {
-            string assertMessage = null;
-
             if (_inBytesUsed < 0 || _inBytesRead < 0)
             {
-                assertMessage = string.Format(
-                    CultureInfo.InvariantCulture,
-                    "either _inBytesUsed or _inBytesRead is negative: {0}, {1}",
-                    _inBytesUsed, _inBytesRead);
+                Debug.Fail($"Invalid TDS Parser State: either _inBytesUsed or _inBytesRead is negative: {_inBytesUsed}, {_inBytesRead}");
             }
             else if (_inBytesUsed > _inBytesRead)
             {
-                assertMessage = string.Format(
-                    CultureInfo.InvariantCulture,
-                    "_inBytesUsed > _inBytesRead: {0} > {1}",
-                    _inBytesUsed, _inBytesRead);
-            }
-
-            if (assertMessage != null)
-            {
-                Debug.Assert(false, "Invalid TDS Parser State: " + assertMessage);
+                Debug.Fail($"Invalid TDS Parser State: _inBytesUsed > _inBytesRead: {_inBytesUsed} > {_inBytesRead}");
             }
 
             Debug.Assert(_inBytesPacket >= 0, "Packet must not be negative");
@@ -3754,7 +3741,7 @@ namespace System.Data.SqlClient
                 Debug.Assert(_asyncWriteCount == 0, "StateObj still has outstanding async writes");
                 Debug.Assert(_delayedWriteAsyncCallbackException == null, "StateObj has an unobserved exceptions from an async write");
                 // Attention\Cancellation\Timeouts
-                Debug.Assert(!_attentionReceived && !_attentionSent && !_attentionSending, string.Format("StateObj is still dealing with attention: Sent: {0}, Received: {1}, Sending: {2}", _attentionSent, _attentionReceived, _attentionSending));
+                Debug.Assert(!_attentionReceived && !_attentionSent && !_attentionSending, $"StateObj is still dealing with attention: Sent: {_attentionSent}, Received: {_attentionReceived}, Sending: {_attentionSending}");
                 Debug.Assert(!_cancelled, "StateObj still has cancellation set");
                 Debug.Assert(!_internalTimeout, "StateObj still has internal timeout set");
                 // Errors and Warnings

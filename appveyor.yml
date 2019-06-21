@@ -38,7 +38,7 @@ install:
 
 # build script logic
 build_script: 
-  - clean -all
+  - build.cmd -clean
   - build.cmd  
 
 # disable automatic test discovery, xUnit already runs as part of build.cmd

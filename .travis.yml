@@ -23,7 +23,7 @@ before_script:
   - sudo sed -i '/[Parameters]/a warning_time_gen_2001=ll:9223372036854775807' /etc/opt/cprocsp/config64.ini
   - sudo sed -i '/[Parameters]/a warning_time_sign_2001=ll:9223372036854775807' /etc/opt/cprocsp/config64.ini
   - cd ..
-  - ./clean.sh -all
+  - ./build.sh -clean
 script:    
   - ./build.sh
   - .dotnet/dotnet msbuild src/System.Security.Cryptography.Csp/tests/ /t:BuildAndTest "/p:XunitOptions=-class System.Security.Cryptography.Encryption.Gost3411.Tests.Gost3411CryptoServiceProviderTests" /p:ForceRunTests=true
