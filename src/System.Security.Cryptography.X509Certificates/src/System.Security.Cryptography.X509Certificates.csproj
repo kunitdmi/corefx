@@ -266,20 +266,20 @@
     <Compile Include="$(CommonPath)\Interop\Windows\Crypt32\Interop.FindOidInfo.cs">
       <Link>Common\Interop\Windows\Crypt32\Interop.FindOidInfo.cs</Link>
     </Compile>
-    <Compile Include="$(CommonPath)\Interop\Windows\advapi32\SafeProvHandle.cs">
-      <Link>Common\Interop\Windows\advapi32\SafeProvHandle.cs</Link>
+    <Compile Include="$(CommonPath)\Interop\Windows\Advapi32\SafeProvHandle.cs">
+      <Link>Common\Interop\Windows\Advapi32\SafeProvHandle.cs</Link>
     </Compile>
-    <Compile Include="$(CommonPath)\Interop\Windows\advapi32\SafeKeyHandle.cs">
-      <Link>Common\Interop\Windows\advapi32\SafeKeyHandle.cs</Link>
+    <Compile Include="$(CommonPath)\Interop\Windows\Advapi32\SafeKeyHandle.cs">
+      <Link>Common\Interop\Windows\Advapi32\SafeKeyHandle.cs</Link>
     </Compile>
-    <Compile Include="$(CommonPath)\Interop\Windows\advapi32\Interop.CryptDestroyKey.cs">
-      <Link>Common\Interop\Windows\advapi32\Interop.CryptDestroyKey.cs</Link>
+    <Compile Include="$(CommonPath)\Interop\Windows\Advapi32\Interop.CryptDestroyKey.cs">
+      <Link>Common\Interop\Windows\Advapi32\Interop.CryptDestroyKey.cs</Link>
     </Compile>
-    <Compile Include="$(CommonPath)\Interop\Windows\advapi32\Interop.CryptReleaseContext.cs">
-      <Link>Common\Interop\Windows\advapi32\Interop.CryptReleaseContext.cs</Link>
+    <Compile Include="$(CommonPath)\Interop\Windows\Advapi32\Interop.CryptReleaseContext.cs">
+      <Link>Common\Interop\Windows\Advapi32\Interop.CryptReleaseContext.cs</Link>
     </Compile>
-    <Compile Include="$(CommonPath)\Interop\Windows\advapi32\Interop.CryptAcquireContext.cs">
-      <Link>Common\Interop\Windows\advapi32\Interop.CryptAcquireContext.cs</Link>
+    <Compile Include="$(CommonPath)\Interop\Windows\Advapi32\Interop.CryptAcquireContext.cs">
+      <Link>Common\Interop\Windows\Advapi32\Interop.CryptAcquireContext.cs</Link>
     </Compile>
     <Compile Include="$(CommonPath)\CoreLib\Interop\Windows\BCrypt\Interop.NTSTATUS.cs">
       <Link>Common\CoreLib\Interop\Windows\BCrypt\Interop.NTSTATUS.cs</Link>
