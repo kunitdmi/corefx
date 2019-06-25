@@ -348,7 +348,7 @@
       <DependentUpon>System\Security\Cryptography\X509Certificates\Asn1\DistributionPointNameAsn.xml</DependentUpon>
     </Compile>
     <Compile Include="System\Security\Cryptography\X509Certificates\Asn1\ReasonFlagsAsn.cs" />
-    <Compile Include="Internal\Cryptography\Pal.Unix\CertCollectionLoader.cs" />
+<!--     <Compile Include="Internal\Cryptography\Pal.Unix\CertCollectionLoader.cs" />
     <Compile Include="Internal\Cryptography\Pal.Unix\CertificateAssetDownloader.cs" />
     <Compile Include="Internal\Cryptography\Pal.Unix\CertificatePal.cs" />
     <Compile Include="Internal\Cryptography\Pal.Unix\ChainPal.cs" />
@@ -366,7 +366,7 @@
     <Compile Include="Internal\Cryptography\Pal.Unix\SingleCertLoader.cs" />
     <Compile Include="Internal\Cryptography\Pal.Unix\StorePal.cs" />
     <Compile Include="Internal\Cryptography\Pal.Unix\X509Pal.cs" />
-    <Compile Include="Internal\Cryptography\Pal.Unix\X509Persistence.cs" />
+    <Compile Include="Internal\Cryptography\Pal.Unix\X509Persistence.cs" /> -->
     <Compile Include="$(CommonPath)\Interop\Unix\Interop.Libraries.cs">
       <Link>Common\Interop\Unix\Interop.Libraries.cs</Link>
     </Compile>
@@ -706,14 +706,14 @@
     <Compile Include="Internal\Cryptography\Pal.OSX\StorePal.LoaderPal.cs" />
     <Compile Include="Internal\Cryptography\Pal.OSX\X509Pal.cs" /> -->
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetsUnix)' == 'true'">
-<!--     <Compile Include="Internal\Cryptography\Pal.Unix\CertificatePolicy.cs" />
+<!--   <ItemGroup Condition=" '$(TargetsUnix)' == 'true'">
+    <Compile Include="Internal\Cryptography\Pal.Unix\CertificatePolicy.cs" />
     <Compile Include="Internal\Cryptography\Pal.Unix\ChainVerifier.cs" />
     <Compile Include="Internal\Cryptography\Pal.Unix\ManagedCertificateFinder.cs" />
     <Compile Include="Internal\Cryptography\Pal.Unix\ManagedX509ExtensionProcessor.cs" />
     <Compile Include="Internal\Cryptography\Pal.Unix\X500NameEncoder.cs" />
-    <Compile Include="Internal\Cryptography\Pal.Unix\X500NameEncoder.ManagedDecode.cs" /> -->
-  </ItemGroup>
+    <Compile Include="Internal\Cryptography\Pal.Unix\X500NameEncoder.ManagedDecode.cs" />
+  </ItemGroup> -->
   <ItemGroup>
     <Reference Include="System.Buffers" />
     <Reference Include="System.Collections" />
