@@ -22,6 +22,8 @@ namespace System.Security.Cryptography.Pkcs
             PrepareRegistrationECDsa(s_lookup);
             //begin: gost
             PrepareRegistrationGost(s_lookup);
+            PrepareRegistrationGost2012_256(s_lookup);
+            PrepareRegistrationGost2012_512(s_lookup);
             //end: gost
         }
 
@@ -30,6 +32,8 @@ namespace System.Security.Cryptography.Pkcs
         static partial void PrepareRegistrationECDsa(Dictionary<string, CmsSignature> lookup);
         //begin: gost
         static partial void PrepareRegistrationGost(Dictionary<string, CmsSignature> lookup);
+        static partial void PrepareRegistrationGost2012_256(Dictionary<string, CmsSignature> lookup);
+        static partial void PrepareRegistrationGost2012_512(Dictionary<string, CmsSignature> lookup);
         //end: gost
         protected abstract bool VerifyKeyType(AsymmetricAlgorithm key);
 
