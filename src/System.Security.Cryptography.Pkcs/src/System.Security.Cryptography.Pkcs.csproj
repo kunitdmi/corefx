@@ -8,7 +8,7 @@
     <UsePackageTargetRuntimeDefaults Condition="'$(IsPartialFacadeAssembly)' != 'true'">true</UsePackageTargetRuntimeDefaults>
     <IncludeDllSafeSearchPathAttribute>true</IncludeDllSafeSearchPathAttribute>
     <NoWarn>$(NoWarn);CS1574;CS3016</NoWarn>
-    <Configurations>net461-Windows_NT-Debug;net461-Windows_NT-Release;netcoreapp-OSX-Debug;netcoreapp-OSX-Release;netcoreapp-Unix-Debug;netcoreapp-Unix-Release;netcoreapp-Windows_NT-Debug;netcoreapp-Windows_NT-Release;netfx-Windows_NT-Debug;netfx-Windows_NT-Release;netstandard-OSX-Debug;netstandard-OSX-Release;netstandard-Unix-Debug;netstandard-Unix-Release;;netstandard-Windows_NT-Debug;netstandard-Windows_NT-Release</Configurations>
+    <Configurations>net461-Windows_NT-Debug;net461-Windows_NT-Release;netcoreapp-Debug;netcoreapp-Release;netcoreapp-Windows_NT-Debug;netcoreapp-Windows_NT-Release;netfx-Windows_NT-Debug;netfx-Windows_NT-Release;netstandard-Debug;netstandard-Release;netstandard-Windows_NT-Debug;netstandard-Windows_NT-Release</Configurations>
   </PropertyGroup>
   <Import Project="$(CommonPath)\System\Security\Cryptography\Asn1\AsnXml.targets" Condition="'$(IsPartialFacadeAssembly)' != 'true'" />
   <Import Project="$(CommonPath)\System\Security\Cryptography\Asn1Reader\System.Security.Cryptography.Asn1Reader.Shared.projitems" Condition="'$(IsPartialFacadeAssembly)' != 'true'" />
@@ -706,16 +706,6 @@
     <Compile Include="System\Security\Cryptography\Pkcs\Rfc3161TimestampToken.cs" />
     <Compile Include="System\Security\Cryptography\Pkcs\Rfc3161TimestampTokenInfo.cs" />
   </ItemGroup>
-<!--   <ItemGroup Condition="'$(TargetsUnix)' == 'true' AND '$(TargetsOSX)' != 'true' ">
-    <Compile Include="$(CommonPath)\Interop\Unix\Interop.Libraries.Capi.cs">
-      <Link>Common\Interop\Unix\Interop.Libraries.Capi.cs</Link>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetsOSX)' == 'true'">
-    <Compile Include="$(CommonPath)\Interop\OSX\Interop.Libraries.cs">
-      <Link>Common\Interop\OSX\Interop.Libraries.cs</Link>
-    </Compile>
-  </ItemGroup> -->
   <ItemGroup>
     <None Include="@(AsnXml)" />
   </ItemGroup>
