@@ -24,6 +24,8 @@ namespace Internal.Cryptography
         ECDsa GetECDsaPrivateKey();
         //begin: gost
         Gost3410 GetGost3410PrivateKey();
+        Gost3410_2012_256 GetGost3410_2012_256PrivateKey();
+        Gost3410_2012_512 GetGost3410_2012_512PrivateKey();
         //end: gost
         string GetNameInfo(X509NameType nameType, bool forIssuer);
         void AppendPrivateKeyInfo(StringBuilder sb);

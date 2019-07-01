@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <ProjectGuid>{03D84CBD-896D-4B2F-9A22-07034F51E73D}</ProjectGuid>
     <AssemblyName>System.Security.Cryptography.Pkcs</AssemblyName>
@@ -710,6 +710,8 @@
     <None Include="@(AsnXml)" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="System\Security\Cryptography\Pkcs\CmsSignature.Gost2012_512.cs" />
+    <Compile Include="System\Security\Cryptography\Pkcs\CmsSignature.Gost2012_256.cs" />
     <Compile Include="System\Security\Cryptography\Pkcs\CmsSignature.Gost.cs" />
   </ItemGroup>
 </Project>

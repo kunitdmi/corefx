@@ -13,16 +13,16 @@ namespace System.Security.Cryptography.Pkcs
 {
     internal partial class CmsSignature
     {
-        static partial void PrepareRegistrationGost(Dictionary<string, CmsSignature> lookup)
+        static partial void PrepareRegistrationGost2012_256(Dictionary<string, CmsSignature> lookup)
         {
-            lookup.Add(Oids.Gost3410, new GostCmsSignature());
+            lookup.Add(Oids.Gost3410_2012_256, new Gost2012_256CmsSignature());
         }
 
-        private sealed class GostCmsSignature : CmsSignature
+        private sealed class Gost2012_256CmsSignature : CmsSignature
         {
             protected override bool VerifyKeyType(AsymmetricAlgorithm key)
             {
-                return (key as Gost3410) != null;
+                return (key as Gost3410_2012_256) != null;
             }
 
             internal override bool VerifySignature(
@@ -67,8 +67,8 @@ namespace System.Security.Cryptography.Pkcs
                     out byte[] signatureValue)
             {
                 // If there's no private key, fall back to the public key for a "no private key" exception.
-                Gost3410 privateKey = key as Gost3410 ??
-                    PkcsPal.Instance.GetPrivateKeyForSigning<Gost3410>(certificate, silent) ?? 
+                Gost3410_2012_256 privateKey = key as Gost3410_2012_256 ??
+                    PkcsPal.Instance.GetPrivateKeyForSigning<Gost3410_2012_256>(certificate, silent) ?? 
                     null; 
 
                 if (privateKey == null)
@@ -78,7 +78,7 @@ namespace System.Security.Cryptography.Pkcs
                     return false;
                 }
 
-                signatureAlgorithm = new Oid(Oids.Gost3410, Oids.Gost3410);
+                signatureAlgorithm = new Oid(Oids.Gost3410_2012_256, Oids.Gost3410_2012_256);
 
 #if netcoreapp
                 byte[] signature = new byte[privateKey.KeySize / 8];

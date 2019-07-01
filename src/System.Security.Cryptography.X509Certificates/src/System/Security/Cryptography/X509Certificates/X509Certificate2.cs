@@ -216,6 +216,12 @@ namespace System.Security.Cryptography.X509Certificates
                         case Oids.Gost3410EL:
                             _lazyPrivateKey = Pal.GetGost3410PrivateKey();
                             break;
+                        case Oids.Gost3410_2012_256:
+                            _lazyPrivateKey = Pal.GetGost3410_2012_256PrivateKey();
+                            break;
+                        case Oids.Gost3410_2012_512:
+                            _lazyPrivateKey = Pal.GetGost3410_2012_512PrivateKey();
+                            break;
                         //end: gost
                         default:
                             // This includes ECDSA, because an Oids.EcPublicKey key can be

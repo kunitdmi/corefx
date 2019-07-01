@@ -262,6 +262,10 @@ namespace Internal.Cryptography.Pal.Windows
                 //begin: gost
                 if (typeof(T) == typeof(Gost3410))
                     return (T)(object)new Gost3410CryptoServiceProvider(cspParams);
+                if (typeof(T) == typeof(Gost3410_2012_256))
+                    return (T)(object)new Gost3410_2012_256CryptoServiceProvider(cspParams);
+                if (typeof(T) == typeof(Gost3410_2012_512))
+                    return (T)(object)new Gost3410_2012_512CryptoServiceProvider(cspParams);
                 //end: gost
 
                 Debug.Fail($"Unknown CAPI key type request: {typeof(T).FullName}");
