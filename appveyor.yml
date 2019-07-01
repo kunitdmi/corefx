@@ -2,10 +2,10 @@
 version: 1.0.{build}
 
 # branches to build
-branches:
-  # whitelist
-  only:
-    - master
+#branches:
+#  # whitelist
+#  only:
+#    - master
     
 # Build worker image (VM template)
 image: Visual Studio 2017
