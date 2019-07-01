@@ -154,7 +154,7 @@ namespace Internal.Cryptography.Pal
         {
             CertStoreFlags certStoreFlags = MapX509StoreFlags(storeLocation, openFlags);
 
-            SafeCertStoreHandle certStore = Interop.crypt32.CertOpenStore(CertStoreProvider.CERT_STORE_PROV_SYSTEM_W, CertEncodingType.All, IntPtr.Zero, certStoreFlags, storeName);
+            SafeCertStoreHandle certStore = Interop.crypt32.CertOpenStore(CertStoreProvider.CERT_STORE_PROV_SYSTEM_A, CertEncodingType.All, IntPtr.Zero, certStoreFlags, storeName);
             if (certStore.IsInvalid)
                 throw Marshal.GetLastWin32Error().ToCryptographicException();
 

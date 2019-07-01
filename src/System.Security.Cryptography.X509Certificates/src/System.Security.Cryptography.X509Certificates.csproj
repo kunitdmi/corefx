@@ -226,8 +226,7 @@
     <Compile Include="System\Security\Cryptography\X509Certificates\Asn1\PolicyInformationAsn.xml.cs">
       <DependentUpon>System\Security\Cryptography\X509Certificates\Asn1\PolicyInformationAsn.xml</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetsWindows)' == 'true'">
+
     <Compile Include="Internal\Cryptography\Pal.Windows\CertificatePal.cs" />
     <Compile Include="Internal\Cryptography\Pal.Windows\CertificatePal.Import.cs" />
     <Compile Include="Internal\Cryptography\Pal.Windows\CertificatePal.PrivateKey.cs" />
@@ -248,7 +247,7 @@
     <Compile Include="Internal\Cryptography\Pal.Windows\X509Pal.GetCertContentType.cs" />
     <Compile Include="Internal\Cryptography\Pal.Windows\X509Pal.PublicKey.cs" />
     <Compile Include="Internal\Cryptography\Pal.Windows\X509Pal.X500DistinguishedName.cs" />
-    <Compile Include="Microsoft\Win32\SafeHandles\SafePasswordHandle.Windows.cs" />
+
     <Compile Include="$(CommonPath)\Interop\Windows\Crypt32\Interop.CertCloseStore.cs">
       <Link>Common\Interop\Windows\Crypt32\Interop.CertCloseStore.cs</Link>
     </Compile>
@@ -267,9 +266,42 @@
     <Compile Include="$(CommonPath)\Interop\Windows\Crypt32\Interop.FindOidInfo.cs">
       <Link>Common\Interop\Windows\Crypt32\Interop.FindOidInfo.cs</Link>
     </Compile>
+    <Compile Include="$(CommonPath)\Interop\Windows\Advapi32\SafeProvHandle.cs">
+      <Link>Common\Interop\Windows\Advapi32\SafeProvHandle.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\Interop\Windows\Advapi32\SafeKeyHandle.cs">
+      <Link>Common\Interop\Windows\Advapi32\SafeKeyHandle.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\Interop\Windows\Advapi32\Interop.CryptDestroyKey.cs">
+      <Link>Common\Interop\Windows\Advapi32\Interop.CryptDestroyKey.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\Interop\Windows\Advapi32\Interop.CryptReleaseContext.cs">
+      <Link>Common\Interop\Windows\Advapi32\Interop.CryptReleaseContext.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\Interop\Windows\Advapi32\Interop.CryptAcquireContext.cs">
+      <Link>Common\Interop\Windows\Advapi32\Interop.CryptAcquireContext.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\CoreLib\Interop\Windows\BCrypt\Interop.NTSTATUS.cs">
+      <Link>Common\CoreLib\Interop\Windows\BCrypt\Interop.NTSTATUS.cs</Link>
+    </Compile>
     <Compile Include="$(CommonPath)\Internal\Cryptography\Windows\CryptoThrowHelper.cs">
       <Link>Common\Internal\Cryptography\Windows\CryptoThrowHelper.cs</Link>
     </Compile>
+
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetsWindows)' == 'true'">
+    <Compile Include="Internal\Cryptography\Pal.Windows\X509Pal.X500DistinguishedNameDecode.Win.cs" />
+    <Compile Include="$(CommonPath)\Interop\Windows\Crypt32\Interop.FindOidInfo.Win.cs">
+      <Link>Common\Interop\Windows\Crypt32\Interop.FindOidInfo.Win.cs</Link>
+    </Compile>
+    <Compile Include="Internal\Cryptography\Pal.Windows\Native\Interop.CertGetNameString.Win.cs" />
+    <Compile Include="$(CommonPath)\Microsoft\Win32\SafeHandles\SafeBCryptHandle.cs">
+      <Link>Common\Microsoft\Win32\SafeHandles\SafeBCryptHandle.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\Microsoft\Win32\SafeHandles\SafeBCryptKeyHandle.cs">
+      <Link>Common\Microsoft\Win32\SafeHandles\SafeBCryptKeyHandle.cs</Link>
+    </Compile>
+    <Compile Include="Microsoft\Win32\SafeHandles\SafePasswordHandle.Windows.cs" />
     <Compile Include="$(CommonPath)\CoreLib\Interop\Windows\Kernel32\Interop.FormatMessage.cs">
       <Link>Common\Internal\Windows\kernel32\Interop.FormatMessage.cs</Link>
     </Compile>
@@ -288,20 +320,22 @@
     <Compile Include="$(CommonPath)\Interop\Windows\BCrypt\Interop.Blobs.cs">
       <Link>Common\Interop\Windows\BCrypt\Interop.Blobs.cs</Link>
     </Compile>
-    <Compile Include="$(CommonPath)\CoreLib\Interop\Windows\BCrypt\Interop.NTSTATUS.cs">
-      <Link>Common\CoreLib\Interop\Windows\BCrypt\Interop.NTSTATUS.cs</Link>
-    </Compile>
-    <Compile Include="$(CommonPath)\Microsoft\Win32\SafeHandles\SafeBCryptHandle.cs">
-      <Link>Common\Microsoft\Win32\SafeHandles\SafeBCryptHandle.cs</Link>
-    </Compile>
-    <Compile Include="$(CommonPath)\Microsoft\Win32\SafeHandles\SafeBCryptKeyHandle.cs">
-      <Link>Common\Microsoft\Win32\SafeHandles\SafeBCryptKeyHandle.cs</Link>
-    </Compile>
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetsUnix)' == 'true'">
+    <Compile Include="Internal\Cryptography\Pal.Windows\X509Pal.X500DistinguishedNameDecode.Unix.cs" />
+    <Compile Include="$(CommonPath)\Interop\Windows\Crypt32\Interop.FindOidInfo.Unix.cs">
+      <Link>Common\Interop\Windows\Crypt32\Interop.FindOidInfo.Unix.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\CoreLib\Interop\Windows\Kernel32\Interop.FormatMessage.Unix.cs">
+      <Link>Common\Internal\Windows\kernel32\Interop.FormatMessage.Unix.cs</Link>
+    </Compile>
+    <Compile Include="Internal\Cryptography\Pal.Windows\Native\Interop.CertGetNameString.Unix.cs" />
     <Compile Include="Microsoft\Win32\SafeHandles\SafePasswordHandle.Unix.cs" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetsUnix)' == 'true' AND '$(TargetsOSX)' != 'true' ">
+    <Compile Include="$(CommonPath)\Interop\Unix\Interop.Libraries.Capi.cs">
+      <Link>Common\Interop\Unix\Interop.Libraries.Capi.cs</Link>
+    </Compile>
     <Compile Include="$(CommonPath)\Interop\Unix\System.Native\Interop.PrintF.cs">
       <Link>Common\Interop\Unix\System.Native\Interop.PrintF.cs</Link>
     </Compile>
@@ -314,7 +348,7 @@
       <DependentUpon>System\Security\Cryptography\X509Certificates\Asn1\DistributionPointNameAsn.xml</DependentUpon>
     </Compile>
     <Compile Include="System\Security\Cryptography\X509Certificates\Asn1\ReasonFlagsAsn.cs" />
-    <Compile Include="Internal\Cryptography\Pal.Unix\CertCollectionLoader.cs" />
+<!--     <Compile Include="Internal\Cryptography\Pal.Unix\CertCollectionLoader.cs" />
     <Compile Include="Internal\Cryptography\Pal.Unix\CertificateAssetDownloader.cs" />
     <Compile Include="Internal\Cryptography\Pal.Unix\CertificatePal.cs" />
     <Compile Include="Internal\Cryptography\Pal.Unix\ChainPal.cs" />
@@ -332,7 +366,7 @@
     <Compile Include="Internal\Cryptography\Pal.Unix\SingleCertLoader.cs" />
     <Compile Include="Internal\Cryptography\Pal.Unix\StorePal.cs" />
     <Compile Include="Internal\Cryptography\Pal.Unix\X509Pal.cs" />
-    <Compile Include="Internal\Cryptography\Pal.Unix\X509Persistence.cs" />
+    <Compile Include="Internal\Cryptography\Pal.Unix\X509Persistence.cs" /> -->
     <Compile Include="$(CommonPath)\Interop\Unix\Interop.Libraries.cs">
       <Link>Common\Interop\Unix\Interop.Libraries.cs</Link>
     </Compile>
@@ -660,7 +694,7 @@
       <Link>Common\System\Security\Cryptography\Asn1\SpecifiedECDomain.xml.cs</Link>
       <DependentUpon>Common\System\Security\Cryptography\Asn1\SpecifiedECDomain.xml</DependentUpon>
     </Compile>
-    <Compile Include="Internal\Cryptography\Pal.OSX\AppleCertificatePal.cs" />
+    <!-- <Compile Include="Internal\Cryptography\Pal.OSX\AppleCertificatePal.cs" />
     <Compile Include="Internal\Cryptography\Pal.OSX\CertificatePal.cs" />
     <Compile Include="Internal\Cryptography\Pal.OSX\CertificateData.cs" />
     <Compile Include="Internal\Cryptography\Pal.OSX\ChainPal.cs" />
@@ -670,16 +704,16 @@
     <Compile Include="Internal\Cryptography\Pal.OSX\StorePal.AppleKeychainStore.cs" />
     <Compile Include="Internal\Cryptography\Pal.OSX\StorePal.ExportPal.cs" />
     <Compile Include="Internal\Cryptography\Pal.OSX\StorePal.LoaderPal.cs" />
-    <Compile Include="Internal\Cryptography\Pal.OSX\X509Pal.cs" />
+    <Compile Include="Internal\Cryptography\Pal.OSX\X509Pal.cs" /> -->
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetsUnix)' == 'true'">
+<!--   <ItemGroup Condition=" '$(TargetsUnix)' == 'true'">
     <Compile Include="Internal\Cryptography\Pal.Unix\CertificatePolicy.cs" />
     <Compile Include="Internal\Cryptography\Pal.Unix\ChainVerifier.cs" />
     <Compile Include="Internal\Cryptography\Pal.Unix\ManagedCertificateFinder.cs" />
     <Compile Include="Internal\Cryptography\Pal.Unix\ManagedX509ExtensionProcessor.cs" />
     <Compile Include="Internal\Cryptography\Pal.Unix\X500NameEncoder.cs" />
     <Compile Include="Internal\Cryptography\Pal.Unix\X500NameEncoder.ManagedDecode.cs" />
-  </ItemGroup>
+  </ItemGroup> -->
   <ItemGroup>
     <Reference Include="System.Buffers" />
     <Reference Include="System.Collections" />
@@ -701,11 +735,12 @@
     <Reference Include="System.Security.Cryptography.Primitives" />
     <Reference Include="System.Text.Encoding.Extensions" />
     <Reference Include="System.Threading" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetsWindows)' == 'true'">
-    <Reference Include="System.Security.Cryptography.Cng" />
     <Reference Include="System.Security.Cryptography.Csp" />
+    <Reference Include="System.Security.Cryptography.Cng" />
   </ItemGroup>
+<!--   <ItemGroup Condition="'$(TargetsWindows)' == 'true'">
+    
+  </ItemGroup> -->
   <ItemGroup Condition="'$(TargetsUnix)' == 'true' AND '$(TargetsOSX)' != 'true'">
     <Reference Include="System.Diagnostics.StackTrace" />
     <Reference Include="System.Security.Cryptography.Csp" />

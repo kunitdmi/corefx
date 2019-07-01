@@ -415,6 +415,9 @@
     <Compile Include="$(CommonPath)\Interop\Windows\Crypt32\Interop.FindOidInfo.cs">
       <Link>Common\Interop\Windows\Crypt32\Interop.FindOidInfo.cs</Link>
     </Compile>
+    <Compile Include="$(CommonPath)\Interop\Windows\Crypt32\Interop.FindOidInfo.Win.cs">
+      <Link>Common\Interop\Windows\Crypt32\Interop.FindOidInfo.Win.cs</Link>
+    </Compile>
     <Compile Include="$(CommonPath)\Interop\Windows\Crypt32\Interop.HashIdAlg.cs">
       <Link>Common\Interop\Windows\Crypt32\Interop.HashIdAlg.cs</Link>
     </Compile>
@@ -723,9 +726,12 @@
     <Compile Include="System\Security\Cryptography\ECDiffieHellman.Create.SecurityTransforms.cs" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetsUnix)' == 'true'">
-<!--     <Compile Include="$(CommonPath)\Interop\Unix\System.Security.Cryptography.Native\Interop.Capilite.cs">
-      <Link>Common\Interop\Unix\System.Security.Cryptography.Native\Interop.Capilite.cs</Link>
-    </Compile> -->    
+    <Compile Include="$(CommonPath)\Interop\Windows\Crypt32\Interop.FindOidInfo.cs">
+      <Link>Common\Interop\Windows\Crypt32\Interop.FindOidInfo.cs</Link>
+    </Compile>
+    <Compile Include="$(CommonPath)\Interop\Windows\Crypt32\Interop.FindOidInfo.Unix.cs">
+      <Link>Common\Interop\Windows\Crypt32\Interop.FindOidInfo.Unix.cs</Link>
+    </Compile>  
     <Compile Include="$(CommonPath)\Interop\Unix\System.Security.Cryptography.Native\Interop.EVP.Cipher.cs">
       <Link>Common\Interop\Unix\System.Security.Cryptography.Native\Interop.EVP.Cipher.cs</Link>
     </Compile>

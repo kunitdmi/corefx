@@ -11,34 +11,6 @@ internal static partial class Interop
 {
     internal static partial class Crypt32
     {
-        [StructLayout(LayoutKind.Sequential)]
-        internal struct CRYPT_OID_INFO
-        {
-            public int cbSize;
-            public IntPtr pszOID;
-            public IntPtr pwszName;
-            public OidGroup dwGroupId;
-            public int AlgId;
-            public int cbData;
-            public IntPtr pbData;
-
-            public string OID
-            {
-                get
-                {
-                    return Marshal.PtrToStringAnsi(pszOID);
-                }
-            }
-
-            public string Name
-            {
-                get
-                {
-                    return Marshal.PtrToStringUni(pwszName);
-                }
-            }
-        }
-
         internal enum CryptOidInfoKeyType : int
         {
             CRYPT_OID_INFO_OID_KEY = 1,
