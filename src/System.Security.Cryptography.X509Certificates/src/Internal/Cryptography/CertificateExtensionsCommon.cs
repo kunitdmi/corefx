@@ -59,8 +59,18 @@ namespace Internal.Cryptography.Pal
             if (typeof(T) == typeof(DSA))
                 return (T)(object)certificate.Pal.GetDSAPrivateKey();
 
+            // begin: gost
             if (typeof(T) == typeof(Gost3410))
                 return (T)(object)certificate.Pal.GetGost3410PrivateKey();
+
+
+            if (typeof(T) == typeof(Gost3410_2012_256))
+                return (T)(object)certificate.Pal.GetGost3410_2012_256PrivateKey();
+
+            if (typeof(T) == typeof(Gost3410_2012_512))
+                return (T)(object)certificate.Pal.GetGost3410_2012_512PrivateKey();
+
+            // end: gost
 
             Debug.Fail("Expected GetExpectedOidValue() to have thrown before we got here.");
             throw new NotSupportedException(SR.NotSupported_KeyAlgorithm);

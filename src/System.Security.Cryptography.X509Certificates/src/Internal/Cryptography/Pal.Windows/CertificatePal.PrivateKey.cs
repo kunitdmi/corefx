@@ -83,6 +83,36 @@ namespace Internal.Cryptography.Pal
                 }
             );
         }
+
+        public Gost3410_2012_256 GetGost3410_2012_256PrivateKey()
+        {
+            return GetPrivateKey<Gost3410_2012_256>(
+                delegate (CspParameters csp)
+                {
+                    return new Gost3410_2012_256CryptoServiceProvider(csp);
+                }
+                ,
+                delegate (CngKey cngKey)
+                {
+                    throw new NotSupportedException("CNG Gost3410 keys are not supported.");//(SR.NotSupported_Gost3410_Cng); 
+                }
+            );
+        }
+
+        public Gost3410_2012_512 GetGost3410_2012_512PrivateKey()
+        {
+            return GetPrivateKey<Gost3410_2012_512>(
+                delegate (CspParameters csp)
+                {
+                    return new Gost3410_2012_512CryptoServiceProvider(csp);
+                }
+                ,
+                delegate (CngKey cngKey)
+                {
+                    throw new NotSupportedException("CNG Gost3410 keys are not supported.");//(SR.NotSupported_Gost3410_Cng); 
+                }
+            );
+        }
         //end: gost
 
         public ICertificatePal CopyWithPrivateKey(DSA dsa)
