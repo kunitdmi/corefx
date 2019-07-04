@@ -133,20 +133,21 @@ namespace Internal.Cryptography
                     int hr = Marshal.GetHRForLastWin32Error();
                     throw new CryptographicException(hr);
                 }
+                hHash.SetParent(hProv);
 
                 int dwHashSize = 0;
                 int cbHashSize = sizeof(int);
                 if (!Interop.Advapi32.CryptGetHashParam(hHash, Interop.Advapi32.CryptHashProperty.HP_HASHSIZE, out dwHashSize, ref cbHashSize, 0))
                 {
-                    hProv.Dispose();
                     hHash.Dispose();
+                    hProv.Dispose();
                     int hr = Marshal.GetHRForLastWin32Error();
                     throw new CryptographicException(hr);
                 }
                 if (dwHashSize < 0)
                 {
-                    hProv.Dispose();
                     hHash.Dispose();
+                    hProv.Dispose();
                     throw new PlatformNotSupportedException(
                         SR.Format(
                             SR.Cryptography_UnknownHashAlgorithm, providerType, calgHash));
