@@ -46,7 +46,7 @@ namespace Internal.Cryptography.Pal
                             throw ErrorCode.CERT_E_INVALID_NAME.ToCryptographicException();
                     }
 
-                    return System.Text.Encoding.Unicode.GetString(buffer.Slice(0, (cchDecoded-1)*sizeof_wchar_t).ToArray());
+                    return System.Text.Encoding.UTF32.GetString(buffer.Slice(0, (cchDecoded-1)*sizeof_wchar_t).ToArray());
                 }
             }
         }

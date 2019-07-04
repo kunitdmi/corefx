@@ -21,6 +21,7 @@ internal static partial class Interop
             public int AlgId;
             public int cbData;
             public IntPtr pbData;
+            private const int sizeof_wchar_t = 4;
 
             public string OID
             {
@@ -36,13 +37,13 @@ internal static partial class Interop
                 {
                     int len = 0;
                     var curr = (byte*)pwszName;
-                    while(*curr != 0 || *(curr++) != 0 || *(curr++) != 0 || *(curr++) != 0) {
+                    while(*curr != 0 || *(curr + 1) != 0 || *(curr + 2) != 0 || *(curr + 3) != 0) {
                         len++;
-                        curr++;
+                        curr+=sizeof_wchar_t;
                     }
-                    var buf = new byte[len*4];
-                    Marshal.Copy(pwszName, buf, 0, len*4);
-                    return System.Text.Encoding.Unicode.GetString(buf);
+                    var buf = new byte[len*sizeof_wchar_t];
+                    Marshal.Copy(pwszName, buf, 0, len*sizeof_wchar_t);
+                    return System.Text.Encoding.UTF32.GetString(buf);
                 }
             }
         }

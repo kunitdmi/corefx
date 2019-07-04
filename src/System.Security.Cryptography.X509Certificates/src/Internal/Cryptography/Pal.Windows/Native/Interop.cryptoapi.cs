@@ -16,8 +16,12 @@ internal static partial class Interop
     public static partial class cryptoapi
     {
         [DllImport(Libraries.Advapi32, SetLastError = true, CharSet = CharSet.Ansi, EntryPoint = "CryptAcquireContextA")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern unsafe bool CryptAcquireContext(out IntPtr psafeProvHandle, char* pszContainer, char* pszProvider, int dwProvType, CryptAcquireContextFlags dwFlags);
+        public static extern bool CryptAcquireContext(
+            out IntPtr phProv,
+            string szContainer,
+            string szProvider,
+            int dwProvType,
+            CryptAcquireContextFlags dwFlags);
     }
 }
 
