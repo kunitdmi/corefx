@@ -78,11 +78,17 @@ namespace Internal.Cryptography.Pal.Native
                 }
             }
         }
-        private static unsafe string pwszToString(IntPtr pwszName) {
+        private static unsafe string pwszToString(IntPtr pwszName)
+        {
+            if (pwszName == IntPtr.Zero)
+            {
+                return null;
+            }
             const int sizeof_wchar_t = 4;
             int len = 0;
             var curr = (byte*)pwszName;
-            while(*curr != 0 || *(curr + 1) != 0 || *(curr + 2) != 0 || *(curr + 3) != 0) {
+            while(*curr != 0 || *(curr + 1) != 0 || *(curr + 2) != 0 || *(curr + 3) != 0)
+            {
                 len++;
                 curr+=sizeof_wchar_t;
             }

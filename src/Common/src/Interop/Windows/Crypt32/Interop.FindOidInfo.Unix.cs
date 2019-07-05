@@ -35,9 +35,14 @@ internal static partial class Interop
             {
                 get
                 {
+                    if (pwszName == IntPtr.Zero)
+                    {
+                        return null;
+                    }
                     int len = 0;
                     var curr = (byte*)pwszName;
-                    while(*curr != 0 || *(curr + 1) != 0 || *(curr + 2) != 0 || *(curr + 3) != 0) {
+                    while(*curr != 0 || *(curr + 1) != 0 || *(curr + 2) != 0 || *(curr + 3) != 0)
+                    {
                         len++;
                         curr+=sizeof_wchar_t;
                     }
