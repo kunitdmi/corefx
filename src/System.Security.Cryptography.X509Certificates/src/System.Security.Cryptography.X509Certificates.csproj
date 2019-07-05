@@ -290,6 +290,9 @@
 
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetsWindows)' == 'true'">
+    <Compile Include="Internal\Cryptography\Pal.Windows\Native\SafeCertContextHandleWithKeyContainerDeletion.Win.cs" />
+    <Compile Include="Internal\Cryptography\Pal.Windows\X509Pal.PublicKey.Win.cs" />
+    <Compile Include="Internal\Cryptography\Pal.Windows\CertificatePal.PrivateKey.Win.cs" />
     <Compile Include="Internal\Cryptography\Pal.Windows\X509Pal.X500DistinguishedNameDecode.Win.cs" />
     <Compile Include="$(CommonPath)\Interop\Windows\Crypt32\Interop.FindOidInfo.Win.cs">
       <Link>Common\Interop\Windows\Crypt32\Interop.FindOidInfo.Win.cs</Link>
@@ -322,6 +325,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetsUnix)' == 'true'">
+    <Compile Include="Internal\Cryptography\Pal.Windows\Native\SafeCertContextHandleWithKeyContainerDeletion.Unix.cs" />
+    <Compile Include="Internal\Cryptography\Pal.Windows\X509Pal.PublicKey.Unix.cs" />
+    <Compile Include="Internal\Cryptography\Pal.Windows\CertificatePal.PrivateKey.Unix.cs" />
     <Compile Include="Internal\Cryptography\Pal.Windows\X509Pal.X500DistinguishedNameDecode.Unix.cs" />
     <Compile Include="$(CommonPath)\Interop\Windows\Crypt32\Interop.FindOidInfo.Unix.cs">
       <Link>Common\Interop\Windows\Crypt32\Interop.FindOidInfo.Unix.cs</Link>

@@ -78,7 +78,7 @@ internal partial class Interop
 
         private static string GetString(Span<byte> buffer)
         {
-            return System.Text.Encoding.Unicode.GetString(buffer.ToArray());
+            return System.Text.Encoding.UTF32.GetString(buffer.ToArray());
         }
     }
 }

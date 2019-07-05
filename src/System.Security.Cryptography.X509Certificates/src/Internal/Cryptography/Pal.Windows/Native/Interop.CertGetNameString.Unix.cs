@@ -33,7 +33,7 @@ internal static partial class Interop
 
                 Debug.Assert(buffer[(cchCount - 1)*sizeof_wchar_t] == '\0');
                 // return new string(buffer.Slice(0, cchCount - 1));
-                return System.Text.Encoding.Unicode.GetString(buffer.Slice(0, (cchCount-1)*sizeof_wchar_t).ToArray());
+                return System.Text.Encoding.UTF32.GetString(buffer.Slice(0, (cchCount-1)*sizeof_wchar_t).ToArray());
             }
         }
 
