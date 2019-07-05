@@ -10,14 +10,10 @@ using System.Security.Cryptography.X509Certificates;
 
 using CryptographicException = System.Security.Cryptography.CryptographicException;
 
-using SafeBCryptKeyHandle = System.Security.Cryptography.SafeKeyHandle;
-using SafeX509ChainHandle = Microsoft.Win32.SafeHandles.SafeX509ChainHandle;
-using X509KeyUsageFlags = System.Security.Cryptography.X509Certificates.X509KeyUsageFlags;
-using SafeNCryptKeyHandle = Microsoft.Win32.SafeHandles.SafeNCryptKeyHandle;
-
+using Microsoft.Win32.SafeHandles;
 using Internal.Cryptography;
 using Internal.Cryptography.Pal.Native;
-using Microsoft.Win32.SafeHandles;
+
 
 internal static partial class Interop
 {

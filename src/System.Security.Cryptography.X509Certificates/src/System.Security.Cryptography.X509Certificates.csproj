@@ -325,6 +325,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetsUnix)' == 'true'">
+    <Compile Include="Internal\Unix\SafeBCryptKeyHandle.Unix.cs" />
     <Compile Include="Internal\Cryptography\Pal.Windows\Native\SafeCertContextHandleWithKeyContainerDeletion.Unix.cs" />
     <Compile Include="Internal\Cryptography\Pal.Windows\X509Pal.PublicKey.Unix.cs" />
     <Compile Include="Internal\Cryptography\Pal.Windows\CertificatePal.PrivateKey.Unix.cs" />

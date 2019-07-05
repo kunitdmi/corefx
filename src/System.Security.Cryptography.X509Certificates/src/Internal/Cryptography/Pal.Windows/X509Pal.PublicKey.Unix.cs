@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
 using NTSTATUS = Interop.BCrypt.NTSTATUS;
-using SafeBCryptKeyHandle = System.Security.Cryptography.SafeKeyHandle;
+using SafeBCryptKeyHandle = Microsoft.Win32.SafeHandles.SafeBCryptKeyHandle;
 
 using static Interop.Crypt32;
 
