@@ -18,5 +18,6 @@ internal static partial class Interop
         internal const string Advapi32 = "/opt/cprocsp/lib/libcapi10.dylib";
         internal const string Crypt32 = "/opt/cprocsp/lib/libcapi20.dylib";
         internal const string Kernel32 = "/opt/cprocsp/lib/librdrsup.dylib";
+        internal const string CPalloc = "/opt/cprocsp/lib/libcpalloc.dylib";
     }
 }

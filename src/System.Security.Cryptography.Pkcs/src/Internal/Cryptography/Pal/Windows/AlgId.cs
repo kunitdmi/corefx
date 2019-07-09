@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Security.Cryptography;
 
 namespace Internal.Cryptography.Pal.Windows
 {
@@ -16,7 +17,9 @@ namespace Internal.Cryptography.Pal.Windows
         CALG_DES = 0x00006601,
         CALG_3DES = 0x00006603,
         //begin: gost
-        CALG_GOST3410 = 0x00002e23,
+        CALG_GOST3410 = GostConstants.CALG_GR3410EL,
+        CALG_GOST3410_2012_256 = GostConstants.CALG_GR3410_2012_256,
+        CALG_GOST3410_2012_512 = GostConstants.CALG_GR3410_2012_512,
         //end: gost
     }
 }

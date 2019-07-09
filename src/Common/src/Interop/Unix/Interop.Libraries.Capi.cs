@@ -10,5 +10,6 @@ internal static partial class Interop
         internal const string Advapi32 = "libcapi10";
         internal const string Crypt32 = "libcapi20";
         internal const string Kernel32 = "librdrsup";
+        internal const string CPalloc = "libcpalloc";
     }
 }

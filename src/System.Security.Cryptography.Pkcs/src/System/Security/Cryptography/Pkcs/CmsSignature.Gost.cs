@@ -38,7 +38,7 @@ namespace System.Security.Cryptography.Pkcs
                 ReadOnlyMemory<byte>? signatureParameters,
                 X509Certificate2 certificate)
             {
-                Gost3410 publicKey = certificate.PrivateKey as Gost3410;
+                Gost3410 publicKey = certificate.GetGost3410PublicKey();
                 if (publicKey != null)
                 {
                     return publicKey.VerifyHash(

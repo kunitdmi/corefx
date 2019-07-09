@@ -1,0 +1,26 @@
+<!-- Not a bug. odbc32.dll is a native component that is natively installed on Windows. -->
+crypt32.dll!CertDuplicateCertificateContext
+crypt32.dll!CertCreateCertificateContext
+crypt32.dll!CertFreeCertificateContext
+crypt32.dll!CertGetCertificateContextProperty
+crypt32.dll!CertGetPublicKeyLength
+crypt32.dll!CertNameToStrW
+crypt32.dll!CryptAcquireCertificatePrivateKey
+kernel32.dll!FormatMessageW
+advapi32.dll!CryptReleaseContext
+advapi32.dll!CryptSetProvParam
+advapi32.dll!CryptGetProvParam
+advapi32.dll!CryptDestroyKey
+advapi32.dll!CryptDestroyHash
+advapi32.dll!CryptAcquireContextA
+crypt32.dll!CryptFindOIDInfo
+crypt32.dll!CryptMsgControl
+crypt32.dll!CryptMsgUpdate
+crypt32.dll!CryptMsgOpenToEncode
+crypt32.dll!CryptMsgOpenToDecode
+crypt32.dll!CryptMsgGetParam
+crypt32.dll!CryptMsgClose
+crypt32.dll!CryptEncodeObject
+crypt32.dll!CryptDecodeObject
+/opt/cprocsp/lib/libcpalloc.dylib!CP_free
+/opt/cprocsp/lib/libcpalloc.dylib!CP_malloc

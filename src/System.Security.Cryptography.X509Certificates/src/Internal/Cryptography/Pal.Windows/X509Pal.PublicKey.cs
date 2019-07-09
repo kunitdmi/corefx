@@ -51,11 +51,31 @@ namespace Internal.Cryptography.Pal
                         cspObject.DecodePublicKey(encodedKeyValue);
                         var cspBlobData = GostKeyExchangeParameters.EncodePublicBlob(cspObject);
 
-                        Gost3410CryptoServiceProvider gost3410 = new Gost3410CryptoServiceProvider();
+                        Gost3410CryptoServiceProvider gost_sp = new Gost3410CryptoServiceProvider();
+                        gost_sp.ImportCspBlob(cspBlobData);
+                        return gost_sp;
+                    }
+                    case AlgId.CALG_GOST3410_2012_256:
+                    {
+                        var cspObject = new GostKeyExchangeParameters();
+                        cspObject.DecodeParameters(encodedParameters);
+                        cspObject.DecodePublicKey(encodedKeyValue);
+                        var cspBlobData = GostKeyExchangeParameters.EncodePublicBlob(cspObject);
 
-                        //gost3410.ImportCspBlob(encodedKeyValue, encodedParameters);
-                        gost3410.ImportCspBlob(cspBlobData);
-                        return gost3410;
+                        Gost3410_2012_256CryptoServiceProvider gost_sp = new Gost3410_2012_256CryptoServiceProvider();
+                        gost_sp.ImportCspBlob(cspBlobData);
+                        return gost_sp;
+                    }
+                    case AlgId.CALG_GOST3410_2012_512:
+                    {
+                        var cspObject = new GostKeyExchangeParameters();
+                        cspObject.DecodeParameters(encodedParameters);
+                        cspObject.DecodePublicKey(encodedKeyValue);
+                        var cspBlobData = GostKeyExchangeParameters.EncodePublicBlob(cspObject);
+
+                        Gost3410_2012_512CryptoServiceProvider gost_sp = new Gost3410_2012_512CryptoServiceProvider();
+                        gost_sp.ImportCspBlob(cspBlobData);
+                        return gost_sp;
                     }
                 //end: gost
                 case AlgId.CALG_DSS_SIGN:

@@ -4,7 +4,8 @@
       netstandard;
       netstandard-Windows_NT;
       netcoreapp-Windows_NT;
-      netcoreapp;
+      netcoreapp-OSX;
+      netcoreapp-Unix;
       net461-Windows_NT;
     </PackageConfigurations>
     <BuildConfigurations>

@@ -292,11 +292,11 @@ namespace Internal.NativeCrypto
                     break;
                 case CspAlgorithmType.PROV_GOST_2012_256:
                     keySize = GostConstants.GOST3410_2012_256KEY_SIZE;
-                    algId = GostConstants.CALG_GR3410_12_256;
+                    algId = GostConstants.CALG_GR3410_2012_256;
                     break;
                 case CspAlgorithmType.PROV_GOST_2012_512:
                     keySize = GostConstants.GOST3410_2012_512KEY_SIZE;
-                    algId = GostConstants.CALG_GR3410_12_512;
+                    algId = GostConstants.CALG_GR3410_2012_512;
                     break;
                 default:
                     throw new CryptographicException(SR.Cryptography_CSP_WrongKeySpec);
@@ -362,11 +362,11 @@ namespace Internal.NativeCrypto
                     break;
                 case CspAlgorithmType.PROV_GOST_2012_256:
                     keySize = GostConstants.GOST3410_2012_256KEY_SIZE;
-                    algId = GostConstants.CALG_GR3410_12_256;
+                    algId = GostConstants.CALG_GR3410_2012_256;
                     break;
                 case CspAlgorithmType.PROV_GOST_2012_512:
                     keySize = GostConstants.GOST3410_2012_512KEY_SIZE;
-                    algId = GostConstants.CALG_GR3410_12_512;
+                    algId = GostConstants.CALG_GR3410_2012_512;
                     break;
                 default:
                     throw new CryptographicException(SR.Cryptography_CSP_WrongKeySpec);

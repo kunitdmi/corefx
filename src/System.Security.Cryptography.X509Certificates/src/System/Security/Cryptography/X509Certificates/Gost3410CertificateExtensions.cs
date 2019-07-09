@@ -22,6 +22,22 @@ namespace System.Security.Cryptography.X509Certificates
         }
 
         /// <summary>
+        /// Gets the <see cref="Gost3410_2012_256" /> public key from the certificate or null if the certificate does not have an Gost3410 public key.
+        /// </summary>
+        public static Gost3410_2012_256 GetGost3410_2012_256PublicKey(this X509Certificate2 certificate)
+        {
+            return certificate.GetPublicKey<Gost3410_2012_256>();
+        }
+
+        /// <summary>
+        /// Gets the <see cref="Gost3410_2012_512" /> public key from the certificate or null if the certificate does not have an Gost3410 public key.
+        /// </summary>
+        public static Gost3410_2012_512 GetGost3410_2012_512PublicKey(this X509Certificate2 certificate)
+        {
+            return certificate.GetPublicKey<Gost3410_2012_512>();
+        }
+
+        /// <summary>
         /// Gets the <see cref="Gost3410" /> private key from the certificate or null if the certificate does not have an Gost3410 private key.
         /// </summary>
         public static Gost3410 GetGost3410PrivateKey(this X509Certificate2 certificate)

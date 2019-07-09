@@ -86,6 +86,10 @@ namespace Internal.Cryptography.Pal
                 return Oids.Dsa;
             if (typeof(T) == typeof(Gost3410))
                 return Oids.Gost3410EL;
+            if (typeof(T) == typeof(Gost3410_2012_256))
+                return Oids.Gost3410_2012_256;
+            if (typeof(T) == typeof(Gost3410_2012_512))
+                return Oids.Gost3410_2012_512;
             throw new NotSupportedException(SR.NotSupported_KeyAlgorithm);
         }
     }

@@ -768,8 +768,8 @@ namespace Internal.NativeCrypto
             else if (parameters.KeyNumber == CALG_DSS_SIGN || 
                      parameters.KeyNumber == CALG_RSA_SIGN ||
                      parameters.KeyNumber == GostConstants.CALG_GR3410EL ||
-                     parameters.KeyNumber == GostConstants.CALG_GR3410_12_256 ||
-                     parameters.KeyNumber == GostConstants.CALG_GR3410_12_256)
+                     parameters.KeyNumber == GostConstants.CALG_GR3410_2012_256 ||
+                     parameters.KeyNumber == GostConstants.CALG_GR3410_2012_256)
             {
                 parameters.KeyNumber = (int)KeyNumber.Signature;
             }

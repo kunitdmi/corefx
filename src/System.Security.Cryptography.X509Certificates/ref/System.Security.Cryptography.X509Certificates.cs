@@ -53,6 +53,8 @@ namespace System.Security.Cryptography.X509Certificates
         public static System.Security.Cryptography.Gost3410_2012_256 GetGost3410_2012_256PrivateKey(this System.Security.Cryptography.X509Certificates.X509Certificate2 certificate) { throw null; }
         public static System.Security.Cryptography.Gost3410_2012_512 GetGost3410_2012_512PrivateKey(this System.Security.Cryptography.X509Certificates.X509Certificate2 certificate) { throw null; }
         public static System.Security.Cryptography.Gost3410 GetGost3410PublicKey(this System.Security.Cryptography.X509Certificates.X509Certificate2 certificate) { throw null; }
+        public static System.Security.Cryptography.Gost3410_2012_256 GetGost3410_2012_256PublicKey(this System.Security.Cryptography.X509Certificates.X509Certificate2 certificate) { throw null; }
+        public static System.Security.Cryptography.Gost3410_2012_512 GetGost3410_2012_512PublicKey(this System.Security.Cryptography.X509Certificates.X509Certificate2 certificate) { throw null; }
     }
 
     //end: gost

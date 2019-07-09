@@ -458,6 +458,8 @@ namespace Internal.Cryptography.Pal.Native
         public const int CALG_SHA1     = 0x8004;
         //begin: gost
         public const int CALG_GOST3410 = GostConstants.CALG_GR3410EL;
+        public const int CALG_GOST3410_2012_256 = GostConstants.CALG_GR3410_2012_256;
+        public const int CALG_GOST3410_2012_512 = GostConstants.CALG_GR3410_2012_512;
         //end: gost
     }
 
