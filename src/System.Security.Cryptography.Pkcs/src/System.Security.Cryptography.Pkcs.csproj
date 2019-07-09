@@ -390,6 +390,11 @@
       <Link>Common\Interop\OSX\Interop.Libraries.cs</Link>
     </Compile>
   </ItemGroup>
+    <ItemGroup Condition=" '$(TargetsWindows)' != 'true' AND '$(TargetsOSX)' != 'true' ">
+    <Compile Include="$(CommonPath)\Interop\Unix\Interop.Libraries.Capi.cs">
+      <Link>Common\Interop\Unix\Interop.Libraries.Capi.cs</Link>
+    </Compile>
+  </ItemGroup>
   <ItemGroup Condition="'$(IsPartialFacadeAssembly)' == 'true'">
     <Reference Include="mscorlib" />
     <Reference Include="System.Security" />
