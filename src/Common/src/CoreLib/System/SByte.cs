@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable enable
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -146,12 +145,6 @@ namespace System
         {
             NumberFormatInfo.ValidateParseStyleInteger(style);
             return Parse(s, style, NumberFormatInfo.GetInstance(provider));
-        }
-
-        private static sbyte Parse(string s, NumberStyles style, NumberFormatInfo info)
-        {
-            if (s == null) ThrowHelper.ThrowArgumentNullException(ExceptionArgument.s);
-            return Parse((ReadOnlySpan<char>)s, style, info);
         }
 
         private static sbyte Parse(ReadOnlySpan<char> s, NumberStyles style, NumberFormatInfo info)

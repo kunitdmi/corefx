@@ -21,16 +21,23 @@ namespace System.Text.Json
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ValidatePropertyNameAndDepth(ReadOnlySpan<byte> utf8PropertyName)
         {
-            if (utf8PropertyName.Length > JsonConstants.MaxTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
+            if (utf8PropertyName.Length > JsonConstants.MaxUnescapedTokenSize || CurrentDepth >= JsonConstants.MaxWriterDepth)
                 ThrowHelper.ThrowInvalidOperationOrArgumentException(utf8PropertyName, _currentDepth);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ValidateDepth()
+        {
+            if (CurrentDepth >= JsonConstants.MaxWriterDepth)
+                ThrowHelper.ThrowInvalidOperationException(_currentDepth);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ValidateWritingProperty()
         {
-            if (!Options.SkipValidation)
+            if (!_options.SkipValidation)
             {
-                if (!_inObject)
+                if (!_inObject || _tokenType == JsonTokenType.PropertyName)
                 {
                     Debug.Assert(_tokenType != JsonTokenType.StartObject);
                     ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CannotWritePropertyWithinArray, currentDepth: default, token: default, _tokenType);
@@ -41,9 +48,9 @@ namespace System.Text.Json
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ValidateWritingProperty(byte token)
         {
-            if (!Options.SkipValidation)
+            if (!_options.SkipValidation)
             {
-                if (!_inObject)
+                if (!_inObject || _tokenType == JsonTokenType.PropertyName)
                 {
                     Debug.Assert(_tokenType != JsonTokenType.StartObject);
                     ThrowHelper.ThrowInvalidOperationException(ExceptionResource.CannotWritePropertyWithinArray, currentDepth: default, token: default, _tokenType);
@@ -101,6 +108,8 @@ namespace System.Text.Json
             {
                 output[BytesPending++] = JsonConstants.ListSeparator;
             }
+
+            Debug.Assert(_options.SkipValidation || _tokenType != JsonTokenType.PropertyName);
 
             if (_tokenType != JsonTokenType.None)
             {
@@ -172,6 +181,8 @@ namespace System.Text.Json
             {
                 output[BytesPending++] = JsonConstants.ListSeparator;
             }
+
+            Debug.Assert(_options.SkipValidation || _tokenType != JsonTokenType.PropertyName);
 
             if (_tokenType != JsonTokenType.None)
             {

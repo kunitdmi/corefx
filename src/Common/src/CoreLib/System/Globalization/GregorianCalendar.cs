@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable enable
 namespace System.Globalization
 {
     /// <remarks>
@@ -28,7 +27,7 @@ namespace System.Globalization
 
         private static readonly int[] DaysToMonth366 = { 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 };
 
-        private static volatile Calendar s_defaultInstance;
+        private static volatile Calendar? s_defaultInstance;
 
         public override DateTime MinSupportedDateTime => DateTime.MinValue;
 

@@ -8,7 +8,7 @@ namespace System.Buffers
     {
         private sealed class ArrayMemoryPoolBuffer : IMemoryOwner<T>
         {
-            private T[] _array;
+            private T[]? _array;
 
             public ArrayMemoryPoolBuffer(int size)
             {
@@ -19,7 +19,7 @@ namespace System.Buffers
             {
                 get
                 {
-                    T[] array = _array;
+                    T[]? array = _array;
                     if (array == null)
                     {
                         ThrowHelper.ThrowObjectDisposedException_ArrayMemoryPoolBuffer();
@@ -31,7 +31,7 @@ namespace System.Buffers
 
             public void Dispose()
             {
-                T[] array = _array;
+                T[]? array = _array;
                 if (array != null)
                 {
                     _array = null;

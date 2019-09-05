@@ -22,8 +22,62 @@ namespace System.IO.Pipelines.Tests
 
             Assert.Equal(0, stream.Length);
 
-            // This throws
             writer.Complete();
+        }
+
+        [Fact]
+        public void DataFlushedOnComplete()
+        {
+            byte[] bytes = Encoding.ASCII.GetBytes("Hello World");
+            var stream = new MemoryStream();
+            PipeWriter writer = PipeWriter.Create(stream, new StreamPipeWriterOptions(leaveOpen: true));
+
+            bytes.AsSpan().CopyTo(writer.GetSpan(bytes.Length));
+            writer.Advance(bytes.Length);
+
+            Assert.Equal(0, stream.Length);
+
+            writer.Complete();
+
+            Assert.Equal(bytes.Length, stream.Length);
+            Assert.Equal("Hello World", Encoding.ASCII.GetString(stream.ToArray()));
+        }
+
+        [Fact]
+        public async Task DataFlushedOnCompleteAsync()
+        {
+            byte[] bytes = Encoding.ASCII.GetBytes("Hello World");
+            var stream = new MemoryStream();
+            PipeWriter writer = PipeWriter.Create(stream, new StreamPipeWriterOptions(leaveOpen: true));
+
+            bytes.AsSpan().CopyTo(writer.GetSpan(bytes.Length));
+            writer.Advance(bytes.Length);
+
+            Assert.Equal(0, stream.Length);
+
+            await writer.CompleteAsync();
+
+            Assert.Equal(bytes.Length, stream.Length);
+            Assert.Equal("Hello World", Encoding.ASCII.GetString(stream.ToArray()));
+        }
+
+        [Fact]
+        public async Task CompleteAsyncDoesNotThrowObjectDisposedException()
+        {
+            byte[] bytes = Encoding.ASCII.GetBytes("Hello World");
+            var stream = new MemoryStream();
+            PipeWriter writer = PipeWriter.Create(stream, new StreamPipeWriterOptions(leaveOpen: true));
+
+            await writer.FlushAsync();
+            bytes.AsSpan().CopyTo(writer.GetSpan(bytes.Length));
+            writer.Advance(bytes.Length);
+
+            Assert.Equal(0, stream.Length);
+
+            await writer.CompleteAsync();
+
+            Assert.Equal(bytes.Length, stream.Length);
+            Assert.Equal("Hello World", Encoding.ASCII.GetString(stream.ToArray()));
         }
 
         [Fact]
@@ -95,20 +149,24 @@ namespace System.IO.Pipelines.Tests
         [Fact]
         public async Task CanDoMultipleAsyncWritesToStream()
         {
-            var pipe = new Pipe(new PipeOptions(readerScheduler: PipeScheduler.Inline));
+            var pipe = new Pipe();
             PipeWriter writer = PipeWriter.Create(pipe.Writer.AsStream());
+            // This needs to run inline to synchronize the reader and writer
+            TaskCompletionSource<object> waitForRead = null;
 
-            static async Task DoWritesAsync(PipeWriter writer, byte[][] writes)
+            async Task DoWritesAsync(PipeWriter writer, byte[][] writes)
             {
                 for (int i = 0; i < writes.Length; i++)
                 {
+                    waitForRead = new TaskCompletionSource<object>();
                     await writer.WriteAsync(writes[i]);
+                    await waitForRead.Task;
                 }
 
                 writer.Complete();
             }
 
-            static async Task DoReadsAsync(PipeReader reader, byte[][] reads)
+            async Task DoReadsAsync(PipeReader reader, byte[][] reads)
             {
                 int index = 0;
                 while (true)
@@ -122,6 +180,7 @@ namespace System.IO.Pipelines.Tests
                     Assert.Equal(reads[index], buffer.ToArray());
                     reader.AdvanceTo(buffer.End);
                     index++;
+                    waitForRead.TrySetResult(null);
                 }
 
                 reader.Complete();
@@ -397,7 +456,28 @@ namespace System.IO.Pipelines.Tests
         public void InvalidMinimumBufferSize_ThrowsArgException()
         {
             Assert.Throws<ArgumentOutOfRangeException>(() => new StreamPipeWriterOptions(minimumBufferSize: 0));
-            Assert.Throws<ArgumentOutOfRangeException>(() => new StreamPipeWriterOptions(minimumBufferSize: -1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new StreamPipeWriterOptions(minimumBufferSize: -2));
+        }
+
+        [Fact]
+        public void StreamPipeWriterOptions_Ctor_Defaults()
+        {
+            var options = new StreamPipeWriterOptions();
+            Assert.Same(MemoryPool<byte>.Shared, options.Pool);
+            Assert.Equal(4096, options.MinimumBufferSize);
+            Assert.False(options.LeaveOpen);
+        }
+
+        [Fact]
+        public void StreamPipeWriterOptions_Ctor_Roundtrip()
+        {
+            using (var pool = new TestMemoryPool())
+            {
+                var options = new StreamPipeWriterOptions(pool: pool, minimumBufferSize: 1234, leaveOpen: true);
+                Assert.Same(pool, options.Pool);
+                Assert.Equal(1234, options.MinimumBufferSize);
+                Assert.True(options.LeaveOpen);
+            }
         }
 
         [Fact]
@@ -446,11 +526,60 @@ namespace System.IO.Pipelines.Tests
         }
 
         [Fact]
-        public void OnReaderCompletedThrowsNotSupported()
+        public void OnReaderCompletedNoops()
         {
+            bool fired = false;
             PipeWriter writer = PipeWriter.Create(Stream.Null);
-            Assert.Throws<NotSupportedException>(() => writer.OnReaderCompleted((_, __) => { }, null));
+#pragma warning disable CS0618 // Type or member is obsolete
+            writer.OnReaderCompleted((_, __) => { fired = true; }, null);
+#pragma warning restore CS0618 // Type or member is obsolete
             writer.Complete();
+            Assert.False(fired);
+        }
+
+        [Fact]
+        public void LeaveUnderlyingStreamOpen()
+        {
+            var stream = new MemoryStream();
+            PipeWriter writer = PipeWriter.Create(stream, new StreamPipeWriterOptions(leaveOpen: true));
+
+            writer.Complete();
+
+            Assert.True(stream.CanRead);
+        }
+
+        [Fact]
+        public async Task OperationCancelledExceptionNotSwallowedIfNotThrownFromSpecifiedToken()
+        {
+            PipeWriter writer = PipeWriter.Create(new ThrowsOperationCanceledExceptionStream());
+
+            await Assert.ThrowsAsync<OperationCanceledException>(async () => await writer.WriteAsync(new byte[1]));
+            await Assert.ThrowsAsync<OperationCanceledException>(async () => await writer.FlushAsync());
+        }
+
+        private class ThrowsOperationCanceledExceptionStream : WriteOnlyStream
+        {
+            public override void Write(byte[] buffer, int offset, int count)
+            {
+                throw new OperationCanceledException();
+            }
+
+            public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+            {
+                throw new OperationCanceledException();
+            }
+
+            public override Task FlushAsync(CancellationToken cancellationToken)
+            {
+                throw new OperationCanceledException();
+            }
+
+#if netcoreapp
+            public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
+            {
+                throw new OperationCanceledException();
+            }
+#endif
         }
 
         private class FlushAsyncAwareStream : WriteOnlyStream

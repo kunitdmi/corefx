@@ -4,17 +4,28 @@
 
 using System.Buffers;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Text.Json.Tests;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
 using Xunit.Sdk;
 
-namespace System.Text.Json.Tests
+namespace System.Text.Json
 {
     internal static class JsonTestHelper
     {
+#if BUILDING_INBOX_LIBRARY
+        public const string DoubleFormatString = null;
+        public const string SingleFormatString = null;
+#else
+        public const string DoubleFormatString = "G17";
+        public const string SingleFormatString = "G9";
+#endif
+
         public static string NewtonsoftReturnStringHelper(TextReader reader)
         {
             var sb = new StringBuilder();
@@ -141,20 +152,49 @@ namespace System.Text.Json.Tests
             return new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
         }
 
-        public static ReadOnlySequence<byte> GetSequence(byte[] _dataUtf8, int segmentSize)
+        public static ReadOnlySequence<byte> CreateSegments(byte[] data, int splitLocation)
         {
-            int numberOfSegments = _dataUtf8.Length / segmentSize + 1;
+            Debug.Assert(splitLocation <= data.Length);
+
+            ReadOnlyMemory<byte> dataMemory = data;
+
+            var firstSegment = new BufferSegment<byte>(dataMemory.Slice(0, splitLocation));
+            ReadOnlyMemory<byte> secondMem = dataMemory.Slice(splitLocation);
+            BufferSegment<byte> secondSegment = firstSegment.Append(secondMem);
+
+            return new ReadOnlySequence<byte>(firstSegment, 0, secondSegment, secondMem.Length);
+        }
+
+        public static ReadOnlySequence<byte> CreateSegments(byte[] data, int firstSplit, int secondSplit)
+        {
+            Debug.Assert(firstSplit <= data.Length && secondSplit <= data.Length && firstSplit <= secondSplit);
+
+            ReadOnlyMemory<byte> dataMemory = data;
+
+            var firstSegment = new BufferSegment<byte>(dataMemory.Slice(0, firstSplit));
+            ReadOnlyMemory<byte> secondMem = dataMemory.Slice(firstSplit, secondSplit - firstSplit);
+            BufferSegment<byte> secondSegment = firstSegment.Append(secondMem);
+
+            ReadOnlyMemory<byte> thirdMem = dataMemory.Slice(secondSplit);
+            BufferSegment<byte> thirdSegment = secondSegment.Append(thirdMem);
+
+            return new ReadOnlySequence<byte>(firstSegment, 0, thirdSegment, thirdMem.Length);
+        }
+
+        public static ReadOnlySequence<byte> GetSequence(byte[] dataUtf8, int segmentSize)
+        {
+            int numberOfSegments = dataUtf8.Length / segmentSize + 1;
             byte[][] buffers = new byte[numberOfSegments][];
 
             for (int j = 0; j < numberOfSegments - 1; j++)
             {
                 buffers[j] = new byte[segmentSize];
-                Array.Copy(_dataUtf8, j * segmentSize, buffers[j], 0, segmentSize);
+                Array.Copy(dataUtf8, j * segmentSize, buffers[j], 0, segmentSize);
             }
 
-            int remaining = _dataUtf8.Length % segmentSize;
+            int remaining = dataUtf8.Length % segmentSize;
             buffers[numberOfSegments - 1] = new byte[remaining];
-            Array.Copy(_dataUtf8, _dataUtf8.Length - remaining, buffers[numberOfSegments - 1], 0, remaining);
+            Array.Copy(dataUtf8, dataUtf8.Length - remaining, buffers[numberOfSegments - 1], 0, remaining);
 
             return BufferFactory.Create(buffers);
         }
@@ -256,6 +296,90 @@ namespace System.Text.Json.Tests
                     builder.AppendFormat(CultureInfo.InvariantCulture, "{0}, ", entry);
             }
             return builder.ToString();
+        }
+
+        private static JsonTokenType MapTokenType(JsonToken token)
+        {
+            switch (token)
+            {
+                case JsonToken.None:
+                    return JsonTokenType.None;
+                case JsonToken.StartObject:
+                    return JsonTokenType.StartObject;
+                case JsonToken.StartArray:
+                    return JsonTokenType.StartArray;
+                case JsonToken.PropertyName:
+                    return JsonTokenType.PropertyName;
+                case JsonToken.Comment:
+                    return JsonTokenType.Comment;
+                case JsonToken.Integer:
+                case JsonToken.Float:
+                    return JsonTokenType.Number;
+                case JsonToken.String:
+                    return JsonTokenType.String;
+                case JsonToken.Boolean:
+                    return JsonTokenType.True;
+                case JsonToken.Null:
+                    return JsonTokenType.Null;
+                case JsonToken.EndObject:
+                    return JsonTokenType.EndObject;
+                case JsonToken.EndArray:
+                    return JsonTokenType.EndArray;
+                case JsonToken.StartConstructor:
+                case JsonToken.EndConstructor:
+                case JsonToken.Date:
+                case JsonToken.Bytes:
+                case JsonToken.Undefined:
+                case JsonToken.Raw:
+                default:
+                    throw new InvalidOperationException();
+            }
+        }
+
+        public static string InsertCommentsEverywhere(string jsonString)
+        {
+            StringBuilder sb = new StringBuilder();
+            StringWriter sw = new StringWriter(sb);
+
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            {
+                writer.Formatting = Formatting.Indented;
+
+                var newtonsoft = new JsonTextReader(new StringReader(jsonString));
+                writer.WriteComment("comment");
+                while (newtonsoft.Read())
+                {
+                    writer.WriteToken(newtonsoft, writeChildren: false);
+                    writer.WriteComment("comment");
+                }
+                writer.WriteComment("comment");
+            }
+            return sb.ToString();
+        }
+
+        public static List<JsonTokenType> GetTokenTypes(string jsonString)
+        {
+            var newtonsoft = new JsonTextReader(new StringReader(jsonString));
+            int totalReads = 0;
+            while (newtonsoft.Read())
+            {
+                totalReads++;
+            }
+
+            var expectedTokenTypes = new List<JsonTokenType>();
+
+            for (int i = 0; i < totalReads; i++)
+            {
+                newtonsoft = new JsonTextReader(new StringReader(jsonString));
+                for (int j = 0; j < i; j++)
+                {
+                    Assert.True(newtonsoft.Read());
+                }
+                newtonsoft.Skip();
+                expectedTokenTypes.Add(MapTokenType(newtonsoft.TokenType));
+            }
+
+            return expectedTokenTypes;
         }
 
         public static byte[] ReaderLoop(int inpuDataLength, out int length, ref Utf8JsonReader json)
@@ -579,6 +703,42 @@ namespace System.Text.Json.Tests
             }
         }
 
+        public static void AssertContents(string expectedValue, ArrayBufferWriter<byte> buffer)
+        {
+            string value = Encoding.UTF8.GetString(
+                    buffer.WrittenSpan
+#if netfx
+                        .ToArray()
+#endif
+                    );
+
+            // Temporary hack until we can use the same escape algorithm on both sides and make sure we want uppercase hex.
+            // Todo: create new AssertContentsAgainJsonNet to avoid calling NormalizeToJsonNetFormat when not necessary.
+            Assert.Equal(expectedValue.NormalizeToJsonNetFormat(), value.NormalizeToJsonNetFormat());
+        }
+
+        public static void AssertContents(string expectedValue, MemoryStream stream)
+        {
+            string value = Encoding.UTF8.GetString(stream.ToArray());
+
+            // Temporary hack until we can use the same escape algorithm on both sides and make sure we want uppercase hex.
+            Assert.Equal(expectedValue.NormalizeToJsonNetFormat(), value.NormalizeToJsonNetFormat());
+        }
+
+        public static void AssertContentsNotEqual(string expectedValue, ArrayBufferWriter<byte> buffer)
+        {
+            string value = Encoding.UTF8.GetString(
+                    buffer.WrittenSpan
+#if netfx
+                        .ToArray()
+#endif
+                    );
+
+            // Temporary hack until we can use the same escape algorithm on both sides and make sure we want uppercase hex.
+            // Todo: create new AssertContentsNotEqualAgainJsonNet to avoid calling NormalizeToJsonNetFormat when not necessary.
+            Assert.NotEqual(expectedValue.NormalizeToJsonNetFormat(), value.NormalizeToJsonNetFormat());
+        }
+
         public delegate void AssertThrowsActionUtf8JsonReader(Utf8JsonReader json);
 
         // Cannot use standard Assert.Throws() when testing Utf8JsonReader - ref structs and closures don't get along.
@@ -601,7 +761,7 @@ namespace System.Text.Json.Tests
                 throw new ThrowsException(typeof(E));
             }
 
-            if (ex.GetType() != typeof(E))
+            if (!(ex is E))
             {
                 throw new ThrowsException(typeof(E), ex);
             }
@@ -636,5 +796,10 @@ namespace System.Text.Json.Tests
                 throw new ThrowsException(typeof(E), ex);
             }
         }
+
+        private static readonly Regex s_stripWhitespace = new Regex(@"\s+", RegexOptions.Compiled);
+
+        public static string StripWhitespace(this string value)
+            => s_stripWhitespace.Replace(value, string.Empty);
     }
 }

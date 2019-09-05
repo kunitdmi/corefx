@@ -5,6 +5,7 @@
     <Configurations>netcoreapp-Debug;netcoreapp-Release;uap-Debug;uap-Release</Configurations>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AssemblyAttributes.cs" />
     <Compile Include="ByteTypeTests.cs" />
     <Compile Include="CharTypeTests.cs" />
     <Compile Include="CollectionsTests.cs" />
@@ -17,6 +18,8 @@
     <Compile Include="DateTypeTests.cs" />
     <Compile Include="DateAndTimeTests.cs" />
     <Compile Include="ErrObjectTests.cs" />
+    <Compile Include="FileSystemTests.cs" />
+    <Compile Include="FinancialTests.cs" />
     <Compile Include="IConvertibleWrapper.cs" />
     <Compile Include="InformationTests.cs" />
     <Compile Include="IntegerTypeTests.cs" />
@@ -24,26 +27,17 @@
     <Compile Include="LateBindingTests.cs" />
     <Compile Include="LikeOperatorTests.cs" />
     <Compile Include="LongTypeTests.cs" />
-    <Compile Include="Microsoft\VisualBasic\ApplicationServices\ApplicationBaseTests.cs" />
-    <Compile Include="Microsoft\VisualBasic\ApplicationServices\StartupEventArgsTests.cs" />
-    <Compile Include="Microsoft\VisualBasic\ApplicationServices\StartupNextInstanceEventArgsTests.cs" />
-    <Compile Include="Microsoft\VisualBasic\ApplicationServices\UnhandledExceptionEventArgsTests.cs" />
-    <Compile Include="Microsoft\VisualBasic\ApplicationServices\UserTests.cs" />
     <Compile Include="Microsoft\VisualBasic\ComClassAttributeTests.cs" />
     <Compile Include="Microsoft\VisualBasic\CompilerServices\DesignerGeneratedAttributeTests.cs" />
     <Compile Include="Microsoft\VisualBasic\CompilerServices\OptionCompareAttributeTests.cs" />
     <Compile Include="Microsoft\VisualBasic\CompilerServices\OptionTextAttributeTests.cs" />
     <Compile Include="Microsoft\VisualBasic\CompilerServices\StandardModuleAttributeTests.cs" />
     <Compile Include="Microsoft\VisualBasic\CompilerServices\StructUtilsTests.cs" />
-    <Compile Include="Microsoft\VisualBasic\Devices\ClockTests.cs" />
-    <Compile Include="Microsoft\VisualBasic\Devices\ComputerInfoTests.cs" />
-    <Compile Include="Microsoft\VisualBasic\Devices\ComputerTests.cs" />
-    <Compile Include="Microsoft\VisualBasic\Devices\NetworkAvailableEventArgsTests.cs" />
-    <Compile Include="Microsoft\VisualBasic\Devices\ServerComputerTests.cs" />
+    <Compile Include="Microsoft\VisualBasic\FileIO\FileSystemTests.cs" />
+    <Compile Include="Microsoft\VisualBasic\FileIO\SpecialDirectoriesTests.cs" />
+    <Compile Include="Microsoft\VisualBasic\FileIO\TextFieldParserTests.cs" />
     <Compile Include="Microsoft\VisualBasic\HideModuleNameAttributeTests.cs" />
     <Compile Include="Microsoft\VisualBasic\MyGroupCollectionAttributeTests.cs" />
-    <Compile Include="Microsoft\VisualBasic\MyServices\FileSystemProxyTests.cs" />
-    <Compile Include="Microsoft\VisualBasic\MyServices\SpecialDirectoriesProxyTests.cs" />
     <Compile Include="Microsoft\VisualBasic\VBFixedArrayAttributeTests.cs" />
     <Compile Include="Microsoft\VisualBasic\VBFixedStringAttributeTests.cs" />
     <Compile Include="ObjectTypeTests.cs" />
@@ -56,8 +50,5 @@
     <Compile Include="StringTypeTests.cs" />
     <Compile Include="UtilsTests.cs" />
     <Compile Include="VBMathTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\$(AssemblyName).rd.xml" />
   </ItemGroup>
 </Project>

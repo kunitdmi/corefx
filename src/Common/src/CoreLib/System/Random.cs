@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable enable
 namespace System
 {
     public class Random
@@ -117,7 +116,7 @@ namespace System
         }
 
         [ThreadStatic]
-        private static Random t_threadRandom;
+        private static Random? t_threadRandom;
         private static readonly Random s_globalRandom = new Random(GenerateGlobalSeed());
 
         /*=====================================GenerateSeed=====================================
@@ -126,7 +125,7 @@ namespace System
         ========================================================================================*/
         private static int GenerateSeed()
         {
-            Random rnd = t_threadRandom;
+            Random? rnd = t_threadRandom;
             if (rnd == null)
             {
                 int seed;

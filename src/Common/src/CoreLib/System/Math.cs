@@ -2,6 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+// ===================================================================================================
+// Portions of the code implemented below are based on the 'Berkeley SoftFloat Release 3e' algorithms.
+// ===================================================================================================
+
 /*============================================================
 **
 **
@@ -13,9 +17,8 @@
 
 //This class contains only static members and doesn't require serialization.
 
-#nullable enable
 using System.Diagnostics;
-using System.Runtime;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 
@@ -100,6 +103,7 @@ namespace System
             return decimal.Abs(value);
         }
 
+        [DoesNotReturn]
         [StackTraceHidden]
         private static void ThrowAbsOverflow()
         {
@@ -539,31 +543,23 @@ namespace System
 
         public static double Max(double val1, double val2)
         {
-            // When val1 and val2 are both finite or infinite, return the larger
-            //  * We count +0.0 as larger than -0.0 to match MSVC
-            // When val1 or val2, but not both, are NaN return the opposite
-            //  * We return the opposite if either is NaN to match MSVC
+            // This matches the IEEE 754:2019 `maximum` function
+            //
+            // It propagates NaN inputs back to the caller and
+            // otherwise returns the larger of the inputs. It
+            // treats +0 as larger than -0 as per the specification.
 
-            if (double.IsNaN(val1))
-            {
-                return val2;
-            }
-
-            if (double.IsNaN(val2))
+            if ((val1 > val2) || double.IsNaN(val1))
             {
                 return val1;
             }
-
-            // We do this comparison first and separately to handle the -0.0 to +0.0 comparision
-            // * Doing (val1 < val2) first could get transformed into (val2 >= val1) by the JIT
-            //   which would then return an incorrect value
 
             if (val1 == val2)
             {
                 return double.IsNegative(val1) ? val2 : val1;
             }
 
-            return (val1 < val2) ? val2 : val1;
+            return val2;
         }
 
         [NonVersionable]
@@ -593,31 +589,23 @@ namespace System
         
         public static float Max(float val1, float val2)
         {
-            // When val1 and val2 are both finite or infinite, return the larger
-            //  * We count +0.0 as larger than -0.0 to match MSVC
-            // When val1 or val2, but not both, are NaN return the opposite
-            //  * We return the opposite if either is NaN to match MSVC
+            // This matches the IEEE 754:2019 `maximum` function
+            //
+            // It propagates NaN inputs back to the caller and
+            // otherwise returns the larger of the inputs. It
+            // treats +0 as larger than -0 as per the specification.
 
-            if (float.IsNaN(val1))
-            {
-                return val2;
-            }
-
-            if (float.IsNaN(val2))
+            if ((val1 > val2) || float.IsNaN(val1))
             {
                 return val1;
             }
-
-            // We do this comparison first and separately to handle the -0.0 to +0.0 comparision
-            // * Doing (val1 < val2) first could get transformed into (val2 >= val1) by the JIT
-            //   which would then return an incorrect value
 
             if (val1 == val2)
             {
                 return float.IsNegative(val1) ? val2 : val1;
             }
 
-            return (val1 < val2) ? val2 : val1;
+            return val2;
         }
 
         [CLSCompliant(false)]
@@ -643,34 +631,26 @@ namespace System
 
         public static double MaxMagnitude(double x, double y)
         {
-            // When x and y are both finite or infinite, return the larger magnitude
-            //  * We count +0.0 as larger than -0.0 to match MSVC
-            // When x or y, but not both, are NaN return the opposite
-            //  * We return the opposite if either is NaN to match MSVC
-
-            if (double.IsNaN(x))
-            {
-                return y;
-            }
-
-            if (double.IsNaN(y))
-            {
-                return x;
-            }
-
-            // We do this comparison first and separately to handle the -0.0 to +0.0 comparision
-            // * Doing (ax < ay) first could get transformed into (ay >= ax) by the JIT which would
-            //   then return an incorrect value
+            // This matches the IEEE 754:2019 `maximumMagnitude` function
+            //
+            // It propagates NaN inputs back to the caller and
+            // otherwise returns the input with a larger magnitude.
+            // It treats +0 as larger than -0 as per the specification.
 
             double ax = Abs(x);
             double ay = Abs(y);
+
+            if ((ax > ay) || double.IsNaN(ax))
+            {
+                return x;
+            }
 
             if (ax == ay)
             {
                 return double.IsNegative(x) ? y : x;
             }
 
-            return (ax < ay) ? y : x;
+            return y;
         }
 
         [NonVersionable]
@@ -687,31 +667,23 @@ namespace System
 
         public static double Min(double val1, double val2)
         {
-            // When val1 and val2 are both finite or infinite, return the smaller
-            //  * We count -0.0 as smaller than -0.0 to match MSVC
-            // When val1 or val2, but not both, are NaN return the opposite
-            //  * We return the opposite if either is NaN to match MSVC
+            // This matches the IEEE 754:2019 `minimum` function
+            //
+            // It propagates NaN inputs back to the caller and
+            // otherwise returns the larger of the inputs. It
+            // treats +0 as larger than -0 as per the specification.
 
-            if (double.IsNaN(val1))
-            {
-                return val2;
-            }
-
-            if (double.IsNaN(val2))
+            if ((val1 < val2) || double.IsNaN(val1))
             {
                 return val1;
             }
-
-            // We do this comparison first and separately to handle the -0.0 to +0.0 comparision
-            // * Doing (val1 < val2) first could get transformed into (val2 >= val1) by the JIT
-            //   which would then return an incorrect value
 
             if (val1 == val2)
             {
                 return double.IsNegative(val1) ? val1 : val2;
             }
 
-            return (val1 < val2) ? val1 : val2;
+            return val2;
         }
 
         [NonVersionable]
@@ -741,31 +713,23 @@ namespace System
 
         public static float Min(float val1, float val2)
         {
-            // When val1 and val2 are both finite or infinite, return the smaller
-            //  * We count -0.0 as smaller than -0.0 to match MSVC
-            // When val1 or val2, but not both, are NaN return the opposite
-            //  * We return the opposite if either is NaN to match MSVC
+            // This matches the IEEE 754:2019 `minimum` function
+            //
+            // It propagates NaN inputs back to the caller and
+            // otherwise returns the larger of the inputs. It
+            // treats +0 as larger than -0 as per the specification.
 
-            if (float.IsNaN(val1))
-            {
-                return val2;
-            }
-
-            if (float.IsNaN(val2))
+            if ((val1 < val2) || float.IsNaN(val1))
             {
                 return val1;
             }
-
-            // We do this comparison first and separately to handle the -0.0 to +0.0 comparision
-            // * Doing (val1 < val2) first could get transformed into (val2 >= val1) by the JIT
-            //   which would then return an incorrect value
 
             if (val1 == val2)
             {
                 return float.IsNegative(val1) ? val1 : val2;
             }
 
-            return (val1 < val2) ? val1 : val2;
+            return val2;
         }
 
         [CLSCompliant(false)]
@@ -791,34 +755,26 @@ namespace System
 
         public static double MinMagnitude(double x, double y)
         {
-            // When x and y are both finite or infinite, return the smaller magnitude
-            //  * We count -0.0 as smaller than -0.0 to match MSVC
-            // When x or y, but not both, are NaN return the opposite
-            //  * We return the opposite if either is NaN to match MSVC
-
-            if (double.IsNaN(x))
-            {
-                return y;
-            }
-
-            if (double.IsNaN(y))
-            {
-                return x;
-            }
-
-            // We do this comparison first and separately to handle the -0.0 to +0.0 comparision
-            // * Doing (ax < ay) first could get transformed into (ay >= ax) by the JIT which would
-            //   then return an incorrect value
+            // This matches the IEEE 754:2019 `minimumMagnitude` function
+            //
+            // It propagates NaN inputs back to the caller and
+            // otherwise returns the input with a larger magnitude.
+            // It treats +0 as larger than -0 as per the specification.
 
             double ax = Abs(x);
             double ay = Abs(y);
+
+            if ((ax < ay) || double.IsNaN(ax))
+            {
+                return x;
+            }
 
             if (ax == ay)
             {
                 return double.IsNegative(x) ? x : y;
             }
 
-            return (ax < ay) ? x : y;
+            return y;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -849,29 +805,70 @@ namespace System
         public static double Round(double a)
         {
             // ************************************************************************************
-            // IMPORTANT: Do not change this implementation without also updating Math.Round(double),
+            // IMPORTANT: Do not change this implementation without also updating MathF.Round(float),
             //            FloatingPointUtils::round(double), and FloatingPointUtils::round(float)
             // ************************************************************************************
 
-            // If the number has no fractional part do nothing
-            // This shortcut is necessary to workaround precision loss in borderline cases on some platforms
+            // This is based on the 'Berkeley SoftFloat Release 3e' algorithm
+            // This only includes the roundToNearestTiesToEven code paths
 
-            if (a == (double)((long)a))
+            ulong bits = (ulong)BitConverter.DoubleToInt64Bits(a);
+            int exponent = double.ExtractExponentFromBits(bits);
+
+            if (exponent <= 0x03FE)
             {
+                if ((bits << 1) == 0)
+                {
+                    // Exactly +/- zero should return the original value
+                    return a;
+                }
+
+                // Any value less than or equal to 0.5 will always round to exactly zero
+                // and any value greater than 0.5 will always round to exactly one. However,
+                // we need to preserve the original sign for IEEE compliance.
+
+                double result = ((exponent == 0x03FE) && (double.ExtractSignificandFromBits(bits) != 0)) ? 1.0 : 0.0;
+                return CopySign(result, a);
+            }
+
+            if (exponent >= 0x0433)
+            {
+                // Any value greater than or equal to 2^52 cannot have a fractional part,
+                // So it will always round to exactly itself.
+
                 return a;
             }
 
-            // We had a number that was equally close to 2 integers.
-            // We need to return the even one.
+            // The absolute value should be greater than or equal to 1.0 and less than 2^52
+            Debug.Assert((0x03FF <= exponent) && (exponent <= 0x0432));
 
-            double flrTempVal = Floor(a + 0.5);
+            // Determine the last bit that represents the integral portion of the value
+            // and the bits representing the fractional portion
 
-            if ((a == (Floor(a) + 0.5)) && (FMod(flrTempVal, 2.0) != 0))
+            ulong lastBitMask = 1UL << (0x0433 - exponent);
+            ulong roundBitsMask = lastBitMask - 1;
+
+            // Increment the first fractional bit, which represents the midpoint between
+            // two integral values in the current window.
+
+            bits += lastBitMask >> 1;
+
+            if ((bits & roundBitsMask) == 0)
             {
-                flrTempVal -= 1.0;
+                // If that overflowed and the rest of the fractional bits are zero
+                // then we were exactly x.5 and we want to round to the even result
+
+                bits &= ~lastBitMask;
+            }
+            else
+            {
+                // Otherwise, we just want to strip the fractional bits off, truncating
+                // to the current integer value.
+
+                bits &= ~roundBitsMask;
             }
 
-            return CopySign(flrTempVal, a);
+            return BitConverter.Int64BitsToDouble((long)bits);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1033,6 +1030,7 @@ namespace System
             return d;
         }
 
+        [DoesNotReturn]
         private static void ThrowMinMaxException<T>(T min, T max)
         {
             throw new ArgumentException(SR.Format(SR.Argument_MinMaxValue, min, max));

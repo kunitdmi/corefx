@@ -44,7 +44,6 @@ namespace System.Runtime.Loader.Tests
         }
     }
 
-    [SkipOnTargetFramework(TargetFrameworkMonikers.UapAot, "AssemblyLoadContext not supported on .NET Native")]
     public class DefaultLoadContextTests
     {
         private const string TestAssemblyName = "System.Runtime.Loader.Noop.Assembly";
@@ -184,7 +183,7 @@ namespace System.Runtime.Loader.Tests
                 () => AssemblyLoadContext.Default.LoadFromAssemblyName(new AssemblyName("System.Runtime.Loader.NonExistent.Assembly")));
         }
 
-        public void DefaultContextFallback()
+        private void DefaultContextFallback()
         {
             var lcDefault = AssemblyLoadContext.Default;
             
@@ -239,7 +238,7 @@ namespace System.Runtime.Loader.Tests
             Assert.Equal(typeof(FileNotFoundException), ex.GetType());
         }
 
-        public void DefaultContextOverrideTPA()
+        private void DefaultContextOverrideTPA()
         {
             var lcDefault = AssemblyLoadContext.Default;
             

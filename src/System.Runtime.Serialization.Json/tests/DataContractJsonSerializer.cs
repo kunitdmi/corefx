@@ -26,12 +26,9 @@ public static partial class DataContractJsonSerializerTests
 
     static DataContractJsonSerializerTests()
     {
-        if (!PlatformDetection.IsFullFramework)
-        {
-            MethodInfo method = typeof(DataContractSerializer).GetMethod(SerializationOptionSetterName, BindingFlags.NonPublic | BindingFlags.Static);
-            Assert.True(method != null, $"No method named {SerializationOptionSetterName}");
-            method.Invoke(null, new object[] { 1 }); 
-        }
+        MethodInfo method = typeof(DataContractSerializer).GetMethod(SerializationOptionSetterName, BindingFlags.NonPublic | BindingFlags.Static);
+        Assert.True(method != null, $"No method named {SerializationOptionSetterName}");
+        method.Invoke(null, new object[] { 1 }); 
     }
 #endif
     [Fact]
@@ -159,15 +156,6 @@ public static partial class DataContractJsonSerializerTests
     }
 
     [Fact]
-    [SkipOnTargetFramework(~TargetFrameworkMonikers.NetFramework)]
-    public static void DCJS_FloatAsRoot_NetFramework()
-    {
-        Assert.StrictEqual(SerializeAndDeserialize<float>(float.MinValue, "-3.40282347E+38"), float.MinValue);
-        Assert.StrictEqual(SerializeAndDeserialize<float>(float.MaxValue, "3.40282347E+38"), float.MaxValue);
-    }
-
-    [Fact]
-    [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework)]
     public static void DCJS_FloatAsRoot_NotNetFramework()
     {
         Assert.StrictEqual(SerializeAndDeserialize<float>(float.MinValue, "-3.4028235E+38"), float.MinValue);
@@ -236,7 +224,6 @@ public static partial class DataContractJsonSerializerTests
     }
 
     [Fact]
-    [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "Implemented in 4.7. and Xunit runner currently targets 4.6.1.")]
     public static void DCJS_StringAsRoot()
     {
         foreach (string value in new string[] { "abc", "  a b  ", null, "", " ", "Hello World! 漢 ñ" })
@@ -1691,6 +1678,7 @@ public static partial class DataContractJsonSerializerTests
         Assert.StrictEqual(value.StringValue, deserializedValue.StringValue);
     }
 
+    [Fact]
     public static void DCJS_SerializationEvents()
     {
         var input = new MyType() { Value = "string value" };
@@ -2974,6 +2962,14 @@ public static partial class DataContractJsonSerializerTests
         }
     }
 
+    [Fact]
+    public static void DCJS_DifferentCollectionsOfSameTypeAsKnownTypes()
+    {
+        Assert.Throws<InvalidOperationException>(() => {
+            (new DataContractSerializer(typeof(TypeWithKnownTypesOfCollectionsWithConflictingXmlName))).WriteObject(new MemoryStream(), new TypeWithKnownTypesOfCollectionsWithConflictingXmlName());
+        });
+    }
+
     private static T SerializeAndDeserialize<T>(T value, string baseline, DataContractJsonSerializerSettings settings = null, Func<DataContractJsonSerializer> serializerFactory = null, bool skipStringCompare = false)
     {
         DataContractJsonSerializer dcjs;
@@ -3076,15 +3072,6 @@ public static partial class DataContractJsonSerializerTests
 
     private static string GetAmString(DateTimeFormat dateTimeFormat)
     {
-        var dcjsSettings = new DataContractJsonSerializerSettings() { DateTimeFormat = dateTimeFormat };
-        var dcjs = new DataContractJsonSerializer(typeof(DateTime), dcjsSettings);
-        using (var ms = new MemoryStream())
-        {
-            dcjs.WriteObject(ms, new DateTime());
-            ms.Position = 0;
-            string output = new StreamReader(ms).ReadToEnd();
-            string actualam = output.Contains("a.m.") ? "a.m." : "a. m.";
-            return actualam;
-        }
+        return ((CultureInfo)dateTimeFormat.FormatProvider).DateTimeFormat.AMDesignator;
     }
 }

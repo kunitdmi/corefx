@@ -159,7 +159,7 @@ namespace System.Collections.ObjectModel
                 // For example, if the element type of the Array is derived from T,
                 // we can't figure out if we can successfully copy the element beforehand.
                 //
-                Type targetType = array.GetType().GetElementType();
+                Type targetType = array.GetType().GetElementType()!;
                 Type sourceType = typeof(T);
                 if (!(targetType.IsAssignableFrom(sourceType) || sourceType.IsAssignableFrom(targetType)))
                 {
@@ -170,7 +170,7 @@ namespace System.Collections.ObjectModel
                 // We can't cast array of value type to object[], so we don't support 
                 // widening of primitive types here.
                 //
-                object[] objects = array as object[];
+                object?[]? objects = array as object[];
                 if (objects == null)
                 {
                     ThrowHelper.ThrowArgumentException_Argument_InvalidArrayType();
@@ -201,7 +201,7 @@ namespace System.Collections.ObjectModel
             get { return true; }
         }
 
-        object IList.this[int index]
+        object? IList.this[int index]
         {
             get { return list[index]; }
             set
@@ -210,7 +210,7 @@ namespace System.Collections.ObjectModel
             }
         }
 
-        int IList.Add(object value)
+        int IList.Add(object? value)
         {
             ThrowHelper.ThrowNotSupportedException(ExceptionResource.NotSupported_ReadOnlyCollection);
             return -1;
@@ -221,37 +221,37 @@ namespace System.Collections.ObjectModel
             ThrowHelper.ThrowNotSupportedException(ExceptionResource.NotSupported_ReadOnlyCollection);
         }
 
-        private static bool IsCompatibleObject(object value)
+        private static bool IsCompatibleObject(object? value)
         {
             // Non-null values are fine.  Only accept nulls if T is a class or Nullable<U>.
             // Note that default(T) is not equal to null for value types except when T is Nullable<U>. 
-            return ((value is T) || (value == null && default(T) == null));
+            return ((value is T) || (value == null && default(T)! == null));
         }
 
-        bool IList.Contains(object value)
+        bool IList.Contains(object? value)
         {
             if (IsCompatibleObject(value))
             {
-                return Contains((T)value);
+                return Contains((T)value!);
             }
             return false;
         }
 
-        int IList.IndexOf(object value)
+        int IList.IndexOf(object? value)
         {
             if (IsCompatibleObject(value))
             {
-                return IndexOf((T)value);
+                return IndexOf((T)value!);
             }
             return -1;
         }
 
-        void IList.Insert(int index, object value)
+        void IList.Insert(int index, object? value)
         {
             ThrowHelper.ThrowNotSupportedException(ExceptionResource.NotSupported_ReadOnlyCollection);
         }
 
-        void IList.Remove(object value)
+        void IList.Remove(object? value)
         {
             ThrowHelper.ThrowNotSupportedException(ExceptionResource.NotSupported_ReadOnlyCollection);
         }

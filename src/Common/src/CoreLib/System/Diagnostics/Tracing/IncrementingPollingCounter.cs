@@ -36,6 +36,9 @@ namespace System.Diagnostics.Tracing
         /// <param name="eventSource">The event source.</param>
         public IncrementingPollingCounter(string name, EventSource eventSource, Func<double> totalValueProvider) : base(name, eventSource)
         {
+            if (totalValueProvider == null)
+                throw new ArgumentNullException(nameof(totalValueProvider));
+
             _totalValueProvider = totalValueProvider;
         }
 
@@ -49,12 +52,13 @@ namespace System.Diagnostics.Tracing
         /// <summary>
         /// Calls "_totalValueProvider" to enqueue the counter value to the queue. 
         /// </summary>
-        private void UpdateMetric()
+        internal void UpdateMetric()
         {
             try
             {
-                lock(MyLock)
+                lock (this)
                 {
+                    _prevIncrement = _increment;
                     _increment = _totalValueProvider();
                 }
             }
@@ -64,19 +68,21 @@ namespace System.Diagnostics.Tracing
             }
         }
 
-        internal override void WritePayload(float intervalSec)
+        internal override void WritePayload(float intervalSec, int pollingIntervalMillisec)
         {
             UpdateMetric();
-            lock (MyLock)     // Lock the counter
+            lock (this)     // Lock the counter
             {
                 IncrementingCounterPayload payload = new IncrementingCounterPayload();
                 payload.Name = Name;
                 payload.DisplayName = DisplayName ?? "";
                 payload.DisplayRateTimeScale = (DisplayRateTimeScale == TimeSpan.Zero) ? "" : DisplayRateTimeScale.ToString("c");
                 payload.IntervalSec = intervalSec;
+                payload.Series = $"Interval={pollingIntervalMillisec}"; // TODO: This may need to change when we support multi-session
+                payload.CounterType = "Sum";
                 payload.Metadata = GetMetadataString();
                 payload.Increment = _increment - _prevIncrement;
-                _prevIncrement = _increment;
+                payload.DisplayUnits = DisplayUnits ?? "";
                 EventSource.Write("EventCounters", new EventSourceOptions() { Level = EventLevel.LogAlways }, new IncrementingPollingCounterPayloadType(payload));
             }
         }

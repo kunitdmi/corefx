@@ -231,6 +231,11 @@ namespace System.Buffers.Tests
 
         public static bool IsX64 { get; } = IntPtr.Size == 8;
 
+        // NOTE: InvalidAdvance_Large test is constrained to run on Windows and MacOSX because it causes
+        //       problems on Linux due to the way deferred memory allocation works. On Linux, the allocation can
+        //       succeed even if there is not enough memory but then the test may get killed by the OOM killer at the
+        //       time the memory is accessed which triggers the full memory allocation.
+        [PlatformSpecific(TestPlatforms.Windows | TestPlatforms.OSX)]
         [ConditionalFact(nameof(IsX64))]
         [OuterLoop]
         public void InvalidAdvance_Large()
@@ -357,28 +362,42 @@ namespace System.Buffers.Tests
         [Fact]
         public void MultipleCallsToGetSpan()
         {
-            var output = new ArrayBufferWriter<T>(300);
-            int previousAvailable = output.FreeCapacity;
-            Assert.True(previousAvailable >= 300);
-            Assert.True(output.Capacity >= 300);
-            Assert.Equal(previousAvailable, output.Capacity);
-            Span<T> span = output.GetSpan();
-            Assert.True(span.Length >= previousAvailable);
-            Assert.True(span.Length >= 256);
-            Span<T> newSpan = output.GetSpan();
-            Assert.Equal(span.Length, newSpan.Length);
-
-            unsafe
+            if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
             {
-                void* pSpan = Unsafe.AsPointer(ref MemoryMarshal.GetReference(span));
-                void* pNewSpan = Unsafe.AsPointer(ref MemoryMarshal.GetReference(newSpan));
-                Assert.Equal((IntPtr)pSpan, (IntPtr)pNewSpan);
+                return;
             }
 
-            Assert.Equal(span.Length, output.GetSpan().Length);
+            var output = new ArrayBufferWriter<T>(300);
+            Assert.True(MemoryMarshal.TryGetArray(output.GetMemory(), out ArraySegment<T> array));
+            GCHandle pinnedArray = GCHandle.Alloc(array.Array, GCHandleType.Pinned);
+            try
+            {
+                int previousAvailable = output.FreeCapacity;
+                Assert.True(previousAvailable >= 300);
+                Assert.True(output.Capacity >= 300);
+                Assert.Equal(previousAvailable, output.Capacity);
+                Span<T> span = output.GetSpan();
+                Assert.True(span.Length >= previousAvailable);
+                Assert.True(span.Length >= 256);
+                Span<T> newSpan = output.GetSpan();
+                Assert.Equal(span.Length, newSpan.Length);
+
+                unsafe
+                {
+                    void* pSpan = Unsafe.AsPointer(ref MemoryMarshal.GetReference(span));
+                    void* pNewSpan = Unsafe.AsPointer(ref MemoryMarshal.GetReference(newSpan));
+                    Assert.Equal((IntPtr)pSpan, (IntPtr)pNewSpan);
+                }
+
+                Assert.Equal(span.Length, output.GetSpan().Length);
+            }
+            finally
+            {
+                pinnedArray.Free();
+            }
         }
 
-        public abstract void WriteData(IBufferWriter<T> bufferWriter, int numBytes);
+        protected abstract void WriteData(IBufferWriter<T> bufferWriter, int numBytes);
 
         public static IEnumerable<object[]> SizeHints
         {

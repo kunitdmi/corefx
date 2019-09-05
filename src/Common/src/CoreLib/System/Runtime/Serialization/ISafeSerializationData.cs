@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable enable
 namespace System.Runtime.Serialization
 {
     //
@@ -140,7 +139,7 @@ namespace System.Runtime.Serialization
     //     
     //    2. Add a protected SerializeObjectState event, which passes through to the SafeSerializationManager:
     //  
-    //       protected event EventHandler<SafeSerializationEventArgs> SerializeObjectState
+    //       protected event EventHandler<SafeSerializationEventArgs>? SerializeObjectState
     //       {
     //           add { _safeSerializationManager.SerializeObjectState += value; }
     //           remove { _safeSerializationManager.SerializeObjectState -= value; }

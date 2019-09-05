@@ -2,14 +2,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable enable
 using System.Runtime.InteropServices;
 
 namespace System.Threading
 {
     internal partial class TimerQueue
     {
-        private static int TickCount
+        private static long TickCount64
         {
             get
             {
@@ -22,18 +21,14 @@ namespace System.Threading
                 // in sleep/hibernate mode.
                 if (Environment.IsWindows8OrAbove)
                 {
-                    ulong time100ns;
-
-                    bool result = Interop.Kernel32.QueryUnbiasedInterruptTime(out time100ns);
-                    if (!result)
+                    if (!Interop.Kernel32.QueryUnbiasedInterruptTime(out ulong time100ns))
                         Marshal.ThrowExceptionForHR(Marshal.GetLastWin32Error());
 
-                    // convert to 100ns to milliseconds, and truncate to 32 bits.
-                    return (int)(uint)(time100ns / 10000);
+                    return (long)(time100ns / 10_000); // convert from 100ns to milliseconds
                 }
                 else
                 {
-                    return Environment.TickCount;
+                    return Environment.TickCount64;
                 }
             }
         }

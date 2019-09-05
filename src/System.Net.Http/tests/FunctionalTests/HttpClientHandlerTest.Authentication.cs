@@ -3,6 +3,8 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Sockets;
 using System.Net.Test.Common;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,16 +28,16 @@ namespace System.Net.Http.Functional.Tests
         private static readonly NetworkCredential s_credentials = new NetworkCredential(Username, Password, Domain);
         private static readonly NetworkCredential s_credentialsNoDomain = new NetworkCredential(Username, Password);
 
-        private static readonly Func<HttpClientHandler, Uri, HttpStatusCode, ICredentials, Task> s_createAndValidateRequest = async (handler, url, expectedStatusCode, credentials) =>
+        private async Task CreateAndValidateRequest(HttpClientHandler handler, Uri url, HttpStatusCode expectedStatusCode, ICredentials credentials)
         {
             handler.Credentials = credentials;
 
-            using (HttpClient client = new HttpClient(handler))
+            using (HttpClient client = CreateHttpClient(handler))
             using (HttpResponseMessage response = await client.GetAsync(url))
             {
                 Assert.Equal(expectedStatusCode, response.StatusCode);
             }
-        };
+        }
 
         public HttpClientHandler_Authentication_Test(ITestOutputHelper output) : base(output) { }
 
@@ -64,7 +66,7 @@ namespace System.Net.Http.Functional.Tests
                     server.AcceptConnectionSendResponseAndCloseAsync(HttpStatusCode.Unauthorized, serverAuthenticateHeader);
 
                 await TestHelper.WhenAllCompletedOrAnyFailedWithTimeout(TestHelper.PassingTestTimeoutMilliseconds,
-                    s_createAndValidateRequest(handler, url, result ? HttpStatusCode.OK : HttpStatusCode.Unauthorized, credentials), serverTask);
+                    CreateAndValidateRequest(handler, url, result ? HttpStatusCode.OK : HttpStatusCode.Unauthorized, credentials), serverTask);
             }, options);
         }
 
@@ -100,7 +102,7 @@ namespace System.Net.Http.Functional.Tests
             {
                 HttpClientHandler handler = CreateHttpClientHandler();
                 Task serverTask = server.AcceptConnectionPerformAuthenticationAndCloseAsync(authenticateHeader);
-                await TestHelper.WhenAllCompletedOrAnyFailed(s_createAndValidateRequest(handler, url, HttpStatusCode.OK, s_credentials), serverTask);
+                await TestHelper.WhenAllCompletedOrAnyFailed(CreateAndValidateRequest(handler, url, HttpStatusCode.OK, s_credentials), serverTask);
             }, options);
         }
 
@@ -126,7 +128,7 @@ namespace System.Net.Http.Functional.Tests
                 credentials.Add(url, unsupportedAuth, new NetworkCredential(Username, Password, Domain));
 
                 Task serverTask = server.AcceptConnectionPerformAuthenticationAndCloseAsync(authenticateHeader);
-                await TestHelper.WhenAllCompletedOrAnyFailed(s_createAndValidateRequest(handler, url, HttpStatusCode.OK, credentials), serverTask);
+                await TestHelper.WhenAllCompletedOrAnyFailed(CreateAndValidateRequest(handler, url, HttpStatusCode.OK, credentials), serverTask);
             }, options);
         }
 
@@ -140,7 +142,7 @@ namespace System.Net.Http.Functional.Tests
             {
                 HttpClientHandler handler = CreateHttpClientHandler();
                 Task serverTask = server.AcceptConnectionPerformAuthenticationAndCloseAsync(authenticateHeader);
-                await TestHelper.WhenAllCompletedOrAnyFailed(s_createAndValidateRequest(handler, url, HttpStatusCode.Unauthorized, new NetworkCredential("wronguser", "wrongpassword")), serverTask);
+                await TestHelper.WhenAllCompletedOrAnyFailed(CreateAndValidateRequest(handler, url, HttpStatusCode.Unauthorized, new NetworkCredential("wronguser", "wrongpassword")), serverTask);
             }, options);
         }
 
@@ -187,7 +189,7 @@ namespace System.Net.Http.Functional.Tests
             await LoopbackServer.CreateClientAndServerAsync(async uri =>
             {
                 using (HttpClientHandler handler = CreateHttpClientHandler())
-                using (var client = new HttpClient(handler))
+                using (HttpClient client = CreateHttpClient(handler))
                 {
                     client.DefaultRequestHeaders.ConnectionClose = true; // for simplicity of not needing to know every handler's pooling policy
                     handler.PreAuthenticate = true;
@@ -235,7 +237,7 @@ namespace System.Net.Http.Functional.Tests
             await LoopbackServer.CreateClientAndServerAsync(async uri =>
             {
                 using (HttpClientHandler handler = CreateHttpClientHandler())
-                using (var client = new HttpClient(handler))
+                using (HttpClient client = CreateHttpClient(handler))
                 {
                     client.DefaultRequestHeaders.ConnectionClose = true; // for simplicity of not needing to know every handler's pooling policy
                     handler.PreAuthenticate = true;
@@ -330,7 +332,7 @@ namespace System.Net.Http.Functional.Tests
             await LoopbackServer.CreateClientAndServerAsync(async uri =>
             {
                 using (HttpClientHandler handler = CreateHttpClientHandler())
-                using (var client = new HttpClient(handler))
+                using (HttpClient client = CreateHttpClient(handler))
                 {
                     client.DefaultRequestHeaders.ConnectionClose = true; // for simplicity of not needing to know every handler's pooling policy
                     handler.PreAuthenticate = true;
@@ -374,7 +376,7 @@ namespace System.Net.Http.Functional.Tests
             await LoopbackServer.CreateClientAndServerAsync(async uri =>
             {
                 using (HttpClientHandler handler = CreateHttpClientHandler())
-                using (var client = new HttpClient(handler))
+                using (HttpClient client = CreateHttpClient(handler))
                 {
                     client.DefaultRequestHeaders.ConnectionClose = true; // for simplicity of not needing to know every handler's pooling policy
                     handler.PreAuthenticate = true;
@@ -410,7 +412,7 @@ namespace System.Net.Http.Functional.Tests
             await LoopbackServer.CreateClientAndServerAsync(async uri =>
             {
                 using (HttpClientHandler handler = CreateHttpClientHandler())
-                using (var client = new HttpClient(handler))
+                using (HttpClient client = CreateHttpClient(handler))
                 {
                     client.DefaultRequestHeaders.ConnectionClose = true; // for simplicity of not needing to know every handler's pooling policy
                     handler.PreAuthenticate = true;
@@ -468,7 +470,7 @@ namespace System.Net.Http.Functional.Tests
             await LoopbackServer.CreateClientAndServerAsync(async uri =>
             {
                 using (HttpClientHandler handler = CreateHttpClientHandler())
-                using (var client = new HttpClient(handler))
+                using (HttpClient client = CreateHttpClient(handler))
                 {
                     client.DefaultRequestHeaders.ConnectionClose = true; // for simplicity of not needing to know every handler's pooling policy
                     handler.PreAuthenticate = true;
@@ -518,6 +520,59 @@ namespace System.Net.Http.Functional.Tests
         private static bool IsNtlmInstalled => Capability.IsNtlmInstalled();
         private static bool IsWindowsServerAvailable => !string.IsNullOrEmpty(Configuration.Http.WindowsServerHttpHost);
         private static bool IsDomainJoinedServerAvailable => !string.IsNullOrEmpty(Configuration.Http.DomainJoinedHttpHost);
+        private static NetworkCredential DomainCredential = new NetworkCredential(
+                    Configuration.Security.ActiveDirectoryUserName,
+                    Configuration.Security.ActiveDirectoryUserPassword,
+                    Configuration.Security.ActiveDirectoryName);
+
+        public static IEnumerable<object[]> EchoServersData()
+        {
+            foreach (Uri serverUri in Configuration.Http.EchoServerList)
+            {
+                yield return new object[] { serverUri };
+            }
+        }
+
+        [MemberData(nameof(EchoServersData))]
+        [ConditionalTheory(nameof(IsDomainJoinedServerAvailable))]
+        public async Task Proxy_DomainJoinedProxyServerUsesKerberos_Success(Uri server)
+        {
+            // We skip the test unless it is running on a Windows client machine. That is because only Windows
+            // automatically registers an SPN for HTTP/<hostname> of the machine. This will enable Kerberos to properly
+            // work with the loopback proxy server.
+            if (!PlatformDetection.IsWindows || !PlatformDetection.IsNotWindowsNanoServer)
+            {
+                throw new SkipTestException("Test can only run on domain joined Windows client machine");
+            }
+
+            var options = new LoopbackProxyServer.Options { AuthenticationSchemes = AuthenticationSchemes.Negotiate };
+            using (LoopbackProxyServer proxyServer = LoopbackProxyServer.Create(options))
+            {
+                using (HttpClientHandler handler = CreateHttpClientHandler())
+                using (HttpClient client = CreateHttpClient(handler))
+                {
+                    // Use 'localhost' DNS name for loopback proxy server (instead of IP address) so that the SPN will
+                    // get calculated properly to use Kerberos.
+                    _output.WriteLine(proxyServer.Uri.AbsoluteUri.ToString());
+                    handler.Proxy = new WebProxy("localhost", proxyServer.Uri.Port) { Credentials = DomainCredential };
+
+                    using (HttpResponseMessage response = await client.GetAsync(server))
+                    {
+                        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+                        int requestCount = proxyServer.Requests.Count;
+                        
+                        // We expect 2 requests to the proxy server. One without the 'Proxy-Authorization' header and
+                        // one with the header.
+                        Assert.Equal(2, requestCount);
+                        Assert.Equal("Negotiate", proxyServer.Requests[requestCount - 1].AuthorizationHeaderValueScheme);
+                        
+                        // Base64 tokens that use SPNEGO protocol start with 'Y'. NTLM tokens start with 'T'.
+                        Assert.Equal('Y', proxyServer.Requests[requestCount - 1].AuthorizationHeaderValueToken[0]);
+                    }
+                }
+            }
+        }
 
         [ConditionalFact(nameof(IsDomainJoinedServerAvailable))]
         public async Task Credentials_DomainJoinedServerUsesKerberos_Success()
@@ -528,21 +583,41 @@ namespace System.Net.Http.Functional.Tests
             }
 
             using (HttpClientHandler handler = CreateHttpClientHandler())
-            using (var client = new HttpClient(handler))
+            using (HttpClient client = CreateHttpClient(handler))
             {
-                handler.Credentials = new NetworkCredential(
-                    Configuration.Security.ActiveDirectoryUserName,
-                    Configuration.Security.ActiveDirectoryUserPassword,
-                    Configuration.Security.ActiveDirectoryName);
+                handler.Credentials = DomainCredential;
+
+                string server = $"http://{Configuration.Http.DomainJoinedHttpHost}/test/auth/kerberos/showidentity.ashx";
+                using (HttpResponseMessage response = await client.GetAsync(server))
+                {
+                    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                    string body = await response.Content.ReadAsStringAsync();
+                    _output.WriteLine(body);
+                }
+            }
+        }
+
+        [ConditionalFact(nameof(IsDomainJoinedServerAvailable))]
+        public async Task Credentials_DomainJoinedServerUsesKerberos_UseIpAddressAndHostHeader_Success()
+        {
+            if (IsCurlHandler || IsWinHttpHandler)
+            {
+                throw new SkipTestException("Skipping test on platform handlers (CurlHandler, WinHttpHandler)");
+            }
+
+            using (HttpClientHandler handler = CreateHttpClientHandler())
+            using (HttpClient client = CreateHttpClient(handler))
+            {
+                handler.Credentials = DomainCredential;
+
+                IPAddress[] addresses = Dns.GetHostAddresses(Configuration.Http.DomainJoinedHttpHost);
+                IPAddress hostIP = addresses.Where(a => a.AddressFamily == AddressFamily.InterNetwork).Select(a => a).First();
 
                 var request = new HttpRequestMessage();
-                var server = $"http://{Configuration.Http.DomainJoinedHttpHost}/test/auth/kerberos/showidentity.ashx";
-                request.RequestUri = new Uri(server);
-
-                // Force HTTP/1.1 since both CurlHandler and SocketsHttpHandler have problems with
-                // HTTP/2.0 and Windows authentication (due to HTTP/2.0 -> HTTP/1.1 downgrade handling).
-                // Issue #35195 (for SocketsHttpHandler).
-                request.Version = new Version(1,1);
+                request.RequestUri = new Uri($"http://{hostIP}/test/auth/kerberos/showidentity.ashx");
+                request.Headers.Host = Configuration.Http.DomainJoinedHttpHost;
+                _output.WriteLine(request.RequestUri.AbsoluteUri.ToString());
+                _output.WriteLine($"Host: {request.Headers.Host}");
 
                 using (HttpResponseMessage response = await client.SendAsync(request))
                 {
@@ -563,21 +638,13 @@ namespace System.Net.Http.Functional.Tests
             }
 
             using (HttpClientHandler handler = CreateHttpClientHandler())
-            using (var client = new HttpClient(handler))
+            using (HttpClient client = CreateHttpClient(handler))
             {
                 handler.Credentials = new NetworkCredential(
                     Configuration.Security.WindowsServerUserName,
                     Configuration.Security.WindowsServerUserPassword);
 
-                var request = new HttpRequestMessage();
-                request.RequestUri = new Uri(server);
-
-                // Force HTTP/1.1 since both CurlHandler and SocketsHttpHandler have problems with
-                // HTTP/2.0 and Windows authentication (due to HTTP/2.0 -> HTTP/1.1 downgrade handling).
-                // Issue #35195 (for SocketsHttpHandler).
-                request.Version = new Version(1,1);
-
-                using (HttpResponseMessage response = await client.SendAsync(request))
+                using (HttpResponseMessage response = await client.GetAsync(server))
                 {
                     Assert.Equal(HttpStatusCode.OK, response.StatusCode);
                     string body = await response.Content.ReadAsStringAsync();
@@ -600,7 +667,7 @@ namespace System.Net.Http.Functional.Tests
                 async uri =>
                 {
                     using (HttpClientHandler handler = CreateHttpClientHandler())
-                    using (var client = new HttpClient(handler))
+                    using (HttpClient client = CreateHttpClient(handler))
                     {
                         handler.Credentials = new NetworkCredential("username", "password");
                         await client.GetAsync(uri);

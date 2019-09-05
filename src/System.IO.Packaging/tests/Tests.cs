@@ -3224,13 +3224,12 @@ namespace System.IO.Packaging.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "Desktop doesn't support Package.Open with FileAccess.Write and FileMode.CreateNew")]
         public void T113_String_CreateNew_Write_Open_Read()
         {
             var tempGuidName = GetTempFileInfoWithExtension(".docx");
-            AssertExtensions.Throws<ArgumentException>(null, () =>
-            {
-                Package package = Package.Open(tempGuidName.FullName, FileMode.CreateNew, FileAccess.Write);
-            });
+            Package package = Package.Open(tempGuidName.FullName, FileMode.CreateNew, FileAccess.Write);
+            package.Close();
             tempGuidName.Delete();
         }
 
@@ -3238,7 +3237,7 @@ namespace System.IO.Packaging.Tests
         public void T112_String_CreateNew_Read_Create_Read()
         {
             var tempGuidName = GetTempFileInfoWithExtension(".docx");
-            AssertExtensions.Throws<ArgumentException>(null, () =>
+            Assert.Throws<ArgumentException>(() =>
             {
                 Package package = Package.Open(tempGuidName.FullName, FileMode.CreateNew, FileAccess.Read);
             });
@@ -3246,11 +3245,13 @@ namespace System.IO.Packaging.Tests
         }
 
         [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "Desktop doesn't support Package.Open with FileAccess.Write and FileMode.Create")]
         public void T111_String_Create_Write_Star()
         {
             var tempGuidName = GetTempFileInfoWithExtension(".docx");
             // opening the package attempts to read the package, and no permissions.
-            AssertExtensions.Throws<ArgumentException>(null, () => Package.Open(tempGuidName.FullName, FileMode.Create, FileAccess.Write));
+            Package package = Package.Open(tempGuidName.FullName, FileMode.Create, FileAccess.Write);
+            package.Close();
             tempGuidName.Delete();
         }
 
@@ -3538,7 +3539,7 @@ namespace System.IO.Packaging.Tests
         public void T100_String_Create_Read_Star()
         {
             var tempGuidName = GetTempFileInfoWithExtension(".docx");
-            AssertExtensions.Throws<ArgumentException>(null, () =>
+            Assert.Throws<ArgumentException>(() =>
             {
                 Package package = Package.Open(tempGuidName.FullName, FileMode.Create, FileAccess.Read);
             });
@@ -3643,57 +3644,116 @@ namespace System.IO.Packaging.Tests
         [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "Desktop doesn't support Package.Open with FileAccess.Write")]
         public void CreateWithFileAccessWrite()
         {
-            string[] fileNames = new [] { "file1.txt", "file2.txt", "file3.txt" };
-            const string RelationshipType = "http://schemas.microsoft.com/relationships/contains";
-            const string PartRelationshipType = "http://schemas.microsoft.com/relationships/self";
-
             using (Stream stream = new MemoryStream())
             {
                 using (Package package = Package.Open(stream, FileMode.Create, FileAccess.Write))
                 {
-                    foreach (string fileName in fileNames)
+                    ForEachPartWithFileName(package, (part, fileName) =>
                     {
-                        Uri partUri = PackUriHelper.CreatePartUri(new Uri(fileName, UriKind.Relative));
-                        PackagePart part = package.CreatePart(partUri,
-                                                              System.Net.Mime.MediaTypeNames.Text.Plain,
-                                                              CompressionOption.Fast);
                         using (StreamWriter writer = new StreamWriter(part.GetStream(), Encoding.ASCII))
                         {
                             // just write the filename as content
                             writer.Write(fileName);
                         }
-                        part.CreateRelationship(part.Uri, TargetMode.Internal, PartRelationshipType);
-                        package.CreateRelationship(part.Uri, TargetMode.Internal, RelationshipType);
-                    }
+                    });
                 }
 
                 // reopen for read and validate the content
                 stream.Seek(0, SeekOrigin.Begin);
                 using (Package readPackage = Package.Open(stream))
                 {
-                    PackageRelationshipCollection packageRelationships = readPackage.GetRelationships();
-                    Assert.All(packageRelationships, relationship => Assert.Equal(RelationshipType, relationship.RelationshipType));
-                    foreach (string fileName in fileNames)
+                    ForEachPartWithFileName(readPackage, (part, fileName) =>
                     {
-                        PackagePart part = readPackage.GetPart(PackUriHelper.CreatePartUri(new Uri(fileName, UriKind.Relative)));
-
                         using (Stream partStream = part.GetStream())
                         using (StreamReader reader = new StreamReader(partStream, Encoding.ASCII))
                         {
                             Assert.Equal(fileName.Length, partStream.Length);
                             Assert.Equal(fileName, reader.ReadToEnd());
                         }
-                        
-                        PackageRelationshipCollection partRelationships = part.GetRelationshipsByType(PartRelationshipType);
-                        Assert.Single(partRelationships);
-                        Assert.All(partRelationships, relationship => Assert.Equal(PartRelationshipType, relationship.RelationshipType));
-
-                        Assert.Single(packageRelationships, relationship => relationship.TargetUri == part.Uri);
-                    }
+                    });
                 }
             }
         }
 
+        [Fact]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.NetFramework, "Desktop doesn't support Package.Open with FileAccess.Write")]
+        [SkipOnTargetFramework(TargetFrameworkMonikers.Uap, "Can't write to FileSystem in UAP")]
+        public void ZipPackage_CreateWithFileAccessWrite()
+        {
+            string packageName = "test.zip";
+
+            using (Package package = Package.Open(packageName, FileMode.Create, FileAccess.Write))
+            {
+                ForEachPartWithFileName(package, (part, fileName) =>
+                {
+                    using (StreamWriter writer = new StreamWriter(part.GetStream(FileMode.Create), Encoding.ASCII))
+                    {
+                        // just write the filename as content
+                        writer.Write(fileName);
+                    }
+                });
+            }
+
+            // reopen for read and validate the content
+            using (Package readPackage = Package.Open(packageName))
+            {
+                ForEachPartWithFileName(readPackage, (part, fileName) =>
+                {
+                    using (Stream partStream = part.GetStream())
+                    using (StreamReader reader = new StreamReader(partStream, Encoding.ASCII))
+                    {
+                        Assert.Equal(fileName.Length, partStream.Length);
+                        Assert.Equal(fileName, reader.ReadToEnd());
+                    }
+
+                    using (Stream partStream = part.GetStream(FileMode.Create))
+                    {
+                        // Assert that the stream was reset because we opened the stream in Create mode
+                        Assert.Equal(0, partStream.Length);
+                    }
+                });
+            }
+        }
+
+        // Helper method for performing an action on every part in the package. All parts are simple
+        // text files. If the part didn't exist, it will be created before invoking the action,
+        // otherwise the existing part is retrieved and passed to the action.
+        private void ForEachPartWithFileName(Package package, Action<PackagePart, string> action)
+        {
+            string[] fileNames = new[] { "file1.txt", "file2.txt", "file3.txt" };
+
+            const string RelationshipType = "http://schemas.microsoft.com/relationships/contains";
+            const string PartRelationshipType = "http://schemas.microsoft.com/relationships/self";
+            foreach (string fileName in fileNames)
+            {
+                Uri partUri = PackUriHelper.CreatePartUri(new Uri(fileName, UriKind.Relative));
+                PackagePart part = package.PartExists(partUri) ?
+                    package.GetPart(partUri) :
+                    package.CreatePart(partUri, System.Net.Mime.MediaTypeNames.Text.Plain);
+                action(part, fileName);
+
+                // Part didn't exist previously so create relationships
+                if (package.FileOpenAccess == FileAccess.Write)
+                {
+                    part.CreateRelationship(part.Uri, TargetMode.Internal, PartRelationshipType);
+                    package.CreateRelationship(part.Uri, TargetMode.Internal, RelationshipType);
+                }
+                else
+                {
+                    // Validate the relationship
+                    PackageRelationshipCollection packageRelationships = package.GetRelationships();
+                    Assert.All(packageRelationships, relationship => Assert.Equal(RelationshipType, relationship.RelationshipType));
+
+                    PackageRelationshipCollection partRelationships = part.GetRelationshipsByType(PartRelationshipType);
+                    Assert.Single(partRelationships);
+                    Assert.All(partRelationships, relationship => Assert.Equal(PartRelationshipType, relationship.RelationshipType));
+
+                    Assert.Single(packageRelationships, relationship => relationship.TargetUri == part.Uri);
+                }
+            }
+        }
+
+        [ActiveIssue(39075)]
         [Fact]
         [OuterLoop]
         public void VeryLargePart()
@@ -3792,12 +3852,21 @@ namespace System.IO.Packaging.Tests
             Uri returnedPackageUri = PackUriHelper.GetPackageUri(combinedUri);
             Uri returnedSamePackageUri = PackUriHelper.GetPackageUri(sameCombinedUri);
 
-            // Validate the PackageUri returned from PackUriHelper.GetPackageHelper matches what was given to PackUriHelper.Create
+            // Validate the PackageUri returned from PackUriHelper.GetPackageUri matches what was given to PackUriHelper.Create
             Assert.Equal(packageUri, returnedPackageUri);
             Assert.Equal(packageUri, returnedSamePackageUri);
 
             // Validate PackUriHelper.ComparePackUri correctly validates identical pack uri's.
             Assert.Equal(0, PackUriHelper.ComparePackUri(combinedUri, sameCombinedUri));
+
+            // Validate the PackageUri returned from PackUriHelper.GetPartUri matches what was given to PackUriHelper.Create
+            Uri returnedPartUri = PackUriHelper.GetPartUri(combinedUri);
+            Uri returnedSamePartUri = PackUriHelper.GetPartUri(sameCombinedUri);
+            Assert.Equal(partUri, returnedPartUri);
+            Assert.Equal(partUri, returnedSamePartUri);
+
+            // Validate PackUriHelper.ComparePartUri correctly validates identical pack uri's.
+            Assert.Equal(0, PackUriHelper.ComparePartUri(partUri, returnedPartUri));
         }
 
         [Fact]
@@ -3830,6 +3899,16 @@ namespace System.IO.Packaging.Tests
             Assert.NotEqual(0, PackUriHelper.ComparePackUri(combinedUriWithPart, combinedUriWithDifferentPart));
             Assert.NotEqual(0, PackUriHelper.ComparePackUri(combinedUriWithPart, combinedUriNoPart));
             Assert.NotEqual(0, PackUriHelper.ComparePackUri(combinedUriNoPart, combinedUriWithDifferentPart));
+
+            Uri returnedPartUri = PackUriHelper.GetPartUri(combinedUriWithPart);
+            Uri returnedPartUriDifferentPart = PackUriHelper.GetPartUri(combinedUriWithDifferentPart);
+
+            // Validate the PartUri returned from PackUriHelper.GetPartHelper matches what was given to PackUriHelper.Create
+            Assert.Equal(partUri, returnedPartUri);
+            Assert.Equal(differentPartUri, returnedPartUriDifferentPart);
+
+            // Validate the two different parts are considered different
+            Assert.NotEqual(0, PackUriHelper.ComparePartUri(partUri, differentPartUri));
         }
 
         [Fact]
@@ -3860,10 +3939,18 @@ namespace System.IO.Packaging.Tests
             // Validate PackUriHelper.ComparePackUri correctly compares pack uri's with different packages.
             Assert.NotEqual(0, PackUriHelper.ComparePackUri(packageUriWithPart, differentPackageSamePart));
             Assert.NotEqual(0, PackUriHelper.ComparePackUri(samePackageNoPart, differentPackageSamePart));
+
+            Uri returnedPartUri = PackUriHelper.GetPartUri(packageUriWithPart);
+            Uri returnedPartUriDifferentPackage = PackUriHelper.GetPartUri(differentPackageSamePart);
+            Assert.Equal(returnedPartUri, returnedPartUriDifferentPackage);
+            Assert.Equal(partUri, returnedPartUri);
+
+            // Validate the two parts are considered the same
+            Assert.Equal(0, PackUriHelper.ComparePartUri(returnedPartUri, returnedPartUriDifferentPackage));
         }
 
         [Fact]
-        void CreatePackUriWithFragment()
+        public void CreatePackUriWithFragment()
         {
             Uri partUri = new Uri("/idontexist.xml", UriKind.Relative);
             Uri packageUri = new Uri("application://");

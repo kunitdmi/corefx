@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable enable
 namespace System.Globalization
 {
     /// <remarks>
@@ -36,7 +35,7 @@ namespace System.Globalization
     /// </remarks>
     public sealed class NumberFormatInfo : IFormatProvider, ICloneable
     {
-        private static volatile NumberFormatInfo s_invariantInfo;
+        private static volatile NumberFormatInfo? s_invariantInfo;
 
         internal int[] _numberGroupSizes = new int[] { 3 };
         internal int[] _currencyGroupSizes = new int[] { 3 };

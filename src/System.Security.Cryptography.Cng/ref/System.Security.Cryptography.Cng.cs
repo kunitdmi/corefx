@@ -96,11 +96,11 @@ namespace System.Security.Cryptography
     [System.FlagsAttribute]
     public enum CngExportPolicies
     {
-        AllowArchiving = 4,
-        AllowExport = 1,
-        AllowPlaintextArchiving = 8,
-        AllowPlaintextExport = 2,
         None = 0,
+        AllowExport = 1,
+        AllowPlaintextExport = 2,
+        AllowArchiving = 4,
+        AllowPlaintextArchiving = 8,
     }
     public sealed partial class CngKey : System.IDisposable
     {
@@ -160,8 +160,8 @@ namespace System.Security.Cryptography
     [System.FlagsAttribute]
     public enum CngKeyCreationOptions
     {
-        MachineKey = 32,
         None = 0,
+        MachineKey = 32,
         OverwriteExistingKey = 128,
     }
     public sealed partial class CngKeyCreationParameters
@@ -178,29 +178,30 @@ namespace System.Security.Cryptography
     [System.FlagsAttribute]
     public enum CngKeyHandleOpenOptions
     {
-        EphemeralKey = 1,
         None = 0,
+        EphemeralKey = 1,
     }
     [System.FlagsAttribute]
     public enum CngKeyOpenOptions
     {
-        MachineKey = 32,
         None = 0,
-        Silent = 64,
         UserKey = 0,
+        MachineKey = 32,
+        Silent = 64,
     }
     [System.FlagsAttribute]
     public enum CngKeyUsages
     {
-        AllUsages = 16777215,
-        Decryption = 1,
-        KeyAgreement = 4,
         None = 0,
+        Decryption = 1,
         Signing = 2,
+        KeyAgreement = 4,
+        AllUsages = 16777215,
     }
     public partial struct CngProperty : System.IEquatable<System.Security.Cryptography.CngProperty>
     {
         private object _dummy;
+        private int _dummyPrimitive;
         public CngProperty(string name, byte[] value, System.Security.Cryptography.CngPropertyOptions options) { throw null; }
         public string Name { get { throw null; } }
         public System.Security.Cryptography.CngPropertyOptions Options { get { throw null; } }
@@ -218,9 +219,9 @@ namespace System.Security.Cryptography
     [System.FlagsAttribute]
     public enum CngPropertyOptions
     {
-        CustomProperty = 1073741824,
-        None = 0,
         Persist = -2147483648,
+        None = 0,
+        CustomProperty = 1073741824,
     }
     public sealed partial class CngProvider : System.IEquatable<System.Security.Cryptography.CngProvider>
     {
@@ -251,9 +252,9 @@ namespace System.Security.Cryptography
     [System.FlagsAttribute]
     public enum CngUIProtectionLevels
     {
-        ForceHighProtection = 2,
         None = 0,
         ProtectKey = 1,
+        ForceHighProtection = 2,
     }
     public sealed partial class DSACng : System.Security.Cryptography.DSA
     {
