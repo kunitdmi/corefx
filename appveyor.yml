@@ -59,9 +59,9 @@ test_script:
 #  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Algorithms\tests\
 #  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Primitives\tests\
 #  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Csp\tests\
-#  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.X509Certificates\tests\
-#  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Pkcs\tests\
-#  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Xml\tests\
+  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.X509Certificates\tests\
+  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Pkcs\tests\
+  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Xml\tests\
  
 # artifacts on succesfull build 
 artifacts:
