@@ -315,6 +315,34 @@ namespace System.Security.Cryptography.Xml
         public override System.Xml.XmlElement GetXml() { throw null; }
         public override void LoadXml(System.Xml.XmlElement value) { }
     }
+
+    public partial class Gost2012_256KeyValue : System.Security.Cryptography.Xml.KeyInfoClause
+    {
+        public Gost2012_256KeyValue() { }
+        public Gost2012_256KeyValue(System.Security.Cryptography.Gost3410_2012_256 key) { }
+        public Gost3410_2012_256 Key { get { throw null; } set { } }
+        public override System.Xml.XmlElement GetXml() { throw null; }
+        public override void LoadXml(System.Xml.XmlElement value) { }
+    }
+
+    public partial class Gost2012_512KeyValue : System.Security.Cryptography.Xml.KeyInfoClause
+    {
+        public Gost2012_512KeyValue() { }
+        public Gost2012_512KeyValue(System.Security.Cryptography.Gost3410_2012_512 key) { }
+        public Gost3410_2012_512 Key { get { throw null; } set { } }
+        public override System.Xml.XmlElement GetXml() { throw null; }
+        public override void LoadXml(System.Xml.XmlElement value) { }
+    }
+
+    public partial class GostKeyValue : System.Security.Cryptography.Xml.KeyInfoClause
+    {
+        public GostKeyValue() { }
+        public GostKeyValue(System.Security.Cryptography.Gost3410 key) { }
+        public Gost3410 Key { get { throw null; } set { } }
+        public override System.Xml.XmlElement GetXml() { throw null; }
+        public override void LoadXml(System.Xml.XmlElement value) { }
+    }
+
     public partial class Signature
     {
         public Signature() { }
