@@ -791,7 +791,25 @@ namespace System.Security.Cryptography.Xml
 
         internal static AsymmetricAlgorithm GetAnyPublicKey(X509Certificate2 certificate)
         {
-            return (AsymmetricAlgorithm)certificate.GetRSAPublicKey();
+            // begin: gost
+            // maybe we will make certificate.GetGostXXXXPublicKey methods, so keeping several if's for now
+            if (certificate?.PublicKey?.Oid.Value == GostConstants.OID_CP_GOST_R3410EL)
+            {
+                return certificate.PublicKey.Key;
+            }
+            else if (certificate?.PublicKey?.Oid.Value == GostConstants.OID_CP_GOST_R3410_12_256)
+            {
+                return  certificate.PublicKey.Key;
+            }
+            else if (certificate?.PublicKey?.Oid.Value == GostConstants.OID_CP_GOST_R3410_12_512)
+            {
+                return  certificate.PublicKey.Key;
+            }
+            // end: gost
+            else
+            {
+                return (AsymmetricAlgorithm)certificate.GetRSAPublicKey();
+            }
         }
 
         internal const int MaxTransformsPerReference = 10;
