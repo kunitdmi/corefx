@@ -207,8 +207,8 @@
 
         // string algorithm names
         internal const string GOST3411_STRING = "Gost3411";
-        internal const string GOST3411_2012_256STRING = "GOST3411_2012_256";
-        internal const string GOST3411_2012_512STRING = "GOST3411_2012_512";
+        internal const string GOST3411_2012_256STRING = "Gost3411_2012_256";
+        internal const string GOST3411_2012_512STRING = "Gost3411_2012_512";
 
         internal const string GOST3410_STRING = "Gost3410";
         internal const string GOST3410_2012_256STRING = "Gost3410_2012_256";

@@ -33,11 +33,15 @@ install:
   - cmd: '"C:\Program Files\Crypto Pro\CSP\csptest" -keyset -enum_c -verifyc -uniq'
   - cmd: '"C:\Program Files\Crypto Pro\CSP\csptest" -keyset -enum_c -verifyc -fqcn'
   - cmd: '"C:\Program Files\Crypto Pro\CSP\csptest" -enum -info -type PP_ENUMALGS'
+  # getting pached nuget packages with gost support
+  - cmd: git clone https://github.com/CryptoProLLC/NetStandard.Library
+  - ps: New-Item -ItemType Directory -Force -Path "$env:userprofile\.nuget\packages\netstandard.library"
+  - ps: Copy-Item -Force -Recurse ".\NetStandard.Library\nugetReady\netstandard.library" -Destination "$env:userprofile\.nuget\packages\"
   # enable-rdp
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 # build script logic
-build_script: 
+build_script:
   - build.cmd -clean
   - build.cmd  
 
@@ -59,9 +63,9 @@ test_script:
 #  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Algorithms\tests\
 #  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Primitives\tests\
 #  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Csp\tests\
-  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.X509Certificates\tests\
-  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Pkcs\tests\
-  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Xml\tests\
+#  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.X509Certificates\tests\
+#  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Pkcs\tests\
+#  - .dotnet\dotnet msbuild /t:BuildAndTest src\System.Security.Cryptography.Xml\tests\
  
 # artifacts on succesfull build 
 artifacts:
