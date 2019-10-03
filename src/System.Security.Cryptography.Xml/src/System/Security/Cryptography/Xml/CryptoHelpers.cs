@@ -87,11 +87,11 @@ namespace System.Security.Cryptography.Xml
                     return Gost3411_2012_512.Create();
 
                 case SignedXml.XmlDsigGost3410Url:
-                    throw new NotImplementedException();
+                    return new GostSignatureDescription();
                 case SignedXml.XmlDsigGost3410_2012_256Url:
-                    return new Gost3410_2012_256SignatureDescription();
+                    return new Gost2012_256SignatureDescription();
                 case SignedXml.XmlDsigGost3410_2012_512Url:
-                    throw new NotImplementedException();
+                    return new Gost2012_512SignatureDescription();
                 // end: gost
             }
 

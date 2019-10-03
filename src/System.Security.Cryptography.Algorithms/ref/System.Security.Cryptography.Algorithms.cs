@@ -810,6 +810,24 @@ namespace System.Security.Cryptography
         private static Exception HashAlgorithmNameNullOrEmpty() { throw null; }
     }
 
+    public partial class GostSignatureFormatter : System.Security.Cryptography.AsymmetricSignatureFormatter
+    {
+        public GostSignatureFormatter() { }
+        public GostSignatureFormatter(System.Security.Cryptography.AsymmetricAlgorithm key) { }
+        public override byte[] CreateSignature(byte[] rgbHash) { throw null; }
+        public override void SetHashAlgorithm(string strName) { }
+        public override void SetKey(System.Security.Cryptography.AsymmetricAlgorithm key) { }
+    }
+
+    public partial class GostSignatureDeformatter : System.Security.Cryptography.AsymmetricSignatureDeformatter
+    {
+        public GostSignatureDeformatter() { }
+        public GostSignatureDeformatter(System.Security.Cryptography.AsymmetricAlgorithm key) { }
+        public override void SetHashAlgorithm(string strName) { }
+        public override void SetKey(System.Security.Cryptography.AsymmetricAlgorithm key) { }
+        public override bool VerifySignature(byte[] rgbHash, byte[] rgbSignature) { throw null; }
+    }
+
     public partial class Gost2012_256SignatureFormatter : System.Security.Cryptography.AsymmetricSignatureFormatter
     {
         public Gost2012_256SignatureFormatter() { }
@@ -823,6 +841,24 @@ namespace System.Security.Cryptography
     {
         public Gost2012_256SignatureDeformatter() { }
         public Gost2012_256SignatureDeformatter(System.Security.Cryptography.AsymmetricAlgorithm key) { }
+        public override void SetHashAlgorithm(string strName) { }
+        public override void SetKey(System.Security.Cryptography.AsymmetricAlgorithm key) { }
+        public override bool VerifySignature(byte[] rgbHash, byte[] rgbSignature) { throw null; }
+    }
+
+    public partial class Gost2012_512SignatureFormatter : System.Security.Cryptography.AsymmetricSignatureFormatter
+    {
+        public Gost2012_512SignatureFormatter() { }
+        public Gost2012_512SignatureFormatter(System.Security.Cryptography.AsymmetricAlgorithm key) { }
+        public override byte[] CreateSignature(byte[] rgbHash) { throw null; }
+        public override void SetHashAlgorithm(string strName) { }
+        public override void SetKey(System.Security.Cryptography.AsymmetricAlgorithm key) { }
+    }
+
+    public partial class Gost2012_512SignatureDeformatter : System.Security.Cryptography.AsymmetricSignatureDeformatter
+    {
+        public Gost2012_512SignatureDeformatter() { }
+        public Gost2012_512SignatureDeformatter(System.Security.Cryptography.AsymmetricAlgorithm key) { }
         public override void SetHashAlgorithm(string strName) { }
         public override void SetKey(System.Security.Cryptography.AsymmetricAlgorithm key) { }
         public override bool VerifySignature(byte[] rgbHash, byte[] rgbSignature) { throw null; }

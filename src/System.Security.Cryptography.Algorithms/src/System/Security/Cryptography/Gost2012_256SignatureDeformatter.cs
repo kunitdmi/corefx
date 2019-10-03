@@ -1,6 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
+﻿using System.Runtime.InteropServices;
 
 namespace System.Security.Cryptography
 {
@@ -37,7 +35,7 @@ namespace System.Security.Cryptography
         /// </summary>
         public Gost2012_256SignatureDeformatter()
         {
-            _alg_algOid = CryptoConfig.MapNameToOID("GOST3411_2012_256");
+            _alg_algOid = CryptoConfig.MapNameToOID(GostConstants.GOST3411_2012_256STRING);
         }
 
         /// <summary>
@@ -59,7 +57,7 @@ namespace System.Security.Cryptography
             : this()
         {
             if (key == null)
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
             Gost3410_2012_256 gost = key as Gost3410_2012_256;
             if (gost == null)
                 throw new ArgumentNullException(nameof(gost));
@@ -93,9 +91,6 @@ namespace System.Security.Cryptography
                 throw new CryptographicUnexpectedOperationException(SR.Cryptography_MissingOID);
             if (_gostKey == null)
                 throw new CryptographicUnexpectedOperationException(SR.Cryptography_MissingKey);
-            // Do we need it now?
-            //byte[] rev = (byte[])rgbSignature.Clone();
-            //Array.Reverse(rev);
             return _gostKey.VerifyHash(rgbHash, rgbSignature, HashAlgorithmName.Gost3411_2012_256);
         }
 
@@ -129,12 +124,8 @@ namespace System.Security.Cryptography
         public override void SetKey(AsymmetricAlgorithm key)
         {
             if (key == null)
-                throw new ArgumentNullException("key");
-            Gost3410_2012_256 gost = key as Gost3410_2012_256;
-            if (gost == null)
-                throw new ArgumentNullException(
-                    nameof(gost));
-            _gostKey = gost;
+                throw new ArgumentNullException(nameof(key));
+            _gostKey = (Gost3410_2012_256)key;
         }
     }
 }

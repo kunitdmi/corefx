@@ -792,18 +792,17 @@ namespace System.Security.Cryptography.Xml
         internal static AsymmetricAlgorithm GetAnyPublicKey(X509Certificate2 certificate)
         {
             // begin: gost
-            // maybe we will make certificate.GetGostXXXXPublicKey methods, so keeping several if's for now
             if (certificate?.PublicKey?.Oid.Value == GostConstants.OID_CP_GOST_R3410EL)
             {
-                return certificate.PublicKey.Key;
+                return (AsymmetricAlgorithm)certificate.GetGost3410PublicKey();
             }
             else if (certificate?.PublicKey?.Oid.Value == GostConstants.OID_CP_GOST_R3410_12_256)
             {
-                return  certificate.PublicKey.Key;
+                return (AsymmetricAlgorithm)certificate.GetGost3410_2012_256PublicKey();
             }
             else if (certificate?.PublicKey?.Oid.Value == GostConstants.OID_CP_GOST_R3410_12_512)
             {
-                return  certificate.PublicKey.Key;
+                return (AsymmetricAlgorithm)certificate.GetGost3410_2012_512PublicKey();
             }
             // end: gost
             else
