@@ -65,11 +65,12 @@ test_script:
  
 # artifacts on succesfull build 
 artifacts:
-  #- path: artifacts\packages\**\*.nupkg
+  - path: artifacts\packages\**\*.nupkg
   #  name: packages
-  - path: artifacts\packages
+  #- path: artifacts\packages
     name: packages
-    type: zip
+  #  type: zip
+    type: NuGetPackage 
   - path: artifacts\bin\runtime\netcoreapp-Windows_NT-Debug-x64
     name: runtime
     type: zip
